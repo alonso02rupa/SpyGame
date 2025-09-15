@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpyGame</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🕵️ SpyGame</h1>
+            <p>Guess the Wikipedia person based on hints!</p>
+        </header>
+
+        <main>
+            <div id="game-area">
+                <div id="message-box" class="message">
+                    Welcome to SpyGame! Click "Start New Game" to begin.
+                </div>
+
+                <div class="game-controls">
+                    <button id="start-game-btn" class="btn btn-primary">Start New Game</button>
+                    <button id="get-hint-btn" class="btn btn-secondary" disabled>Get Hint</button>
+                    <button id="reveal-answer-btn" class="btn btn-danger" disabled>Reveal Answer</button>
+                </div>
+
+                <div id="hints-section" class="hints-section" style="display: none;">
+                    <h3>Hints:</h3>
+                    <ul id="hints-list"></ul>
+                    <p id="hints-remaining"></p>
+                </div>
+
+                <div id="guess-section" class="guess-section" style="display: none;">
+                    <h3>Make Your Guess:</h3>
+                    <div class="guess-input">
+                        <input type="text" id="guess-input" placeholder="Enter your guess..." maxlength="100">
+                        <button id="submit-guess-btn" class="btn btn-primary">Submit Guess</button>
+                    </div>
+                </div>
+
+                <div id="result-section" class="result-section"></div>
+            </div>
+
+            <div class="stats-link">
+                <a href="/stats" class="btn btn-link">View Game Statistics</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let gameActive = false;
+
+        // DOM elements
+        const messageBox = document.getElementById('message-box');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const getHintBtn = document.getElementById('get-hint-btn');
+        const revealAnswerBtn = document.getElementById('reveal-answer-btn');
+        const hintsSection = document.getElementById('hints-section');
+        const hintsList = document.getElementById('hints-list');
+        const hintsRemaining = document.getElementById('hints-remaining');
+        const guessSection = document.getElementById('guess-section');
+        const guessInput = document.getElementById('guess-input');
+        const submitGuessBtn = document.getElementById('submit-guess-btn');
+        const resultSection = document.getElementById('result-section');
+
+        // Event listeners
+        startGameBtn.addEventListener('click', startNewGame);
+        getHintBtn.addEventListener('click', getHint);
+        revealAnswerBtn.addEventListener('click', revealAnswer);
+        submitGuessBtn.addEventListener('click', makeGuess);
+        guessInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                makeGuess();
+            }
+        });
+
+        function updateMessage(message, type = 'info') {
+            messageBox.textContent = message;
+            messageBox.className = `message ${type}`;
+        }
+
+        function startNewGame() {
+            fetch('/start_game', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    gameActive = true;
+                    updateMessage(data.message, 'success');
+                    
+                    // Reset UI
+                    hintsList.innerHTML = '';
+                    hintsRemaining.textContent = '';
+                    guessInput.value = '';
+                    resultSection.innerHTML = '';
+                    
+                    // Show/hide sections
+                    hintsSection.style.display = 'block';
+                    guessSection.style.display = 'block';
+                    
+                    // Update button states
+                    startGameBtn.textContent = 'Start New Game';
+                    getHintBtn.disabled = false;
+                    revealAnswerBtn.disabled = false;
+                } else {
+                    updateMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                updateMessage('Error starting game. Please try again.', 'error');
+            });
+        }
+
+        function getHint() {
+            if (!gameActive) return;
+
+            fetch('/get_hint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Add hint to list
+                    const li = document.createElement('li');
+                    li.textContent = data.hint;
+                    hintsList.appendChild(li);
+                    
+                    // Update hints remaining
+                    hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
+                    
+                    // Disable hint button if no more hints
+                    if (data.hints_remaining === 0) {
+                        getHintBtn.disabled = true;
+                        updateMessage('No more hints available! Make your guess.', 'warning');
+                    } else {
+                        updateMessage('Hint added! You can ask for more hints or make a guess.', 'info');
+                    }
+                } else {
+                    updateMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                updateMessage('Error getting hint. Please try again.', 'error');
+            });
+        }
+
+        function makeGuess() {
+            if (!gameActive) return;
+
+            const guess = guessInput.value.trim();
+            if (!guess) {
+                updateMessage('Please enter a guess!', 'error');
+                return;
+            }
+
+            fetch('/make_guess', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ guess: guess })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    if (data.correct) {
+                        gameActive = false;
+                        updateMessage(data.message, 'success');
+                        getHintBtn.disabled = true;
+                        revealAnswerBtn.disabled = true;
+                        guessInput.disabled = true;
+                        submitGuessBtn.disabled = true;
+                    } else {
+                        updateMessage(data.message, 'warning');
+                        guessInput.value = '';
+                        guessInput.focus();
+                    }
+                } else {
+                    updateMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                updateMessage('Error making guess. Please try again.', 'error');
+            });
+        }
+
+        function revealAnswer() {
+            if (!gameActive) return;
+
+            if (confirm('Are you sure you want to reveal the answer? This will end the current game.')) {
+                fetch('/get_answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        gameActive = false;
+                        updateMessage(data.message, 'warning');
+                        getHintBtn.disabled = true;
+                        revealAnswerBtn.disabled = true;
+                        guessInput.disabled = true;
+                        submitGuessBtn.disabled = true;
+                    } else {
+                        updateMessage(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    updateMessage('Error revealing answer. Please try again.', 'error');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpyGame - Statistics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🕵️ SpyGame Statistics</h1>
+            <p>View your game history and performance</p>
+        </header>
+
+        <main>
+            <div class="stats-nav">
+                <a href="/" class="btn btn-primary">← Back to Game</a>
+            </div>
+
+            <div class="stats-content">
+                {% if sessions %}
+                    <div class="stats-summary">
+                        <h3>Game Summary</h3>
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <h4>Total Games</h4>
+                                <p class="stat-number">{{ sessions|length }}</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Correct Guesses</h4>
+                                <p class="stat-number">{{ sessions|selectattr('correct', 'equalto', true)|list|length }}</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Success Rate</h4>
+                                <p class="stat-number">
+                                    {% set correct_guesses = sessions|selectattr('correct', 'equalto', true)|list|length %}
+                                    {% set total_guesses = sessions|selectattr('guess', 'ne', '')|list|length %}
+                                    {% if total_guesses > 0 %}
+                                        {{ "%.1f"|format((correct_guesses / total_guesses) * 100) }}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sessions-table">
+                        <h3>Game History</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date & Time</th>
+                                    <th>Person</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in sessions|reverse %}
+                                <tr>
+                                    <td>{{ session.timestamp[:19]|replace('T', ' ') }}</td>
+                                    <td>{{ session.person }}</td>
+                                    <td>
+                                        {% if session.hint %}
+                                            Hint Request
+                                        {% elif session.guess %}
+                                            Guess
+                                        {% else %}
+                                            Other
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if session.hint %}
+                                            {{ session.hint }}
+                                        {% elif session.guess %}
+                                            "{{ session.guess }}"
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if session.correct == true %}
+                                            <span class="result-correct">✓ Correct</span>
+                                        {% elif session.correct == false %}
+                                            <span class="result-incorrect">✗ Wrong</span>
+                                        {% else %}
+                                            <span class="result-neutral">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="no-data">
+                        <h3>No Game History</h3>
+                        <p>You haven't played any games yet. <a href="/">Start your first game!</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</body>
+</html>

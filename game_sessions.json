@@ -1,0 +1,30 @@
+[
+  {
+    "person": "Cleopatra",
+    "hint": "I was the last pharaoh of Egypt",
+    "guess": "",
+    "correct": null,
+    "timestamp": "2025-09-15T14:27:19.185976"
+  },
+  {
+    "person": "Cleopatra",
+    "hint": "",
+    "guess": "Cleopatra",
+    "correct": true,
+    "timestamp": "2025-09-15T14:27:35.703443"
+  },
+  {
+    "person": "Leonardo da Vinci",
+    "hint": "I designed flying machines centuries before they were built",
+    "guess": "",
+    "correct": null,
+    "timestamp": "2025-09-15T14:28:17.033847"
+  },
+  {
+    "person": "Leonardo da Vinci",
+    "hint": "I painted the Mona Lisa",
+    "guess": "",
+    "correct": null,
+    "timestamp": "2025-09-15T14:28:25.016449"
+  }
+]
