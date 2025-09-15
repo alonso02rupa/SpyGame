@@ -1,338 +1,812 @@
-/* SpyGame CSS Styles */
+/* SpyGame CSS Styles - Dark Purple/Noir Theme */
 
+/* 
+ * Universal Reset: This removes default margins, padding, and sets consistent box-sizing
+ * for all HTML elements. This ensures consistent styling across different browsers.
+ */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    margin: 0;                    /* Remove default margins from all elements */
+    padding: 0;                   /* Remove default padding from all elements */
+    box-sizing: border-box;       /* Include padding and border in element's total width/height */
 }
 
+/* 
+ * Body Styles: Sets up the main background and typography for the entire page
+ * This creates the dark, noir atmosphere perfect for a spy game
+ */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  /* Modern, clean font stack */
+    line-height: 1.6;                                              /* Comfortable line spacing for readability */
+    color: #e2e8f0;                                                /* Light text color for dark theme */
+    background: linear-gradient(135deg, #1a1625 0%, #2d1b69 25%, #4c1d95 50%, #581c87 75%, #3b1f60 100%);  /* Dark purple gradient background */
+    min-height: 100vh;                                             /* Ensure full viewport height coverage */
+    position: relative;                                            /* Allow positioning of pseudo-elements */
 }
 
+/* 
+ * Add a subtle noise texture overlay for that classic noir feel
+ * This creates a film grain effect that enhances the spy theme
+ */
+body::before {
+    content: '';                                                   /* Required for pseudo-element */
+    position: fixed;                                               /* Fixed positioning covers entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.03"/></svg>');
+    pointer-events: none;                                          /* Don't interfere with clicking */
+    z-index: 1;                                                    /* Layer above background but below content */
+}
+
+/* 
+ * Container: Main wrapper that centers content and provides consistent spacing
+ * Acts as the layout foundation for the entire page
+ */
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 800px;                                              /* Maximum width prevents content from being too wide on large screens */
+    margin: 0 auto;                                                /* Center the container horizontally */
+    padding: 20px;                                                 /* Add spacing around the content */
+    position: relative;                                            /* Allow positioning relative to this container */
+    z-index: 2;                                                    /* Ensure content appears above background effects */
 }
 
+/* 
+ * Header Styles: The top section containing the game title and description
+ * Features a dark, glassy appearance with subtle transparency
+ */
 header {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
+    text-align: center;                                            /* Center all header content */
+    background: rgba(30, 20, 60, 0.85);                          /* Dark purple with transparency */
+    border: 1px solid rgba(139, 92, 246, 0.3);                   /* Subtle purple border */
+    border-radius: 20px;                                          /* Rounded corners for modern look */
+    padding: 40px 30px;                                           /* Generous padding for breathing room */
+    margin-bottom: 30px;                                          /* Space below header */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),                 /* Large shadow for depth */
+                0 0 30px rgba(139, 92, 246, 0.2),                /* Purple glow effect */
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);          /* Inner highlight for glass effect */
+    backdrop-filter: blur(20px);                                  /* Blur effect for modern glass look */
+    -webkit-backdrop-filter: blur(20px);                          /* Safari compatibility */
 }
 
+/* 
+ * Main heading (h1): The game title with dramatic styling
+ * Uses multiple effects to create a spy movie poster feel
+ */
 header h1 {
-    font-size: 3em;
-    color: #4a5568;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 3.5em;                                             /* Large, attention-grabbing size */
+    color: #a855f7;                                               /* Bright purple color */
+    margin-bottom: 15px;                                          /* Space below title */
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.8),              /* Purple glow around text */
+                 0 4px 8px rgba(0, 0, 0, 0.7),                   /* Drop shadow for depth */
+                 0 2px 4px rgba(0, 0, 0, 0.9);                   /* Additional shadow for contrast */
+    font-weight: 700;                                             /* Bold font weight */
+    letter-spacing: 2px;                                          /* Spaced out letters for dramatic effect */
+    background: linear-gradient(45deg, #a855f7, #e879f9, #fbbf24); /* Gradient text effect */
+    -webkit-background-clip: text;                                /* Clip background to text shape */
+    -webkit-text-fill-color: transparent;                         /* Make text transparent to show gradient */
+    background-clip: text;                                        /* Standard property */
 }
 
+/* 
+ * Subtitle paragraph: Description text under the main title
+ * Provides context about what the game does
+ */
 header p {
-    font-size: 1.2em;
-    color: #718096;
+    font-size: 1.3em;                                             /* Slightly larger than normal text */
+    color: #c4b5fd;                                               /* Light purple color */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                  /* Shadow for readability on dark background */
+    font-weight: 300;                                             /* Light font weight for elegance */
 }
 
+/* 
+ * Main Content Area: Contains all the game functionality
+ * Features the same dark glass theme as the header for consistency
+ */
 main {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
+    background: rgba(30, 20, 60, 0.9);                           /* Darker background than header */
+    border: 1px solid rgba(139, 92, 246, 0.4);                   /* Slightly more visible border */
+    border-radius: 20px;                                          /* Matching rounded corners */
+    padding: 35px;                                                /* Comfortable internal spacing */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7),                 /* Large shadow for floating effect */
+                0 0 40px rgba(139, 92, 246, 0.15),               /* Purple ambient glow */
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);          /* Inner highlight */
+    backdrop-filter: blur(25px);                                  /* Strong blur for glass effect */
+    -webkit-backdrop-filter: blur(25px);                          /* Safari compatibility */
 }
 
-/* Messages */
+/* 
+ * Message Styles: Feedback messages that appear throughout the game
+ * Each type has distinct coloring to convey different meanings
+ */
 .message {
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-weight: 500;
-    text-align: center;
+    padding: 18px 24px;                                           /* Comfortable padding for readability */
+    border-radius: 12px;                                          /* Rounded corners to match theme */
+    margin-bottom: 25px;                                          /* Space below message */
+    font-weight: 500;                                             /* Medium font weight for emphasis */
+    text-align: center;                                           /* Center the message text */
+    border: 1px solid transparent;                                /* Default transparent border */
+    backdrop-filter: blur(10px);                                  /* Blur effect for glass look */
+    position: relative;                                           /* Allow positioning of pseudo-elements */
+    overflow: hidden;                                             /* Hide overflow for animations */
 }
 
+/* Add a subtle animated shimmer effect to messages */
+.message::before {
+    content: '';                                                  /* Required for pseudo-element */
+    position: absolute;                                           /* Position relative to message */
+    top: 0;
+    left: -100%;                                                  /* Start off-screen to the left */
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); /* Moving highlight */
+    animation: shimmer 3s infinite;                               /* Infinite shimmer animation */
+    pointer-events: none;                                         /* Don't interfere with clicks */
+}
+
+/* Shimmer animation keyframes */
+@keyframes shimmer {
+    0% { left: -100%; }                                           /* Start position */
+    100% { left: 100%; }                                          /* End position */
+}
+
+/* Info messages: For general information and neutral feedback */
 .message.info {
-    background-color: #e6f3ff;
-    border: 1px solid #b3d9ff;
-    color: #0066cc;
+    background: rgba(59, 130, 246, 0.15);                        /* Blue background with transparency */
+    border-color: rgba(59, 130, 246, 0.4);                       /* Blue border */
+    color: #93c5fd;                                               /* Light blue text */
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.1);             /* Blue glow shadow */
 }
 
+/* Success messages: For positive feedback like correct guesses */
 .message.success {
-    background-color: #e6ffe6;
-    border: 1px solid #b3ffb3;
-    color: #009900;
+    background: rgba(34, 197, 94, 0.15);                         /* Green background with transparency */
+    border-color: rgba(34, 197, 94, 0.4);                        /* Green border */
+    color: #86efac;                                               /* Light green text */
+    box-shadow: 0 8px 16px rgba(34, 197, 94, 0.1);              /* Green glow shadow */
 }
 
+/* Warning messages: For important notices like "no more hints" */
 .message.warning {
-    background-color: #fff3cd;
-    border: 1px solid #ffd700;
-    color: #856404;
+    background: rgba(245, 158, 11, 0.15);                        /* Amber background with transparency */
+    border-color: rgba(245, 158, 11, 0.4);                       /* Amber border */
+    color: #fcd34d;                                               /* Light amber text */
+    box-shadow: 0 8px 16px rgba(245, 158, 11, 0.1);             /* Amber glow shadow */
 }
 
+/* Error messages: For problems and incorrect guesses */
 .message.error {
-    background-color: #ffe6e6;
-    border: 1px solid #ffb3b3;
-    color: #cc0000;
+    background: rgba(239, 68, 68, 0.15);                         /* Red background with transparency */
+    border-color: rgba(239, 68, 68, 0.4);                        /* Red border */
+    color: #fca5a5;                                               /* Light red text */
+    box-shadow: 0 8px 16px rgba(239, 68, 68, 0.1);              /* Red glow shadow */
 }
 
-/* Buttons */
+/* 
+ * Button Styles: Interactive elements that trigger game actions
+ * Features a sophisticated design with hover effects and disabled states
+ */
 .btn {
-    display: inline-block;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 5px;
+    display: inline-block;                                        /* Allow inline positioning with block properties */
+    padding: 14px 28px;                                          /* Comfortable padding for touch targets */
+    border: none;                                                 /* Remove default button border */
+    border-radius: 12px;                                         /* Rounded corners to match theme */
+    text-decoration: none;                                        /* Remove underlines from link buttons */
+    font-size: 16px;                                             /* Readable font size */
+    font-weight: 600;                                            /* Semi-bold for emphasis */
+    cursor: pointer;                                             /* Show pointer cursor on hover */
+    transition: all 0.3s ease;                                   /* Smooth animations for all properties */
+    margin: 8px;                                                 /* Space around buttons */
+    position: relative;                                          /* Allow positioning of pseudo-elements */
+    overflow: hidden;                                            /* Hide overflow for effects */
+    border: 1px solid transparent;                               /* Transparent border for hover effects */
+    backdrop-filter: blur(10px);                                 /* Blur effect for glass look */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);                 /* Text shadow for contrast */
 }
 
+/* 
+ * Button hover effects: Enhanced interactivity
+ * Provides visual feedback when user hovers over buttons
+ */
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px) scale(1.02);                     /* Lift and slightly enlarge button */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4),                /* Large shadow for floating effect */
+                0 0 25px rgba(139, 92, 246, 0.4);               /* Purple glow around button */
 }
 
+/* 
+ * Active/pressed state: Feedback when button is clicked
+ */
+.btn:active {
+    transform: translateY(-1px) scale(0.98);                     /* Slight press effect */
+    transition: all 0.1s ease;                                   /* Quick transition for immediate feedback */
+}
+
+/* 
+ * Disabled button state: When buttons can't be clicked
+ * Visual indication that the button is not functional
+ */
 .btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    opacity: 0.4;                                                /* Make button appear faded */
+    cursor: not-allowed;                                         /* Show "not allowed" cursor */
+    transform: none;                                             /* Remove hover transforms */
+    box-shadow: none;                                            /* Remove hover shadows */
+    filter: grayscale(50%);                                      /* Desaturate colors */
 }
 
+/* 
+ * Primary buttons: Main action buttons (Start Game, Submit Guess)
+ * Uses purple theme colors to match the spy aesthetic
+ */
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%); /* Purple gradient */
+    color: white;                                                /* White text for contrast */
+    border-color: rgba(168, 85, 247, 0.6);                      /* Purple border */
+    box-shadow: 0 8px 16px rgba(124, 58, 237, 0.3);            /* Purple shadow */
 }
 
+.btn-primary:hover {
+    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #d8b4fe 100%); /* Lighter purple on hover */
+    border-color: rgba(168, 85, 247, 0.8);                      /* More visible border */
+    box-shadow: 0 15px 30px rgba(124, 58, 237, 0.4),           /* Enhanced shadow */
+                0 0 25px rgba(168, 85, 247, 0.6);               /* Strong purple glow */
+}
+
+/* 
+ * Secondary buttons: Less important actions (Get Hint)
+ * Uses a complementary color scheme
+ */
 .btn-secondary {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
+    background: linear-gradient(135deg, #ec4899 0%, #f472b6 50%, #f9a8d4 100%); /* Pink gradient */
+    color: white;                                                /* White text */
+    border-color: rgba(244, 114, 182, 0.6);                     /* Pink border */
+    box-shadow: 0 8px 16px rgba(236, 72, 153, 0.3);            /* Pink shadow */
 }
 
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #f472b6 0%, #f9a8d4 50%, #fbcfe8 100%); /* Lighter pink on hover */
+    border-color: rgba(244, 114, 182, 0.8);                     /* More visible border */
+    box-shadow: 0 15px 30px rgba(236, 72, 153, 0.4),           /* Enhanced shadow */
+                0 0 25px rgba(244, 114, 182, 0.6);              /* Strong pink glow */
+}
+
+/* 
+ * Danger buttons: Destructive actions (Reveal Answer)
+ * Uses red colors to indicate caution is needed
+ */
 .btn-danger {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-    color: white;
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%); /* Red gradient */
+    color: white;                                                /* White text */
+    border-color: rgba(239, 68, 68, 0.6);                       /* Red border */
+    box-shadow: 0 8px 16px rgba(220, 38, 38, 0.3);             /* Red shadow */
 }
 
+.btn-danger:hover {
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 50%, #fca5a5 100%); /* Lighter red on hover */
+    border-color: rgba(239, 68, 68, 0.8);                       /* More visible border */
+    box-shadow: 0 15px 30px rgba(220, 38, 38, 0.4),            /* Enhanced shadow */
+                0 0 25px rgba(239, 68, 68, 0.6);                /* Strong red glow */
+}
+
+/* 
+ * Link buttons: Text-based navigation (View Statistics)
+ * Styled to look like links but maintain button functionality
+ */
 .btn-link {
-    background: transparent;
-    color: #667eea;
-    text-decoration: underline;
+    background: transparent;                                      /* No background */
+    color: #a855f7;                                              /* Purple text color */
+    text-decoration: underline;                                  /* Underlined like a traditional link */
+    border: none;                                                /* No border */
+    box-shadow: none;                                            /* No shadow */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);                 /* Text shadow for readability */
 }
 
 .btn-link:hover {
-    color: #764ba2;
+    color: #c084fc;                                              /* Lighter purple on hover */
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.8);             /* Glowing text effect */
+    transform: translateY(-1px);                                 /* Slight lift effect */
 }
 
-/* Game Controls */
+/* 
+ * Game Controls Section: Container for the main action buttons
+ * Centers buttons and provides appropriate spacing
+ */
 .game-controls {
-    text-align: center;
-    margin-bottom: 30px;
+    text-align: center;                                           /* Center all buttons */
+    margin-bottom: 35px;                                         /* Space below button area */
+    padding: 20px;                                               /* Internal padding */
+    background: rgba(139, 92, 246, 0.05);                       /* Very subtle purple background */
+    border-radius: 15px;                                         /* Rounded corners */
+    border: 1px solid rgba(139, 92, 246, 0.2);                  /* Subtle purple border */
 }
 
-/* Hints Section */
+/* 
+ * Hints Section: Displays the list of hints received during gameplay
+ * Features a dark, contained design that fits the noir theme
+ */
 .hints-section {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: rgba(15, 10, 30, 0.8);                          /* Very dark background */
+    border: 1px solid rgba(139, 92, 246, 0.3);                  /* Purple border */
+    border-radius: 15px;                                         /* Rounded corners */
+    padding: 25px;                                               /* Comfortable internal spacing */
+    margin-bottom: 25px;                                         /* Space below section */
+    backdrop-filter: blur(15px);                                 /* Blur effect */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5),                /* Large shadow for depth */
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);         /* Inner highlight */
 }
 
+/* 
+ * Hints section heading: Title for the hints area
+ */
 .hints-section h3 {
-    color: #4a5568;
-    margin-bottom: 15px;
+    color: #c4b5fd;                                              /* Light purple color */
+    margin-bottom: 20px;                                         /* Space below heading */
+    font-size: 1.4em;                                           /* Larger font size */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                 /* Shadow for contrast */
+    font-weight: 600;                                            /* Semi-bold weight */
 }
 
+/* 
+ * Hints list: Container for individual hint items
+ * Removes default list styling for custom appearance
+ */
 #hints-list {
-    list-style: none;
-    padding: 0;
+    list-style: none;                                            /* Remove bullet points */
+    padding: 0;                                                  /* Remove default padding */
+    margin: 0;                                                   /* Remove default margin */
 }
 
+/* 
+ * Individual hint items: Each hint appears as a styled card
+ * Features subtle animations and hover effects
+ */
 #hints-list li {
-    background: white;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border-left: 4px solid #667eea;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, rgba(30, 20, 60, 0.9), rgba(45, 27, 105, 0.7)); /* Dark gradient background */
+    color: #e2e8f0;                                              /* Light text color */
+    padding: 16px 20px;                                          /* Comfortable padding */
+    margin: 12px 0;                                              /* Space between hints */
+    border-radius: 10px;                                         /* Rounded corners */
+    border-left: 4px solid #a855f7;                             /* Purple accent border */
+    border: 1px solid rgba(139, 92, 246, 0.4);                  /* Overall border */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4),                 /* Shadow for depth */
+                0 0 15px rgba(168, 85, 247, 0.1);               /* Purple glow */
+    transition: all 0.3s ease;                                   /* Smooth hover transitions */
+    backdrop-filter: blur(10px);                                 /* Blur effect */
 }
 
+/* Hover effect for hint items */
+#hints-list li:hover {
+    transform: translateX(5px);                                   /* Slight slide effect */
+    border-left-color: #c084fc;                                  /* Brighter purple on hover */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6),                /* Enhanced shadow */
+                0 0 20px rgba(168, 85, 247, 0.2);               /* Stronger glow */
+}
+
+/* 
+ * Hints remaining counter: Shows how many hints are left
+ */
 #hints-remaining {
-    font-weight: 500;
-    color: #718096;
-    margin-top: 10px;
+    font-weight: 500;                                            /* Medium font weight */
+    color: #a855f7;                                              /* Purple color */
+    margin-top: 15px;                                            /* Space above counter */
+    text-align: center;                                          /* Center the text */
+    font-size: 1.1em;                                           /* Slightly larger text */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);                 /* Shadow for readability */
 }
 
-/* Guess Section */
+/* 
+ * Guess Section: Area where players enter their guesses
+ * Matches the hints section design for visual consistency
+ */
 .guess-section {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: rgba(15, 10, 30, 0.8);                          /* Dark background matching hints */
+    border: 1px solid rgba(139, 92, 246, 0.3);                  /* Purple border */
+    border-radius: 15px;                                         /* Rounded corners */
+    padding: 25px;                                               /* Internal spacing */
+    margin-bottom: 25px;                                         /* Space below section */
+    backdrop-filter: blur(15px);                                 /* Blur effect */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5),                /* Shadow for depth */
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);         /* Inner highlight */
 }
 
+/* 
+ * Guess section heading: Title for the input area
+ */
 .guess-section h3 {
-    color: #4a5568;
-    margin-bottom: 15px;
+    color: #c4b5fd;                                              /* Light purple color */
+    margin-bottom: 20px;                                         /* Space below heading */
+    font-size: 1.4em;                                           /* Larger font size */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                 /* Shadow for contrast */
+    font-weight: 600;                                            /* Semi-bold weight */
 }
 
+/* 
+ * Guess input container: Flexbox layout for input and button
+ * Arranges the text input and submit button side by side
+ */
 .guess-input {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+    display: flex;                                               /* Use flexbox layout */
+    gap: 15px;                                                   /* Space between input and button */
+    align-items: center;                                         /* Vertically center items */
+    flex-wrap: wrap;                                             /* Allow wrapping on small screens */
 }
 
+/* 
+ * Text input field: Where players type their guesses
+ * Features the dark theme styling with purple accents
+ */
 #guess-input {
-    flex: 1;
-    padding: 12px;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
+    flex: 1;                                                     /* Take up remaining space */
+    padding: 14px 18px;                                          /* Comfortable padding */
+    border: 2px solid rgba(139, 92, 246, 0.3);                  /* Purple border */
+    border-radius: 10px;                                         /* Rounded corners */
+    font-size: 16px;                                             /* Readable font size */
+    background: rgba(30, 20, 60, 0.8);                          /* Dark background */
+    color: #e2e8f0;                                              /* Light text color */
+    transition: all 0.3s ease;                                   /* Smooth focus transitions */
+    backdrop-filter: blur(10px);                                 /* Blur effect */
+    min-width: 200px;                                            /* Minimum width for usability */
 }
 
+/* 
+ * Input field placeholder text styling
+ * Makes placeholder text visible on dark background
+ */
+#guess-input::placeholder {
+    color: #94a3b8;                                              /* Subtle gray color */
+    opacity: 0.8;                                                /* Slightly transparent */
+}
+
+/* 
+ * Input field focus state: Visual feedback when user clicks in the field
+ * Provides clear indication that the field is active
+ */
 #guess-input:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;                                               /* Remove default browser outline */
+    border-color: #a855f7;                                       /* Bright purple border */
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2),             /* Purple glow around field */
+                0 8px 16px rgba(168, 85, 247, 0.15);            /* Purple shadow below */
+    background: rgba(30, 20, 60, 0.95);                         /* Slightly more opaque background */
+    transform: scale(1.02);                                       /* Slight enlargement effect */
 }
 
-/* Stats Link */
+/* 
+ * Stats Link: Navigation to the statistics page
+ * Positioned prominently at the bottom of the main content
+ */
 .stats-link {
-    text-align: center;
-    margin-top: 30px;
+    text-align: center;                                          /* Center the link */
+    margin-top: 35px;                                            /* Space above link */
+    padding: 20px;                                               /* Internal padding */
+    background: rgba(139, 92, 246, 0.08);                       /* Very subtle purple background */
+    border-radius: 12px;                                         /* Rounded corners */
+    border: 1px solid rgba(139, 92, 246, 0.2);                  /* Subtle border */
 }
 
-/* Statistics Page */
+/* 
+ * Statistics Page Styles: Layout and styling for the stats page
+ * Maintains consistency with the main game page design
+ */
+
+/* Navigation area on stats page */
 .stats-nav {
-    margin-bottom: 30px;
+    margin-bottom: 35px;                                         /* Space below navigation */
+    text-align: center;                                          /* Center the back button */
 }
 
+/* Summary section containing overview cards */
 .stats-summary {
-    margin-bottom: 30px;
+    margin-bottom: 35px;                                         /* Space below summary */
 }
 
+/* Grid layout for summary cards */
 .summary-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+    display: grid;                                               /* Use CSS Grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsive columns */
+    gap: 25px;                                                   /* Space between cards */
+    margin-top: 25px;                                            /* Space above cards */
 }
 
+/* 
+ * Individual summary cards: Display key statistics
+ * Each card shows one important metric
+ */
 .summary-card {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, rgba(30, 20, 60, 0.9), rgba(45, 27, 105, 0.7)); /* Dark gradient */
+    border: 1px solid rgba(139, 92, 246, 0.4);                  /* Purple border */
+    padding: 25px;                                               /* Internal spacing */
+    border-radius: 15px;                                         /* Rounded corners */
+    text-align: center;                                          /* Center card content */
+    backdrop-filter: blur(15px);                                 /* Blur effect */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4),                /* Shadow for depth */
+                0 0 20px rgba(168, 85, 247, 0.1);               /* Purple glow */
+    transition: all 0.3s ease;                                   /* Smooth hover effects */
 }
 
+/* Hover effect for summary cards */
+.summary-card:hover {
+    transform: translateY(-5px) scale(1.02);                     /* Lift and enlarge */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),                /* Enhanced shadow */
+                0 0 30px rgba(168, 85, 247, 0.2);               /* Stronger glow */
+}
+
+/* Card headings */
 .summary-card h4 {
-    color: #4a5568;
-    margin-bottom: 10px;
+    color: #c4b5fd;                                              /* Light purple */
+    margin-bottom: 15px;                                         /* Space below heading */
+    font-size: 1.2em;                                           /* Larger font */
+    font-weight: 600;                                            /* Semi-bold */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                 /* Text shadow */
 }
 
+/* 
+ * Statistic numbers: Large, prominent display of key metrics
+ */
 .stat-number {
-    font-size: 2em;
-    font-weight: bold;
-    color: #667eea;
+    font-size: 2.5em;                                           /* Very large font */
+    font-weight: 700;                                           /* Bold weight */
+    color: #a855f7;                                              /* Purple color */
+    text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);             /* Glowing effect */
+    margin: 10px 0;                                             /* Vertical spacing */
 }
 
-/* Table Styles */
+/* 
+ * Table Styles: For displaying detailed game history
+ * Features a dark theme that matches the overall design
+ */
+
+/* Container for responsive table scrolling */
 .sessions-table {
-    overflow-x: auto;
+    overflow-x: auto;                                            /* Allow horizontal scrolling on small screens */
+    margin-top: 25px;                                            /* Space above table */
+    border-radius: 15px;                                         /* Rounded container */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);                /* Shadow around entire table */
 }
 
+/* Main table element */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;                                                 /* Full width of container */
+    border-collapse: collapse;                                   /* Remove spacing between cells */
+    margin: 0;                                                   /* No margin */
+    background: linear-gradient(135deg, rgba(30, 20, 60, 0.9), rgba(45, 27, 105, 0.7)); /* Dark gradient */
+    border-radius: 15px;                                         /* Rounded corners */
+    overflow: hidden;                                            /* Hide overflow for rounded corners */
+    backdrop-filter: blur(15px);                                 /* Blur effect */
+    border: 1px solid rgba(139, 92, 246, 0.3);                  /* Purple border */
 }
 
+/* Table cells (both headers and data) */
 th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 15px 18px;                                          /* Comfortable cell padding */
+    text-align: left;                                            /* Left-align text */
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);          /* Subtle purple border between rows */
+    color: #e2e8f0;                                              /* Light text color */
 }
 
+/* 
+ * Table headers: Column titles
+ * Distinguished styling to separate from data rows
+ */
 th {
-    background: #f8f9fa;
-    font-weight: 600;
-    color: #4a5568;
+    background: linear-gradient(135deg, rgba(45, 27, 105, 0.9), rgba(76, 29, 149, 0.8)); /* Darker gradient */
+    font-weight: 600;                                            /* Semi-bold text */
+    color: #c4b5fd;                                              /* Light purple text */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                 /* Text shadow */
+    font-size: 1.1em;                                           /* Slightly larger font */
+    letter-spacing: 0.5px;                                       /* Spaced letters */
 }
 
+/* 
+ * Table row hover effect: Interactive feedback
+ * Provides visual feedback when hovering over data rows
+ */
 tr:hover {
-    background: #f8f9fa;
+    background: rgba(139, 92, 246, 0.1);                        /* Purple highlight */
+    transform: scale(1.01);                                       /* Slight enlargement */
+    transition: all 0.2s ease;                                   /* Smooth transition */
 }
 
+/* Don't apply hover effect to header row */
+thead tr:hover {
+    background: none;                                            /* Remove hover background */
+    transform: none;                                             /* Remove hover transform */
+}
+
+/* 
+ * Result status indicators: Visual feedback for game outcomes
+ * Different colors for correct, incorrect, and neutral results
+ */
 .result-correct {
-    color: #009900;
-    font-weight: 500;
+    color: #86efac;                                              /* Light green for correct */
+    font-weight: 600;                                            /* Bold text */
+    text-shadow: 0 0 10px rgba(134, 239, 172, 0.5);            /* Green glow */
 }
 
 .result-incorrect {
-    color: #cc0000;
-    font-weight: 500;
+    color: #fca5a5;                                              /* Light red for incorrect */
+    font-weight: 600;                                            /* Bold text */
+    text-shadow: 0 0 10px rgba(252, 165, 165, 0.5);            /* Red glow */
 }
 
 .result-neutral {
-    color: #718096;
+    color: #94a3b8;                                              /* Gray for neutral */
+    font-weight: 400;                                            /* Normal weight */
 }
 
+/* 
+ * No Data State: Displayed when there are no statistics to show
+ * Provides helpful messaging and call-to-action
+ */
 .no-data {
-    text-align: center;
-    padding: 40px;
-    color: #718096;
+    text-align: center;                                          /* Center the content */
+    padding: 50px 30px;                                          /* Generous padding */
+    color: #94a3b8;                                              /* Subtle gray color */
+    background: rgba(15, 10, 30, 0.6);                          /* Dark background */
+    border-radius: 15px;                                         /* Rounded corners */
+    border: 1px solid rgba(139, 92, 246, 0.2);                  /* Subtle border */
+    backdrop-filter: blur(10px);                                 /* Blur effect */
 }
 
 .no-data h3 {
-    margin-bottom: 15px;
-    color: #4a5568;
+    margin-bottom: 20px;                                         /* Space below heading */
+    color: #c4b5fd;                                              /* Light purple */
+    font-size: 1.5em;                                           /* Larger font */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                 /* Text shadow */
 }
 
-/* Responsive Design */
+.no-data a {
+    color: #a855f7;                                              /* Purple link color */
+    text-decoration: underline;                                  /* Underlined link */
+    font-weight: 500;                                            /* Medium weight */
+    transition: color 0.3s ease;                                 /* Smooth color transition */
+}
+
+.no-data a:hover {
+    color: #c084fc;                                              /* Lighter purple on hover */
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);             /* Glowing effect */
+}
+
+/* 
+ * Responsive Design: Adaptations for different screen sizes
+ * Ensures the game works well on mobile devices and tablets
+ */
 @media (max-width: 768px) {
+    /* 
+     * Container adjustments for smaller screens
+     * Reduce padding to maximize usable space
+     */
     .container {
-        padding: 10px;
+        padding: 15px;                                           /* Smaller padding on mobile */
     }
     
+    /* 
+     * Header title size adjustment
+     * Make title smaller to fit mobile screens
+     */
     header h1 {
-        font-size: 2em;
+        font-size: 2.5em;                                        /* Smaller title on mobile */
+        letter-spacing: 1px;                                     /* Reduce letter spacing */
     }
     
+    header p {
+        font-size: 1.1em;                                        /* Slightly smaller subtitle */
+    }
+    
+    /* 
+     * Input layout changes for mobile
+     * Stack input and button vertically for better touch interaction
+     */
     .guess-input {
-        flex-direction: column;
+        flex-direction: column;                                   /* Stack items vertically */
+        align-items: stretch;                                     /* Stretch items to full width */
     }
     
+    #guess-input {
+        min-width: unset;                                         /* Remove minimum width constraint */
+        margin-bottom: 10px;                                      /* Space below input */
+    }
+    
+    /* 
+     * Button adjustments for mobile
+     * Make buttons full-width for easier touch interaction
+     */
     .btn {
-        display: block;
-        width: 100%;
-        margin: 5px 0;
+        display: block;                                           /* Full-width buttons */
+        width: 100%;                                             /* Take full container width */
+        margin: 10px 0;                                          /* Vertical margin only */
+        padding: 16px 20px;                                      /* Larger padding for touch */
+        font-size: 18px;                                         /* Larger text for readability */
     }
     
+    /* 
+     * Game controls adjustments
+     * Ensure buttons stack nicely on mobile
+     */
+    .game-controls .btn {
+        margin: 8px 0;                                           /* Consistent vertical spacing */
+    }
+    
+    /* 
+     * Summary cards layout for mobile
+     * Single column layout for better readability
+     */
     .summary-cards {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr;                              /* Single column on mobile */
+        gap: 20px;                                               /* Reduced gap */
     }
     
+    /* 
+     * Table adjustments for mobile
+     * Smaller font and padding for better fit
+     */
     table {
-        font-size: 14px;
+        font-size: 14px;                                         /* Smaller font for mobile */
     }
     
     th, td {
-        padding: 8px;
+        padding: 10px 8px;                                       /* Reduced padding */
+    }
+    
+    /* 
+     * Section padding adjustments
+     * Reduce padding in content sections for mobile
+     */
+    .hints-section,
+    .guess-section {
+        padding: 20px 15px;                                      /* Smaller padding */
+    }
+    
+    /* 
+     * Message adjustments for mobile
+     * Ensure messages are readable on small screens
+     */
+    .message {
+        padding: 15px;                                           /* Consistent padding */
+        font-size: 16px;                                         /* Readable font size */
+    }
+}
+
+/* 
+ * Extra small screens (phones in portrait)
+ * Additional optimizations for very small screens
+ */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 2em;                                          /* Even smaller title */
+        margin-bottom: 10px;                                     /* Reduced margin */
+    }
+    
+    header p {
+        font-size: 1em;                                          /* Standard subtitle size */
+    }
+    
+    .summary-card {
+        padding: 20px 15px;                                      /* Reduced card padding */
+    }
+    
+    .stat-number {
+        font-size: 2em;                                          /* Smaller stat numbers */
+    }
+    
+    main {
+        padding: 25px 20px;                                      /* Reduced main padding */
+    }
+}
+
+/* 
+ * Large screens optimization
+ * Enhancements for desktop and large displays
+ */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1000px;                                       /* Wider container on large screens */
+    }
+    
+    header h1 {
+        font-size: 4em;                                          /* Larger title on big screens */
+    }
+    
+    .summary-cards {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Wider cards on large screens */
     }
 }
