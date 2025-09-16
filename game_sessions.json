@@ -40,5 +40,26 @@
     "guess": "",
     "correct": null,
     "timestamp": "2025-09-15T17:40:37.349757"
+  },
+  {
+    "person": "William Shakespeare",
+    "hint": "I invented many words that are still used today",
+    "guess": "",
+    "correct": null,
+    "timestamp": "2025-09-16T10:08:01.221735"
+  },
+  {
+    "person": "William Shakespeare",
+    "hint": "",
+    "guess": "William Shakespeare",
+    "correct": true,
+    "timestamp": "2025-09-16T10:08:19.574721"
+  },
+  {
+    "person": "Marie Curie",
+    "hint": "I won Nobel Prizes in both Physics and Chemistry",
+    "guess": "",
+    "correct": null,
+    "timestamp": "2025-09-16T10:08:36.133691"
   }
 ]
