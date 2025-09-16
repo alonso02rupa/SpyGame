@@ -197,6 +197,11 @@
                     class="btn btn-link": Styles the link to look like a button
                 -->
             </div>
+
+            <div class="info-button">
+                <!-- Information button about the project -->
+                <button id="info-btn" class="btn btn-info" title="About this project">❓</button>
+            </div>
         </main>
         <!-- End of main content area -->
     </div>
@@ -230,6 +235,7 @@
         const guessInput = document.getElementById('guess-input');          // Text input field
         const submitGuessBtn = document.getElementById('submit-guess-btn'); // Submit guess button
         const resultSection = document.getElementById('result-section');     // Results display area
+        const infoBtn = document.getElementById('info-btn');               // Info button
 
         /* 
          * Event Listeners: These "listen" for user interactions and respond to them
@@ -256,6 +262,9 @@
             }
         });
 
+        // When the info button is clicked, show project information
+        infoBtn.addEventListener('click', showProjectInfo);
+
         /* 
          * Helper function to update the message box with feedback for the user
          * Parameters:
@@ -272,6 +281,16 @@
          * This function sends a request to the Flask server to begin a new game session
          */
         function startNewGame() {
+            // Check if a game is already active
+            if (gameActive) {
+                if (confirm('A game is already in progress. Do you want to start a new game? This will end the current game.')) {
+                    // User confirmed - proceed with new game
+                } else {
+                    // User cancelled - don't start new game
+                    return;
+                }
+            }
+            
             // Use fetch() to make an HTTP request to our Flask server
             fetch('/start_game', {
                 method: 'POST',                                  // POST method for sending data
@@ -300,6 +319,8 @@
                     startGameBtn.textContent = 'Start New Game'; // Reset button text
                     getHintBtn.disabled = false;                 // Enable hint button
                     revealAnswerBtn.disabled = false;            // Enable reveal button
+                    guessInput.disabled = false;                 // Enable guess input
+                    submitGuessBtn.disabled = false;             // Enable submit button
                 } else {
                     // Something went wrong - show error message
                     updateMessage(data.message, 'error');
@@ -454,6 +475,25 @@
                 });
             }
             // If user clicked "Cancel" in the confirmation dialog, nothing happens
+        }
+
+        /*
+         * Function to show project information
+         * This displays information about the thesis project and data usage
+         */
+        function showProjectInfo() {
+            const message = `About SpyGame
+
+This is a final degree project (proyecto de fin de grado) that studies human guessing patterns and behavior.
+
+Data Collection:
+• Game sessions (hints requested, guesses made, success/failure) are saved
+• No personal information or user profiling is collected
+• All data will be used later for scientific research
+
+Thank you for your collaboration in this research project! Your participation helps advance our understanding of how people solve puzzles and make guesses.`;
+
+            alert(message);
         }
     </script>
     <!-- End of JavaScript section -->
