@@ -1,125 +1,326 @@
 <!DOCTYPE html>
+<!-- 
+    This declares the document type as HTML5. 
+    HTML5 is the latest version of HTML and provides modern features.
+-->
 <html lang="en">
+<!-- 
+    The <html> element is the root element of the page.
+    lang="en" tells browsers and screen readers this page is in English.
+-->
 <head>
+    <!-- 
+        The <head> section contains metadata about the page that doesn't appear in the browser window.
+        This information is used by browsers, search engines, and other tools.
+    -->
+    
     <meta charset="UTF-8">
+    <!-- 
+        This sets the character encoding to UTF-8, which supports all Unicode characters.
+        This ensures special characters like emojis (🕵️) display correctly.
+    -->
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 
+        This makes the page responsive (mobile-friendly).
+        width=device-width: Makes the page width match the device's screen width
+        initial-scale=1.0: Sets the initial zoom level to 100%
+    -->
+    
     <title>SpyGame</title>
+    <!-- 
+        The text that appears in the browser tab/window title.
+        Also used by search engines as the clickable headline in search results.
+    -->
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- 
+        This links to our CSS file that contains all the styling.
+        {{ url_for('static', filename='style.css') }} is Flask template syntax that
+        generates the correct URL path to our CSS file.
+    -->
 </head>
 <body>
+    <!-- 
+        The <body> element contains all the visible content of the page.
+        Everything users see and interact with goes inside here.
+    -->
+    
     <div class="container">
+        <!-- 
+            This div wraps all our content and centers it on the page.
+            The "container" class is defined in our CSS file and sets max-width and centering.
+        -->
+        
         <header>
+            <!-- 
+                The <header> element represents the top section of our page.
+                It typically contains headings, logos, and introductory content.
+            -->
             <h1>🕵️ SpyGame</h1>
+            <!-- 
+                <h1> is the main heading of the page (largest and most important).
+                The 🕵️ emoji adds visual appeal and reinforces the spy theme.
+            -->
+            
             <p>Guess the Wikipedia person based on hints!</p>
+            <!-- 
+                <p> creates a paragraph of text that explains what the game is about.
+                This gives users context about what they're about to play.
+            -->
         </header>
 
         <main>
+            <!-- 
+                The <main> element contains the primary content of the page.
+                It represents the main functionality - in this case, the game itself.
+            -->
+            
             <div id="game-area">
+                <!-- 
+                    This div contains all the game-related elements.
+                    The id="game-area" allows us to reference this specific element in CSS and JavaScript.
+                -->
+                
                 <div id="message-box" class="message">
+                    <!-- 
+                        This div displays feedback messages to the user throughout the game.
+                        id="message-box": Unique identifier so JavaScript can update the message
+                        class="message": CSS class that styles the message box
+                    -->
                     Welcome to SpyGame! Click "Start New Game" to begin.
                 </div>
 
                 <div class="game-controls">
+                    <!-- 
+                        This div contains all the main action buttons for the game.
+                        The class="game-controls" applies CSS styling to center and space the buttons.
+                    -->
+                    
                     <button id="start-game-btn" class="btn btn-primary">Start New Game</button>
+                    <!-- 
+                        HTML button element that users click to start a new game.
+                        id="start-game-btn": Unique identifier for JavaScript to attach click events
+                        class="btn btn-primary": CSS classes for button styling (btn = general button, btn-primary = primary action styling)
+                    -->
+                    
                     <button id="get-hint-btn" class="btn btn-secondary" disabled>Get Hint</button>
+                    <!-- 
+                        Button to request hints during gameplay.
+                        disabled: HTML attribute that makes the button unclickable until a game starts
+                        class="btn btn-secondary": Secondary button styling (less prominent than primary)
+                    -->
+                    
                     <button id="reveal-answer-btn" class="btn btn-danger" disabled>Reveal Answer</button>
+                    <!-- 
+                        Button to give up and reveal the answer.
+                        class="btn btn-danger": Danger styling (red) to indicate this ends the game
+                    -->
                 </div>
 
                 <div id="hints-section" class="hints-section" style="display: none;">
+                    <!-- 
+                        This section displays the hints that the player has requested.
+                        id="hints-section": Unique identifier for JavaScript to show/hide this section
+                        class="hints-section": CSS class for styling the hints container
+                        style="display: none;": Initially hidden until a game starts
+                    -->
+                    
                     <h3>Hints:</h3>
+                    <!-- 
+                        <h3> is a third-level heading (smaller than h1 and h2).
+                        It labels this section so users know what the content below represents.
+                    -->
+                    
                     <ul id="hints-list"></ul>
+                    <!-- 
+                        <ul> creates an unordered (bulleted) list.
+                        id="hints-list": JavaScript will add hint items to this list
+                        Initially empty - hints are added dynamically via JavaScript
+                    -->
+                    
                     <p id="hints-remaining"></p>
+                    <!-- 
+                        This paragraph will show how many hints are left.
+                        id="hints-remaining": JavaScript updates this text as hints are used
+                    -->
                 </div>
 
                 <div id="guess-section" class="guess-section" style="display: none;">
+                    <!-- 
+                        This section contains the input field and button for making guesses.
+                        Initially hidden until a game starts (style="display: none;")
+                    -->
+                    
                     <h3>Make Your Guess:</h3>
+                    <!-- Heading that tells the user what this section is for -->
+                    
                     <div class="guess-input">
+                        <!-- 
+                            Container div that uses CSS flexbox to arrange the input and button side by side.
+                            class="guess-input": CSS class that applies flexbox layout
+                        -->
+                        
                         <input type="text" id="guess-input" placeholder="Enter your guess..." maxlength="100">
+                        <!-- 
+                            Text input field where users type their guesses.
+                            type="text": Specifies this is a text input field
+                            id="guess-input": JavaScript uses this to get the typed value
+                            placeholder="Enter your guess...": Gray text shown when field is empty
+                            maxlength="100": Limits input to 100 characters
+                        -->
+                        
                         <button id="submit-guess-btn" class="btn btn-primary">Submit Guess</button>
+                        <!-- 
+                            Button to submit the guess.
+                            When clicked, JavaScript gets the value from the input field above
+                        -->
                     </div>
                 </div>
 
                 <div id="result-section" class="result-section"></div>
+                <!-- 
+                    This div will contain game results and outcome messages.
+                    Initially empty - JavaScript adds content here when games end
+                -->
             </div>
 
             <div class="stats-link">
+                <!-- 
+                    Container for the navigation link to the statistics page.
+                    class="stats-link": CSS class that centers the link and adds styling
+                -->
                 <a href="/stats" class="btn btn-link">View Game Statistics</a>
+                <!-- 
+                    <a> creates a hyperlink to another page.
+                    href="/stats": The URL path to the statistics page
+                    class="btn btn-link": Styles the link to look like a button
+                -->
             </div>
         </main>
+        <!-- End of main content area -->
     </div>
+    <!-- End of container div -->
 
     <script>
+        /* 
+         * JavaScript Section: This adds interactivity to our HTML page
+         * JavaScript runs in the user's browser and can:
+         * - Respond to user interactions (clicks, typing, etc.)
+         * - Modify the page content dynamically
+         * - Communicate with our Flask server
+         */
+        
+        // Game state variable to track if a game is currently active
         let gameActive = false;
 
-        // DOM elements
-        const messageBox = document.getElementById('message-box');
-        const startGameBtn = document.getElementById('start-game-btn');
-        const getHintBtn = document.getElementById('get-hint-btn');
-        const revealAnswerBtn = document.getElementById('reveal-answer-btn');
-        const hintsSection = document.getElementById('hints-section');
-        const hintsList = document.getElementById('hints-list');
-        const hintsRemaining = document.getElementById('hints-remaining');
-        const guessSection = document.getElementById('guess-section');
-        const guessInput = document.getElementById('guess-input');
-        const submitGuessBtn = document.getElementById('submit-guess-btn');
-        const resultSection = document.getElementById('result-section');
+        /* 
+         * DOM Element References: These variables store references to HTML elements
+         * so we can easily interact with them throughout our JavaScript code.
+         * document.getElementById() finds elements by their unique id attribute.
+         */
+        const messageBox = document.getElementById('message-box');         // The message display area
+        const startGameBtn = document.getElementById('start-game-btn');     // Start new game button
+        const getHintBtn = document.getElementById('get-hint-btn');         // Get hint button
+        const revealAnswerBtn = document.getElementById('reveal-answer-btn'); // Reveal answer button
+        const hintsSection = document.getElementById('hints-section');       // Hints container
+        const hintsList = document.getElementById('hints-list');           // List where hints appear
+        const hintsRemaining = document.getElementById('hints-remaining');   // Hint counter text
+        const guessSection = document.getElementById('guess-section');       // Guess input container
+        const guessInput = document.getElementById('guess-input');          // Text input field
+        const submitGuessBtn = document.getElementById('submit-guess-btn'); // Submit guess button
+        const resultSection = document.getElementById('result-section');     // Results display area
 
-        // Event listeners
+        /* 
+         * Event Listeners: These "listen" for user interactions and respond to them
+         * addEventListener() tells the browser what function to call when an event happens
+         */
+        
+        // When the "Start New Game" button is clicked, call the startNewGame function
         startGameBtn.addEventListener('click', startNewGame);
+        
+        // When the "Get Hint" button is clicked, call the getHint function
         getHintBtn.addEventListener('click', getHint);
+        
+        // When the "Reveal Answer" button is clicked, call the revealAnswer function
         revealAnswerBtn.addEventListener('click', revealAnswer);
+        
+        // When the "Submit Guess" button is clicked, call the makeGuess function
         submitGuessBtn.addEventListener('click', makeGuess);
+        
+        // Listen for key presses in the guess input field
         guessInput.addEventListener('keypress', function(e) {
+            // If the Enter key is pressed, submit the guess (same as clicking the button)
             if (e.key === 'Enter') {
                 makeGuess();
             }
         });
 
+        /* 
+         * Helper function to update the message box with feedback for the user
+         * Parameters:
+         * - message: The text to display
+         * - type: The style of message ('info', 'success', 'warning', 'error')
+         */
         function updateMessage(message, type = 'info') {
-            messageBox.textContent = message;
-            messageBox.className = `message ${type}`;
+            messageBox.textContent = message;                    // Set the text content
+            messageBox.className = `message ${type}`;            // Set CSS classes for styling
         }
 
+        /* 
+         * Function to start a new game
+         * This function sends a request to the Flask server to begin a new game session
+         */
         function startNewGame() {
+            // Use fetch() to make an HTTP request to our Flask server
             fetch('/start_game', {
-                method: 'POST',
+                method: 'POST',                                  // POST method for sending data
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',          // Tell server we're sending JSON
                 }
             })
-            .then(response => response.json())
-            .then(data => {
+            .then(response => response.json())                   // Convert response to JSON
+            .then(data => {                                      // Handle the server's response
                 if (data.status === 'success') {
-                    gameActive = true;
-                    updateMessage(data.message, 'success');
+                    // Game started successfully - update the user interface
+                    gameActive = true;                           // Set game state to active
+                    updateMessage(data.message, 'success');     // Show success message
                     
-                    // Reset UI
-                    hintsList.innerHTML = '';
-                    hintsRemaining.textContent = '';
-                    guessInput.value = '';
-                    resultSection.innerHTML = '';
+                    // Reset the user interface to clean state
+                    hintsList.innerHTML = '';                    // Clear any old hints
+                    hintsRemaining.textContent = '';             // Clear hint counter
+                    guessInput.value = '';                       // Clear guess input field
+                    resultSection.innerHTML = '';                // Clear any old results
                     
-                    // Show/hide sections
-                    hintsSection.style.display = 'block';
-                    guessSection.style.display = 'block';
+                    // Show/hide page sections appropriately
+                    hintsSection.style.display = 'block';       // Show hints section
+                    guessSection.style.display = 'block';       // Show guess section
                     
                     // Update button states
-                    startGameBtn.textContent = 'Start New Game';
-                    getHintBtn.disabled = false;
-                    revealAnswerBtn.disabled = false;
+                    startGameBtn.textContent = 'Start New Game'; // Reset button text
+                    getHintBtn.disabled = false;                 // Enable hint button
+                    revealAnswerBtn.disabled = false;            // Enable reveal button
                 } else {
+                    // Something went wrong - show error message
                     updateMessage(data.message, 'error');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                // Handle network errors or other problems
+                console.error('Error:', error);                 // Log error to browser console
                 updateMessage('Error starting game. Please try again.', 'error');
             });
         }
 
+        /* 
+         * Function to request a hint from the server
+         * This adds a new hint to the hints list and updates the remaining count
+         */
         function getHint() {
+            // Don't do anything if no game is active
             if (!gameActive) return;
 
+            // Send request to Flask server for a hint
             fetch('/get_hint', {
                 method: 'POST',
                 headers: {
@@ -129,22 +330,25 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    // Add hint to list
-                    const li = document.createElement('li');
-                    li.textContent = data.hint;
-                    hintsList.appendChild(li);
+                    // Hint received successfully - add it to the page
                     
-                    // Update hints remaining
+                    // Create a new list item (<li>) element for this hint
+                    const li = document.createElement('li');
+                    li.textContent = data.hint;                  // Set the hint text
+                    hintsList.appendChild(li);                   // Add it to the hints list
+                    
+                    // Update the remaining hints counter
                     hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
                     
-                    // Disable hint button if no more hints
+                    // Check if this was the last hint
                     if (data.hints_remaining === 0) {
-                        getHintBtn.disabled = true;
+                        getHintBtn.disabled = true;              // Disable the hint button
                         updateMessage('No more hints available! Make your guess.', 'warning');
                     } else {
                         updateMessage('Hint added! You can ask for more hints or make a guess.', 'info');
                     }
                 } else {
+                    // Error getting hint
                     updateMessage(data.message, 'error');
                 }
             })
@@ -154,38 +358,53 @@
             });
         }
 
+        /* 
+         * Function to submit a guess to the server
+         * This checks the user's guess against the correct answer
+         */
         function makeGuess() {
+            // Don't do anything if no game is active
             if (!gameActive) return;
 
+            // Get the guess from the input field and remove extra whitespace
             const guess = guessInput.value.trim();
+            
+            // Check if the user actually entered something
             if (!guess) {
                 updateMessage('Please enter a guess!', 'error');
-                return;
+                return;                                          // Exit the function early
             }
 
+            // Send the guess to the Flask server
             fetch('/make_guess', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ guess: guess })
+                body: JSON.stringify({ guess: guess })           // Send guess as JSON data
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
+                    // Check if the guess was correct
                     if (data.correct) {
-                        gameActive = false;
-                        updateMessage(data.message, 'success');
+                        // Correct guess - end the game
+                        gameActive = false;                      // Set game as inactive
+                        updateMessage(data.message, 'success'); // Show success message
+                        
+                        // Disable all game buttons since game is over
                         getHintBtn.disabled = true;
                         revealAnswerBtn.disabled = true;
                         guessInput.disabled = true;
                         submitGuessBtn.disabled = true;
                     } else {
+                        // Wrong guess - let them try again
                         updateMessage(data.message, 'warning');
-                        guessInput.value = '';
-                        guessInput.focus();
+                        guessInput.value = '';                   // Clear the input field
+                        guessInput.focus();                      // Put cursor back in input
                     }
                 } else {
+                    // Server error
                     updateMessage(data.message, 'error');
                 }
             })
@@ -195,10 +414,17 @@
             });
         }
 
+        /* 
+         * Function to give up and reveal the correct answer
+         * This ends the current game and shows the answer
+         */
         function revealAnswer() {
+            // Don't do anything if no game is active
             if (!gameActive) return;
 
+            // Ask for confirmation since this will end the game
             if (confirm('Are you sure you want to reveal the answer? This will end the current game.')) {
+                // User confirmed - request the answer from the server
                 fetch('/get_answer', {
                     method: 'POST',
                     headers: {
@@ -208,13 +434,17 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        gameActive = false;
-                        updateMessage(data.message, 'warning');
+                        // Answer revealed - end the game
+                        gameActive = false;                      // Set game as inactive
+                        updateMessage(data.message, 'warning'); // Show the answer message
+                        
+                        // Disable all game controls since game is over
                         getHintBtn.disabled = true;
                         revealAnswerBtn.disabled = true;
                         guessInput.disabled = true;
                         submitGuessBtn.disabled = true;
                     } else {
+                        // Server error
                         updateMessage(data.message, 'error');
                     }
                 })
@@ -223,7 +453,11 @@
                     updateMessage('Error revealing answer. Please try again.', 'error');
                 });
             }
+            // If user clicked "Cancel" in the confirmation dialog, nothing happens
         }
     </script>
+    <!-- End of JavaScript section -->
 </body>
+<!-- End of HTML body -->
 </html>
+<!-- End of HTML document -->

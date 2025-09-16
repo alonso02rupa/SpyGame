@@ -1,45 +1,100 @@
 <!DOCTYPE html>
+<!-- 
+    Statistics page for SpyGame - shows game history and performance metrics
+    This page follows the same structure as index.html but displays different content
+-->
 <html lang="en">
 <head>
+    <!-- Same metadata setup as the main page -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpyGame - Statistics</title>
+    <!-- Different title to show this is the statistics page -->
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Uses the same CSS file as the main page for consistent styling -->
 </head>
 <body>
     <div class="container">
+        <!-- Same container structure for consistent layout -->
+        
         <header>
+            <!-- Header section with statistics-specific content -->
             <h1>🕵️ SpyGame Statistics</h1>
+            <!-- Main heading indicating this is the statistics page -->
+            
             <p>View your game history and performance</p>
+            <!-- Subtitle explaining what this page shows -->
         </header>
 
         <main>
+            <!-- Main content area for statistics -->
+            
             <div class="stats-nav">
+                <!-- Navigation section to return to the main game -->
                 <a href="/" class="btn btn-primary">← Back to Game</a>
+                <!-- Link back to the main page (/) with arrow indicating direction -->
             </div>
 
             <div class="stats-content">
+                <!-- Main statistics content area -->
+                
                 {% if sessions %}
+                <!-- 
+                    Flask template conditional: Only show statistics if there are game sessions
+                    {{ sessions }} is a variable passed from the Flask server containing game data
+                    {% if sessions %} checks if the sessions list has any data
+                -->
+                
                     <div class="stats-summary">
+                        <!-- Summary section showing key metrics -->
                         <h3>Game Summary</h3>
+                        <!-- Section heading -->
+                        
                         <div class="summary-cards">
+                            <!-- 
+                                Container for summary cards using CSS Grid layout
+                                This creates responsive cards that show key statistics
+                            -->
+                            
                             <div class="summary-card">
+                                <!-- Card showing total number of games played -->
                                 <h4>Total Games</h4>
                                 <p class="stat-number">{{ sessions|length }}</p>
+                                <!-- 
+                                    {{ sessions|length }} uses Flask's Jinja2 template syntax
+                                    |length is a "filter" that counts items in the sessions list
+                                -->
                             </div>
+                            
                             <div class="summary-card">
+                                <!-- Card showing successful guesses -->
                                 <h4>Correct Guesses</h4>
                                 <p class="stat-number">{{ sessions|selectattr('correct', 'equalto', true)|list|length }}</p>
+                                <!-- 
+                                    This template expression:
+                                    1. Filters sessions to only those where 'correct' equals true
+                                    2. Converts the result to a list and gets the length (count)
+                                -->
                             </div>
+                            
                             <div class="summary-card">
+                                <!-- Card showing success percentage -->
                                 <h4>Success Rate</h4>
                                 <p class="stat-number">
                                     {% set correct_guesses = sessions|selectattr('correct', 'equalto', true)|list|length %}
                                     {% set total_guesses = sessions|selectattr('guess', 'ne', '')|list|length %}
+                                    <!-- 
+                                        Set variables for calculation:
+                                        - correct_guesses: Count of sessions where correct=true
+                                        - total_guesses: Count of sessions where guess is not empty
+                                    -->
                                     {% if total_guesses > 0 %}
                                         {{ "%.1f"|format((correct_guesses / total_guesses) * 100) }}%
+                                        <!-- Calculate percentage and format to 1 decimal place -->
                                     {% else %}
                                         0%
+                                        <!-- Show 0% if no guesses have been made -->
                                     {% endif %}
                                 </p>
                             </div>
@@ -47,62 +102,130 @@
                     </div>
 
                     <div class="sessions-table">
+                        <!-- Table section showing detailed game history -->
                         <h3>Game History</h3>
+                        <!-- Section heading for the detailed history table -->
+                        
                         <table>
+                            <!-- 
+                                HTML table element for displaying structured data
+                                Tables have rows and columns, perfect for showing game records
+                            -->
+                            
                             <thead>
+                                <!-- 
+                                    Table header section - defines column titles
+                                    <thead> groups header content separate from data rows
+                                -->
                                 <tr>
-                                    <th>Date & Time</th>
-                                    <th>Person</th>
-                                    <th>Action</th>
-                                    <th>Details</th>
-                                    <th>Result</th>
+                                    <!-- Table row containing header cells -->
+                                    <th>Date & Time</th>        <!-- Column for when action occurred -->
+                                    <th>Person</th>             <!-- Column for which historical figure -->
+                                    <th>Action</th>             <!-- Column for type of action (hint/guess) -->
+                                    <th>Details</th>            <!-- Column for hint text or guess content -->
+                                    <th>Result</th>             <!-- Column for outcome (correct/wrong) -->
                                 </tr>
                             </thead>
+                            
                             <tbody>
+                                <!-- 
+                                    Table body section - contains the actual data rows
+                                    <tbody> groups data content separate from headers
+                                -->
+                                
                                 {% for session in sessions|reverse %}
+                                <!-- 
+                                    Flask template loop: Iterate through each session in reverse order
+                                    |reverse filter shows newest sessions first
+                                -->
+                                
                                 <tr>
+                                    <!-- Table row for each game session -->
+                                    
                                     <td>{{ session.timestamp[:19]|replace('T', ' ') }}</td>
+                                    <!-- 
+                                        Display date/time of the session
+                                        [:19] takes first 19 characters (removes milliseconds)
+                                        |replace('T', ' ') changes 'T' to space for better readability
+                                        Example: "2025-09-15T14:27:35" becomes "2025-09-15 14:27:35"
+                                    -->
+                                    
                                     <td>{{ session.person }}</td>
+                                    <!-- Display which historical person this session was about -->
+                                    
                                     <td>
+                                        <!-- Determine what type of action this was -->
                                         {% if session.hint %}
                                             Hint Request
+                                            <!-- If session has hint data, it was a hint request -->
                                         {% elif session.guess %}
                                             Guess
+                                            <!-- If session has guess data, it was a guess attempt -->
                                         {% else %}
                                             Other
+                                            <!-- Fallback for any other type of session -->
                                         {% endif %}
                                     </td>
+                                    
                                     <td>
+                                        <!-- Show the details of what happened -->
                                         {% if session.hint %}
                                             {{ session.hint }}
+                                            <!-- Display the hint text that was given -->
                                         {% elif session.guess %}
                                             "{{ session.guess }}"
+                                            <!-- Display the guess in quotes -->
                                         {% else %}
                                             -
+                                            <!-- Show dash if no specific content -->
                                         {% endif %}
                                     </td>
+                                    
                                     <td>
+                                        <!-- Show the result/outcome with appropriate styling -->
                                         {% if session.correct == true %}
                                             <span class="result-correct">✓ Correct</span>
+                                            <!-- Green styling for correct guesses -->
                                         {% elif session.correct == false %}
                                             <span class="result-incorrect">✗ Wrong</span>
+                                            <!-- Red styling for incorrect guesses -->
                                         {% else %}
                                             <span class="result-neutral">-</span>
+                                            <!-- Neutral styling for non-guess actions -->
                                         {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
+                                <!-- End of session loop -->
                             </tbody>
                         </table>
                     </div>
                 {% else %}
+                <!-- 
+                    This section displays when there are no game sessions yet
+                    {% else %} is the alternative to {% if sessions %}
+                -->
+                
                     <div class="no-data">
+                        <!-- Container for the "no data" message -->
                         <h3>No Game History</h3>
+                        <!-- Heading indicating no games have been played -->
+                        
                         <p>You haven't played any games yet. <a href="/">Start your first game!</a></p>
+                        <!-- 
+                            Encouraging message with a link back to the main game page
+                            <a href="/"> creates a link to the root page (main game)
+                        -->
                     </div>
                 {% endif %}
+                <!-- End of conditional content -->
             </div>
+            <!-- End of stats content area -->
         </main>
+        <!-- End of main content area -->
     </div>
+    <!-- End of container -->
 </body>
+<!-- End of HTML body -->
 </html>
+<!-- End of HTML document -->
