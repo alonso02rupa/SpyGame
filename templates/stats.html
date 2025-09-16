@@ -42,8 +42,8 @@
                 {% if sessions %}
                 <!-- 
                     Flask template conditional: Only show statistics if there are game sessions
-                    {{ sessions }} is a variable passed from the Flask server containing game data
-                    {% if sessions %} checks if the sessions list has any data
+                    sessions is a variable passed from the Flask server containing game data
+                    The if sessions statement checks if the sessions list has any data
                 -->
                 
                     <div class="stats-summary">
@@ -203,7 +203,7 @@
                 {% else %}
                 <!-- 
                     This section displays when there are no game sessions yet
-                    {% else %} is the alternative to {% if sessions %}
+                    else is the alternative to if sessions
                 -->
                 
                     <div class="no-data">
