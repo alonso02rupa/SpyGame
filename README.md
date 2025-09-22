@@ -34,8 +34,11 @@ SpyGame challenges players to guess famous Wikipedia personalities using a hint 
 ### Prerequisites
 - Python 3.7 or higher
 - Flask web framework
+- MongoDB (for production/Docker deployment)
 
 ### Installation
+
+#### Option 1: Local Development Setup
 
 1. **Clone the repository**
    ```bash
@@ -57,6 +60,30 @@ SpyGame challenges players to guess famous Wikipedia personalities using a hint 
    ```
    http://127.0.0.1:5000
    ```
+
+#### Option 2: Docker Deployment with MongoDB
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/alonso02rupa/SpyGame.git
+   cd SpyGame
+   ```
+
+2. **Run with Docker Compose**
+   ```bash
+   docker-compose up --build
+   ```
+
+3. **Open your web browser** and navigate to:
+   ```
+   http://localhost:5000
+   ```
+
+   This setup includes:
+   - Flask web application container
+   - MongoDB database container
+   - Persistent data storage
+   - Automatic container networking
 
 ## 🎯 How to Play
 
@@ -103,8 +130,19 @@ The game automatically tracks all your gameplay activities:
 ### Backend (Python/Flask)
 - **`app.py`**: Main Flask application with game logic
 - **Session management**: Tracks current game state
-- **Data persistence**: Stores game history in JSON format
+- **Data persistence**: Stores game history in MongoDB (with JSON fallback for local development)
 - **API endpoints**: Handle game actions via AJAX requests
+- **MongoDB integration**: PyMongo for database operations
+
+### Database
+- **MongoDB**: Primary database for production deployment
+- **JSON fallback**: Local file storage for development when MongoDB is unavailable
+- **Collections**: Game sessions with timestamps, hints, guesses, and results
+
+### Deployment
+- **Docker support**: Complete containerization with Docker Compose
+- **MongoDB container**: Persistent data storage with volume mounting
+- **Network isolation**: Secure container networking
 
 ### Frontend (HTML/CSS/JavaScript)
 - **`templates/index.html`**: Main game interface
@@ -124,7 +162,10 @@ The game automatically tracks all your gameplay activities:
 SpyGame/
 ├── app.py                 # Flask application and game logic
 ├── requirements.txt       # Python dependencies
-├── game_sessions.json     # Game history storage (auto-created)
+├── docker-compose.yml     # Docker Compose configuration
+├── Dockerfile            # Docker container definition
+├── .dockerignore         # Docker build exclusions
+├── game_sessions.json     # Game history storage (fallback for local dev)
 ├── static/
 │   └── style.css         # Complete CSS styling
 ├── templates/

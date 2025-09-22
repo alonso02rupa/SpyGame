@@ -308,6 +308,42 @@ main {
 }
 
 /* 
+ * Info buttons: Information and help buttons
+ * Uses a subtle dark purple theme to match the noir aesthetic
+ */
+.btn-info {
+    background: linear-gradient(135deg, #1a1625 0%, #2d1b69 50%, #4c1d95 100%); /* Dark purple gradient matching page theme */
+    color: #c084fc;                                              /* Light purple text */
+    border-color: rgba(124, 58, 237, 0.4);                      /* Purple border */
+    box-shadow: 0 8px 16px rgba(26, 22, 37, 0.3);              /* Dark shadow */
+}
+
+.btn-info:hover {
+    background: linear-gradient(135deg, #2d1b69 0%, #4c1d95 50%, #581c87 100%); /* Slightly lighter on hover */
+    border-color: rgba(124, 58, 237, 0.6);                      /* More visible border */
+    color: #d8b4fe;                                              /* Lighter purple text on hover */
+    box-shadow: 0 15px 30px rgba(26, 22, 37, 0.4),             /* Enhanced shadow */
+                0 0 25px rgba(124, 58, 237, 0.3);               /* Purple glow */
+}
+
+/* 
+ * Bottom info button container: Positions info button at bottom of page
+ * Fixed positioning ensures it stays at bottom regardless of content
+ */
+.info-button-bottom {
+    position: fixed;                                             /* Fixed positioning relative to viewport */
+    bottom: 20px;                                                /* 20px from bottom of screen */
+    right: 20px;                                                 /* 20px from right side of screen */
+    z-index: 1000;                                               /* High z-index to stay above other content */
+}
+
+.info-button-bottom .btn {
+    margin: 0;                                                   /* Remove default button margin */
+    font-size: 18px;                                             /* Slightly larger for better visibility */
+    padding: 12px 16px;                                          /* Adjusted padding for bottom button */
+}
+
+/* 
  * Game Controls Section: Container for the main action buttons
  * Centers buttons and provides appropriate spacing
  */
