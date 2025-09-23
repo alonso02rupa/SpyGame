@@ -1,0 +1,12 @@
+*.pyc
+__pycache__/
+.git/
+.vscode/
+*.log
+.env
+node_modules/
+.DS_Store
+game_sessions.json
+*.tmp
+.pytest_cache/
+.coverage

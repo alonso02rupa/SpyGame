@@ -3,9 +3,16 @@ import json
 import os
 from datetime import datetime
 import random
+from pymongo import MongoClient
 
 app = Flask(__name__)
 app.secret_key = 'spygame_secret_key_2024'
+
+# MongoDB configuration
+MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
+client = MongoClient(MONGODB_URI)
+db = client.spygame
+sessions_collection = db.sessions
 
 # Sample Wikipedia persons data (in a real app, this would come from Wikipedia API)
 PERSONS_DATA = {
@@ -46,19 +53,24 @@ PERSONS_DATA = {
     ]
 }
 
-# File to store game sessions
+# File to store game sessions (legacy - now using MongoDB)
 SESSIONS_FILE = 'game_sessions.json'
 
 def load_sessions():
-    """Load game sessions from file"""
-    if os.path.exists(SESSIONS_FILE):
-        with open(SESSIONS_FILE, 'r') as f:
-            return json.load(f)
-    return []
+    """Load game sessions from MongoDB"""
+    try:
+        sessions = list(sessions_collection.find({}, {'_id': 0}))
+        return sessions
+    except Exception as e:
+        print(f"MongoDB error: {e}")
+        # Fallback to JSON file if MongoDB is not available
+        if os.path.exists(SESSIONS_FILE):
+            with open(SESSIONS_FILE, 'r') as f:
+                return json.load(f)
+        return []
 
 def save_session(person, hint, guess, correct, timestamp):
-    """Save a game session to file"""
-    sessions = load_sessions()
+    """Save a game session to MongoDB"""
     session_data = {
         'person': person,
         'hint': hint,
@@ -66,10 +78,16 @@ def save_session(person, hint, guess, correct, timestamp):
         'correct': correct,
         'timestamp': timestamp
     }
-    sessions.append(session_data)
     
-    with open(SESSIONS_FILE, 'w') as f:
-        json.dump(sessions, f, indent=2)
+    try:
+        sessions_collection.insert_one(session_data)
+    except Exception as e:
+        print(f"MongoDB error: {e}")
+        # Fallback to JSON file if MongoDB is not available
+        sessions = load_sessions()
+        sessions.append(session_data)
+        with open(SESSIONS_FILE, 'w') as f:
+            json.dump(sessions, f, indent=2)
 
 @app.route('/')
 def index():
@@ -186,4 +204,4 @@ def stats():
     return render_template('stats.html', sessions=sessions)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
