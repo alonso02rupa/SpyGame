@@ -11,10 +11,18 @@ app.secret_key = 'spygame_secret_key_2024'
 
 # MongoDB configuration
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
-client = MongoClient(MONGODB_URI)
-db = client.spygame
-sessions_collection = db.sessions
-users_collection = db.users
+
+def get_db_collections():
+    """Get MongoDB collections with error handling"""
+    try:
+        client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+        # Test the connection
+        client.admin.command('ping')
+        db = client.spygame
+        return db.sessions, db.users, True
+    except Exception as e:
+        print(f"MongoDB connection failed: {e}")
+        return None, None, False
 
 # Sample Wikipedia persons data (in a real app, this would come from Wikipedia API)
 PERSONS_DATA = {
@@ -64,28 +72,35 @@ def get_current_user():
 
 def load_sessions(username=None):
     """Load game sessions from MongoDB, optionally filtered by user"""
-    try:
-        if username is None:
-            username = get_current_user()
-        
-        query = {'username': username} if username != 'guest' else {'username': {'$exists': False}}
-        sessions = list(sessions_collection.find(query, {'_id': 0}))
-        return sessions
-    except Exception as e:
-        print(f"MongoDB error: {e}")
-        # Fallback to JSON file if MongoDB is not available
-        if os.path.exists(SESSIONS_FILE):
-            with open(SESSIONS_FILE, 'r') as f:
-                all_sessions = json.load(f)
-                # Filter sessions for the user (legacy sessions don't have username)
-                if username == 'guest':
-                    return [s for s in all_sessions if 'username' not in s]
-                else:
-                    return [s for s in all_sessions if s.get('username') == username]
-        return []
+    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    
+    if mongodb_available:
+        try:
+            if username is None:
+                username = get_current_user()
+            
+            query = {'username': username} if username != 'guest' else {'username': {'$exists': False}}
+            sessions = list(sessions_collection.find(query, {'_id': 0}))
+            return sessions
+        except Exception as e:
+            print(f"MongoDB error: {e}")
+    
+    # Fallback to JSON file if MongoDB is not available
+    if os.path.exists(SESSIONS_FILE):
+        with open(SESSIONS_FILE, 'r') as f:
+            all_sessions = json.load(f)
+            # Filter sessions for the user (legacy sessions don't have username)
+            if username is None:
+                username = get_current_user()
+            if username == 'guest':
+                return [s for s in all_sessions if 'username' not in s]
+            else:
+                return [s for s in all_sessions if s.get('username') == username]
+    return []
 
 def save_session(person, hint, guess, correct, timestamp):
     """Save a game session to MongoDB"""
+    sessions_collection, users_collection, mongodb_available = get_db_collections()
     username = get_current_user()
     session_data = {
         'person': person,
@@ -99,15 +114,21 @@ def save_session(person, hint, guess, correct, timestamp):
     if username != 'guest':
         session_data['username'] = username
     
-    try:
-        sessions_collection.insert_one(session_data)
-    except Exception as e:
-        print(f"MongoDB error: {e}")
-        # Fallback to JSON file if MongoDB is not available
-        sessions = load_sessions()
-        sessions.append(session_data)
-        with open(SESSIONS_FILE, 'w') as f:
-            json.dump(sessions, f, indent=2)
+    if mongodb_available:
+        try:
+            sessions_collection.insert_one(session_data)
+            return
+        except Exception as e:
+            print(f"MongoDB error: {e}")
+    
+    # Fallback to JSON file if MongoDB is not available
+    sessions = []
+    if os.path.exists(SESSIONS_FILE):
+        with open(SESSIONS_FILE, 'r') as f:
+            sessions = json.load(f)
+    sessions.append(session_data)
+    with open(SESSIONS_FILE, 'w') as f:
+        json.dump(sessions, f, indent=2)
 
 @app.route('/')
 def index():
@@ -129,6 +150,11 @@ def register():
     
     if len(password) < 6:
         return jsonify({'status': 'error', 'message': 'Password must be at least 6 characters long'})
+    
+    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        return jsonify({'status': 'error', 'message': 'User registration requires database connection. Please try again later or play as guest.'})
     
     try:
         # Check if user already exists
@@ -164,6 +190,11 @@ def login():
     
     if not username or not password:
         return jsonify({'status': 'error', 'message': 'Username and password are required'})
+    
+    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        return jsonify({'status': 'error', 'message': 'User login requires database connection. Please try again later or play as guest.'})
     
     try:
         user = users_collection.find_one({'username': username})
