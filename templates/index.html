@@ -322,51 +322,65 @@
          * addEventListener() tells the browser what function to call when an event happens
          */
         
-        // When the "Start New Game" button is clicked, call the startNewGame function
-        startGameBtn.addEventListener('click', startNewGame);
-        
-        // When the "Get Hint" button is clicked, call the getHint function
-        getHintBtn.addEventListener('click', getHint);
-        
-        // When the "Reveal Answer" button is clicked, call the revealAnswer function
-        revealAnswerBtn.addEventListener('click', revealAnswer);
-        
-        // When the "Submit Guess" button is clicked, call the makeGuess function
-        submitGuessBtn.addEventListener('click', makeGuess);
-        
-        // Listen for key presses in the guess input field
-        guessInput.addEventListener('keypress', function(e) {
-            // If the Enter key is pressed, submit the guess (same as clicking the button)
-            if (e.key === 'Enter') {
-                makeGuess();
+        // Add event listeners with error handling
+        try {
+            // When the "Start New Game" button is clicked, call the startNewGame function
+            if (startGameBtn) startGameBtn.addEventListener('click', startNewGame);
+            
+            // When the "Get Hint" button is clicked, call the getHint function
+            if (getHintBtn) getHintBtn.addEventListener('click', getHint);
+            
+            // When the "Reveal Answer" button is clicked, call the revealAnswer function
+            if (revealAnswerBtn) revealAnswerBtn.addEventListener('click', revealAnswer);
+            
+            // When the "Submit Guess" button is clicked, call the makeGuess function
+            if (submitGuessBtn) submitGuessBtn.addEventListener('click', makeGuess);
+            
+            // Listen for key presses in the guess input field
+            if (guessInput) {
+                guessInput.addEventListener('keypress', function(e) {
+                    // If the Enter key is pressed, submit the guess (same as clicking the button)
+                    if (e.key === 'Enter') {
+                        makeGuess();
+                    }
+                });
             }
-        });
 
-        // When the info button is clicked, show project information
-        infoBtn.addEventListener('click', showProjectInfo);
+            // When the info button is clicked, show project information
+            if (infoBtn) infoBtn.addEventListener('click', showProjectInfo);
 
-        // Authentication event listeners
-        loginBtn.addEventListener('click', showLoginModal);
-        registerBtn.addEventListener('click', showRegisterModal);
-        guestBtn.addEventListener('click', playAsGuest);
-        logoutBtn.addEventListener('click', logout);
-        loginForm.addEventListener('submit', handleLogin);
-        registerForm.addEventListener('submit', handleRegister);
-        
-        // Modal close events
-        document.getElementById('login-close').addEventListener('click', hideLoginModal);
-        document.getElementById('register-close').addEventListener('click', hideRegisterModal);
-        document.getElementById('cancel-login').addEventListener('click', hideLoginModal);
-        document.getElementById('cancel-register').addEventListener('click', hideRegisterModal);
-        
-        // Close modals when clicking outside them
-        window.addEventListener('click', function(e) {
-            if (e.target === loginModal) hideLoginModal();
-            if (e.target === registerModal) hideRegisterModal();
-        });
+            // Authentication event listeners
+            if (loginBtn) loginBtn.addEventListener('click', showLoginModal);
+            if (registerBtn) registerBtn.addEventListener('click', showRegisterModal);
+            if (guestBtn) guestBtn.addEventListener('click', playAsGuest);
+            if (logoutBtn) logoutBtn.addEventListener('click', logout);
+            if (loginForm) loginForm.addEventListener('submit', handleLogin);
+            if (registerForm) registerForm.addEventListener('submit', handleRegister);
+            
+            // Modal close events
+            const loginClose = document.getElementById('login-close');
+            const registerClose = document.getElementById('register-close');
+            const cancelLogin = document.getElementById('cancel-login');
+            const cancelRegister = document.getElementById('cancel-register');
+            
+            if (loginClose) loginClose.addEventListener('click', hideLoginModal);
+            if (registerClose) registerClose.addEventListener('click', hideRegisterModal);
+            if (cancelLogin) cancelLogin.addEventListener('click', hideLoginModal);
+            if (cancelRegister) cancelRegister.addEventListener('click', hideRegisterModal);
+            
+            // Close modals when clicking outside them
+            window.addEventListener('click', function(e) {
+                if (e.target === loginModal) hideLoginModal();
+                if (e.target === registerModal) hideRegisterModal();
+            });
 
-        // Initialize user display on page load
-        updateUserDisplay();
+            // Initialize user display on page load
+            updateUserDisplay();
+            
+            console.log('All event listeners added successfully');
+        } catch (error) {
+            console.error('Error setting up event listeners:', error);
+        }
 
         /* 
          * Helper function to update the message box with feedback for the user
