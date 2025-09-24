@@ -846,3 +846,189 @@ thead tr:hover {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Wider cards on large screens */
     }
 }
+
+/* 
+ * User Authentication Styles
+ * Styles for login/register functionality and user status display
+ */
+
+/* User status bar - shows current user and auth buttons */
+.user-status {
+    background: rgba(88, 28, 135, 0.3);                        /* Semi-transparent purple background */
+    border: 1px solid rgba(139, 92, 246, 0.3);                 /* Subtle purple border */
+    border-radius: 8px;                                         /* Rounded corners */
+    padding: 15px;                                              /* Comfortable padding */
+    margin-bottom: 20px;                                        /* Space below the status bar */
+    backdrop-filter: blur(10px);                                /* Glass effect blur */
+}
+
+.user-info {
+    display: flex;                                              /* Flex layout for user info */
+    justify-content: space-between;                             /* Space between user display and buttons */
+    align-items: center;                                        /* Vertically center items */
+    flex-wrap: wrap;                                            /* Allow wrapping on small screens */
+    gap: 10px;                                                  /* Space between items */
+}
+
+#user-display {
+    font-weight: 600;                                           /* Bold text for user display */
+    color: #e2e8f0;                                            /* Light text color */
+    font-size: 1.1em;                                          /* Slightly larger text */
+}
+
+.auth-buttons {
+    display: flex;                                              /* Flex layout for buttons */
+    gap: 8px;                                                   /* Space between buttons */
+    flex-wrap: wrap;                                            /* Allow wrapping on small screens */
+}
+
+/* Small button variant for auth buttons */
+.btn-small {
+    padding: 6px 12px !important;                              /* Smaller padding */
+    font-size: 0.9em !important;                               /* Smaller font size */
+    min-width: auto !important;                                 /* Override minimum width */
+}
+
+/* Modal styles for login/register forms */
+.modal {
+    display: none;                                              /* Hidden by default */
+    position: fixed;                                            /* Fixed positioning */
+    z-index: 1000;                                             /* High z-index to appear above everything */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);                      /* Dark semi-transparent overlay */
+    backdrop-filter: blur(5px);                                 /* Blur the background */
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #2d1b69, #4c1d95);     /* Purple gradient background */
+    margin: 10% auto;                                           /* Center the modal */
+    padding: 0;                                                 /* No padding on container */
+    border: 1px solid rgba(139, 92, 246, 0.5);                 /* Purple border */
+    border-radius: 12px;                                        /* Rounded corners */
+    width: 90%;                                                 /* Responsive width */
+    max-width: 400px;                                           /* Maximum width */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);               /* Strong shadow */
+    animation: modalSlideIn 0.3s ease-out;                     /* Slide-in animation */
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 20px 20px 10px 20px;                              /* Top and side padding */
+    border-bottom: 1px solid rgba(139, 92, 246, 0.3);          /* Bottom border */
+    display: flex;                                              /* Flex layout */
+    justify-content: space-between;                             /* Space between title and close */
+    align-items: center;                                        /* Center vertically */
+}
+
+.modal-header h3 {
+    margin: 0;                                                  /* Remove default margin */
+    color: #e2e8f0;                                            /* Light text color */
+    font-size: 1.5em;                                          /* Larger text */
+}
+
+.close {
+    color: #cbd5e1;                                            /* Light gray color */
+    font-size: 28px;                                           /* Large size */
+    font-weight: bold;                                          /* Bold text */
+    cursor: pointer;                                            /* Pointer cursor */
+    line-height: 1;                                            /* Compact line height */
+    transition: color 0.3s ease;                               /* Smooth color transition */
+}
+
+.close:hover {
+    color: #f8fafc;                                            /* Lighter on hover */
+}
+
+.modal-body {
+    padding: 20px;                                              /* Comfortable padding */
+}
+
+/* Form styles within modals */
+.form-group {
+    margin-bottom: 20px;                                        /* Space between form groups */
+}
+
+.form-group label {
+    display: block;                                             /* Block display for labels */
+    margin-bottom: 8px;                                         /* Space below labels */
+    color: #e2e8f0;                                            /* Light text color */
+    font-weight: 500;                                           /* Medium font weight */
+}
+
+.form-group input {
+    width: 100%;                                                /* Full width inputs */
+    padding: 12px;                                              /* Comfortable padding */
+    border: 1px solid rgba(139, 92, 246, 0.3);                 /* Purple border */
+    border-radius: 6px;                                         /* Rounded corners */
+    background: rgba(88, 28, 135, 0.2);                        /* Semi-transparent background */
+    color: #e2e8f0;                                            /* Light text color */
+    font-size: 1em;                                            /* Normal font size */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;  /* Smooth transitions */
+}
+
+.form-group input:focus {
+    outline: none;                                              /* Remove default outline */
+    border-color: rgba(139, 92, 246, 0.8);                     /* Brighter border on focus */
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);            /* Purple glow effect */
+}
+
+.form-group input::placeholder {
+    color: rgba(226, 232, 240, 0.5);                           /* Lighter placeholder text */
+}
+
+.form-group small {
+    display: block;                                             /* Block display */
+    margin-top: 5px;                                            /* Space above helper text */
+    color: rgba(226, 232, 240, 0.7);                           /* Dimmed text color */
+    font-size: 0.85em;                                          /* Smaller font size */
+}
+
+.form-actions {
+    display: flex;                                              /* Flex layout for buttons */
+    gap: 10px;                                                  /* Space between buttons */
+    justify-content: flex-end;                                  /* Align buttons to the right */
+    margin-top: 25px;                                           /* Space above buttons */
+}
+
+.form-actions .btn {
+    min-width: 80px;                                            /* Minimum button width */
+}
+
+/* Responsive modal adjustments */
+@media (max-width: 480px) {
+    .modal-content {
+        margin: 5% auto;                                        /* Less top margin on small screens */
+        width: 95%;                                             /* Wider on mobile */
+    }
+    
+    .form-actions {
+        flex-direction: column;                                 /* Stack buttons vertically */
+    }
+    
+    .form-actions .btn {
+        width: 100%;                                            /* Full width buttons on mobile */
+    }
+    
+    .user-info {
+        flex-direction: column;                                 /* Stack user info vertically */
+        align-items: flex-start;                                /* Align to left */
+    }
+    
+    .auth-buttons {
+        align-self: stretch;                                    /* Stretch to full width */
+        justify-content: center;                                /* Center buttons */
+    }
+}

@@ -70,6 +70,19 @@
             -->
         </header>
 
+        <div id="user-status" class="user-status">
+            <!-- User authentication status area -->
+            <div id="user-info" class="user-info">
+                <span id="user-display">Playing as Guest</span>
+                <div class="auth-buttons">
+                    <button id="login-btn" class="btn btn-small">Login</button>
+                    <button id="register-btn" class="btn btn-small">Register</button>
+                    <button id="guest-btn" class="btn btn-small" style="display: none;">Play as Guest</button>
+                    <button id="logout-btn" class="btn btn-small" style="display: none;">Logout</button>
+                </div>
+            </div>
+        </div>
+
         <main>
             <!-- 
                 The <main> element contains the primary content of the page.
@@ -207,6 +220,59 @@
         <button id="info-btn" class="btn btn-info" title="About this project">❓</button>
     </div>
 
+    <!-- Authentication Modals -->
+    <div id="login-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login</h3>
+                <span class="close" id="login-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Username:</label>
+                        <input type="text" id="login-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password:</label>
+                        <input type="password" id="login-password" name="password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-login">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="register-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Register</h3>
+                <span class="close" id="register-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">Username:</label>
+                        <input type="text" id="register-username" name="username" required minlength="3">
+                        <small>At least 3 characters</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password:</label>
+                        <input type="password" id="register-password" name="password" required minlength="6">
+                        <small>At least 6 characters</small>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-register">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* 
          * JavaScript Section: This adds interactivity to our HTML page
@@ -237,33 +303,84 @@
         const resultSection = document.getElementById('result-section');     // Results display area
         const infoBtn = document.getElementById('info-btn');               // Info button
 
+        // Authentication-related DOM elements
+        const userDisplay = document.getElementById('user-display');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const guestBtn = document.getElementById('guest-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+
+        // User authentication state
+        let currentUser = 'guest';
+
         /* 
          * Event Listeners: These "listen" for user interactions and respond to them
          * addEventListener() tells the browser what function to call when an event happens
          */
         
-        // When the "Start New Game" button is clicked, call the startNewGame function
-        startGameBtn.addEventListener('click', startNewGame);
-        
-        // When the "Get Hint" button is clicked, call the getHint function
-        getHintBtn.addEventListener('click', getHint);
-        
-        // When the "Reveal Answer" button is clicked, call the revealAnswer function
-        revealAnswerBtn.addEventListener('click', revealAnswer);
-        
-        // When the "Submit Guess" button is clicked, call the makeGuess function
-        submitGuessBtn.addEventListener('click', makeGuess);
-        
-        // Listen for key presses in the guess input field
-        guessInput.addEventListener('keypress', function(e) {
-            // If the Enter key is pressed, submit the guess (same as clicking the button)
-            if (e.key === 'Enter') {
-                makeGuess();
+        // Add event listeners with error handling
+        try {
+            // When the "Start New Game" button is clicked, call the startNewGame function
+            if (startGameBtn) startGameBtn.addEventListener('click', startNewGame);
+            
+            // When the "Get Hint" button is clicked, call the getHint function
+            if (getHintBtn) getHintBtn.addEventListener('click', getHint);
+            
+            // When the "Reveal Answer" button is clicked, call the revealAnswer function
+            if (revealAnswerBtn) revealAnswerBtn.addEventListener('click', revealAnswer);
+            
+            // When the "Submit Guess" button is clicked, call the makeGuess function
+            if (submitGuessBtn) submitGuessBtn.addEventListener('click', makeGuess);
+            
+            // Listen for key presses in the guess input field
+            if (guessInput) {
+                guessInput.addEventListener('keypress', function(e) {
+                    // If the Enter key is pressed, submit the guess (same as clicking the button)
+                    if (e.key === 'Enter') {
+                        makeGuess();
+                    }
+                });
             }
-        });
 
-        // When the info button is clicked, show project information
-        infoBtn.addEventListener('click', showProjectInfo);
+            // When the info button is clicked, show project information
+            if (infoBtn) infoBtn.addEventListener('click', showProjectInfo);
+
+            // Authentication event listeners
+            if (loginBtn) loginBtn.addEventListener('click', showLoginModal);
+            if (registerBtn) registerBtn.addEventListener('click', showRegisterModal);
+            if (guestBtn) guestBtn.addEventListener('click', playAsGuest);
+            if (logoutBtn) logoutBtn.addEventListener('click', logout);
+            if (loginForm) loginForm.addEventListener('submit', handleLogin);
+            if (registerForm) registerForm.addEventListener('submit', handleRegister);
+            
+            // Modal close events
+            const loginClose = document.getElementById('login-close');
+            const registerClose = document.getElementById('register-close');
+            const cancelLogin = document.getElementById('cancel-login');
+            const cancelRegister = document.getElementById('cancel-register');
+            
+            if (loginClose) loginClose.addEventListener('click', hideLoginModal);
+            if (registerClose) registerClose.addEventListener('click', hideRegisterModal);
+            if (cancelLogin) cancelLogin.addEventListener('click', hideLoginModal);
+            if (cancelRegister) cancelRegister.addEventListener('click', hideRegisterModal);
+            
+            // Close modals when clicking outside them
+            window.addEventListener('click', function(e) {
+                if (e.target === loginModal) hideLoginModal();
+                if (e.target === registerModal) hideRegisterModal();
+            });
+
+            // Initialize user display on page load
+            updateUserDisplay();
+            
+            console.log('All event listeners added successfully');
+        } catch (error) {
+            console.error('Error setting up event listeners:', error);
+        }
 
         /* 
          * Helper function to update the message box with feedback for the user
@@ -475,6 +592,165 @@
                 });
             }
             // If user clicked "Cancel" in the confirmation dialog, nothing happens
+        }
+
+        /* Authentication Functions */
+        
+        function updateUserDisplay() {
+            /**
+             * Update the user status display based on current authentication state
+             */
+            if (currentUser === 'guest') {
+                userDisplay.textContent = 'Playing as Guest';
+                loginBtn.style.display = 'inline-block';
+                registerBtn.style.display = 'inline-block';
+                guestBtn.style.display = 'none';
+                logoutBtn.style.display = 'none';
+            } else {
+                userDisplay.textContent = `Welcome, ${currentUser}!`;
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                guestBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'inline-block';
+            }
+        }
+
+        function showLoginModal() {
+            loginModal.style.display = 'block';
+            document.getElementById('login-username').focus();
+        }
+
+        function hideLoginModal() {
+            loginModal.style.display = 'none';
+            loginForm.reset();
+        }
+
+        function showRegisterModal() {
+            registerModal.style.display = 'block';
+            document.getElementById('register-username').focus();
+        }
+
+        function hideRegisterModal() {
+            registerModal.style.display = 'none';
+            registerForm.reset();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    currentUser = username;
+                    hideLoginModal();
+                    updateUserDisplay();
+                    updateMessage(data.message, 'success');
+                } else {
+                    updateMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                updateMessage('Login failed. Please try again.', 'error');
+            });
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value.trim();
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    currentUser = username;
+                    hideRegisterModal();
+                    updateUserDisplay();
+                    updateMessage(data.message, 'success');
+                } else {
+                    updateMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                updateMessage('Registration failed. Please try again.', 'error');
+            });
+        }
+
+        function playAsGuest() {
+            fetch('/play_as_guest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                currentUser = 'guest';
+                updateUserDisplay();
+                updateMessage(data.message, 'info');
+                // Clear any active game when switching to guest
+                gameActive = false;
+                resetGameUI();
+            })
+            .catch(error => {
+                console.error('Guest mode error:', error);
+                updateMessage('Failed to switch to guest mode.', 'error');
+            });
+        }
+
+        function logout() {
+            fetch('/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                currentUser = 'guest';
+                updateUserDisplay();
+                updateMessage(data.message, 'info');
+                // Clear any active game when logging out
+                gameActive = false;
+                resetGameUI();
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
+                updateMessage('Logout failed.', 'error');
+            });
+        }
+
+        function resetGameUI() {
+            /**
+             * Reset the game UI to initial state
+             */
+            startGameBtn.disabled = false;
+            getHintBtn.disabled = true;
+            revealAnswerBtn.disabled = true;
+            guessInput.disabled = true;
+            submitGuessBtn.disabled = true;
+            hintsList.innerHTML = '';
+            hintsRemaining.textContent = '';
+            hintsSection.style.display = 'none';
+            guessSection.style.display = 'none';
+            resultSection.innerHTML = '';
         }
 
         /*

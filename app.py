@@ -1,18 +1,28 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import json
 import os
 from datetime import datetime
 import random
 from pymongo import MongoClient
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'spygame_secret_key_2024'
 
 # MongoDB configuration
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
-client = MongoClient(MONGODB_URI)
-db = client.spygame
-sessions_collection = db.sessions
+
+def get_db_collections():
+    """Get MongoDB collections with error handling"""
+    try:
+        client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+        # Test the connection
+        client.admin.command('ping')
+        db = client.spygame
+        return db.sessions, db.users, True
+    except Exception as e:
+        print(f"MongoDB connection failed: {e}")
+        return None, None, False
 
 # Sample Wikipedia persons data (in a real app, this would come from Wikipedia API)
 PERSONS_DATA = {
@@ -56,21 +66,42 @@ PERSONS_DATA = {
 # File to store game sessions (legacy - now using MongoDB)
 SESSIONS_FILE = 'game_sessions.json'
 
-def load_sessions():
-    """Load game sessions from MongoDB"""
-    try:
-        sessions = list(sessions_collection.find({}, {'_id': 0}))
-        return sessions
-    except Exception as e:
-        print(f"MongoDB error: {e}")
-        # Fallback to JSON file if MongoDB is not available
-        if os.path.exists(SESSIONS_FILE):
-            with open(SESSIONS_FILE, 'r') as f:
-                return json.load(f)
-        return []
+def get_current_user():
+    """Get the current user context (username or 'guest')"""
+    return session.get('username', 'guest')
+
+def load_sessions(username=None):
+    """Load game sessions from MongoDB, optionally filtered by user"""
+    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    
+    if mongodb_available:
+        try:
+            if username is None:
+                username = get_current_user()
+            
+            query = {'username': username} if username != 'guest' else {'username': {'$exists': False}}
+            sessions = list(sessions_collection.find(query, {'_id': 0}))
+            return sessions
+        except Exception as e:
+            print(f"MongoDB error: {e}")
+    
+    # Fallback to JSON file if MongoDB is not available
+    if os.path.exists(SESSIONS_FILE):
+        with open(SESSIONS_FILE, 'r') as f:
+            all_sessions = json.load(f)
+            # Filter sessions for the user (legacy sessions don't have username)
+            if username is None:
+                username = get_current_user()
+            if username == 'guest':
+                return [s for s in all_sessions if 'username' not in s]
+            else:
+                return [s for s in all_sessions if s.get('username') == username]
+    return []
 
 def save_session(person, hint, guess, correct, timestamp):
     """Save a game session to MongoDB"""
+    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    username = get_current_user()
     session_data = {
         'person': person,
         'hint': hint,
@@ -79,20 +110,131 @@ def save_session(person, hint, guess, correct, timestamp):
         'timestamp': timestamp
     }
     
-    try:
-        sessions_collection.insert_one(session_data)
-    except Exception as e:
-        print(f"MongoDB error: {e}")
-        # Fallback to JSON file if MongoDB is not available
-        sessions = load_sessions()
-        sessions.append(session_data)
-        with open(SESSIONS_FILE, 'w') as f:
-            json.dump(sessions, f, indent=2)
+    # Add username for registered users
+    if username != 'guest':
+        session_data['username'] = username
+    
+    if mongodb_available:
+        try:
+            sessions_collection.insert_one(session_data)
+            return
+        except Exception as e:
+            print(f"MongoDB error: {e}")
+    
+    # Fallback to JSON file if MongoDB is not available
+    sessions = []
+    if os.path.exists(SESSIONS_FILE):
+        with open(SESSIONS_FILE, 'r') as f:
+            sessions = json.load(f)
+    sessions.append(session_data)
+    with open(SESSIONS_FILE, 'w') as f:
+        json.dump(sessions, f, indent=2)
 
 @app.route('/')
 def index():
     """Main game page"""
     return render_template('index.html')
+
+@app.route('/register', methods=['POST'])
+def register():
+    """Register a new user"""
+    data = request.get_json()
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
+    
+    if not username or not password:
+        return jsonify({'status': 'error', 'message': 'Username and password are required'})
+    
+    if len(username) < 3:
+        return jsonify({'status': 'error', 'message': 'Username must be at least 3 characters long'})
+    
+    if len(password) < 6:
+        return jsonify({'status': 'error', 'message': 'Password must be at least 6 characters long'})
+    
+    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        return jsonify({'status': 'error', 'message': 'User registration requires database connection. Please try again later or play as guest.'})
+    
+    try:
+        # Check if user already exists
+        if users_collection.find_one({'username': username}):
+            return jsonify({'status': 'error', 'message': 'Username already exists'})
+        
+        # Create new user
+        hashed_password = generate_password_hash(password)
+        user_data = {
+            'username': username,
+            'password': hashed_password,
+            'created_at': datetime.now().isoformat()
+        }
+        
+        users_collection.insert_one(user_data)
+        session['username'] = username
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'Welcome {username}! You have been registered and logged in.'
+        })
+        
+    except Exception as e:
+        print(f"Registration error: {e}")
+        return jsonify({'status': 'error', 'message': 'Registration failed. Please try again.'})
+
+@app.route('/login', methods=['POST'])
+def login():
+    """Login an existing user"""
+    data = request.get_json()
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
+    
+    if not username or not password:
+        return jsonify({'status': 'error', 'message': 'Username and password are required'})
+    
+    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        return jsonify({'status': 'error', 'message': 'User login requires database connection. Please try again later or play as guest.'})
+    
+    try:
+        user = users_collection.find_one({'username': username})
+        if user and check_password_hash(user['password'], password):
+            session['username'] = username
+            return jsonify({
+                'status': 'success',
+                'message': f'Welcome back, {username}!'
+            })
+        else:
+            return jsonify({'status': 'error', 'message': 'Invalid username or password'})
+            
+    except Exception as e:
+        print(f"Login error: {e}")
+        return jsonify({'status': 'error', 'message': 'Login failed. Please try again.'})
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    """Logout the current user"""
+    username = session.get('username')
+    session.pop('username', None)
+    # Also clear game session when logging out
+    session.pop('current_person', None)
+    session.pop('hints_used', None)
+    session.pop('game_start_time', None)
+    
+    message = f'Goodbye, {username}!' if username else 'Logged out successfully!'
+    return jsonify({
+        'status': 'success',
+        'message': message
+    })
+
+@app.route('/play_as_guest', methods=['POST'])
+def play_as_guest():
+    """Start playing as guest"""
+    session.pop('username', None)  # Remove any existing login
+    return jsonify({
+        'status': 'success',
+        'message': 'Playing as guest. Your games will not be saved to your profile.'
+    })
 
 @app.route('/start_game', methods=['POST'])
 def start_game():
@@ -201,7 +343,8 @@ def get_answer():
 def stats():
     """View game statistics"""
     sessions = load_sessions()
-    return render_template('stats.html', sessions=sessions)
+    current_user = get_current_user()
+    return render_template('stats.html', sessions=sessions, current_user=current_user)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
