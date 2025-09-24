@@ -23,8 +23,13 @@
             <h1>🕵️ SpyGame Statistics</h1>
             <!-- Main heading indicating this is the statistics page -->
             
-            <p>View your game history and performance</p>
-            <!-- Subtitle explaining what this page shows -->
+            {% if current_user != 'guest' %}
+                <p>Game history for {{ current_user }}</p>
+                <!-- Personalized subtitle for logged-in users -->
+            {% else %}
+                <p>Guest game history (this session only)</p>
+                <!-- Different subtitle for guest users -->
+            {% endif %}
         </header>
 
         <main>
