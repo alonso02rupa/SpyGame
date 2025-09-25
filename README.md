@@ -38,31 +38,6 @@ SpyGame challenges players to guess famous Wikipedia personalities using a hint 
 
 ### Installation
 
-#### Option 1: Local Development Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/alonso02rupa/SpyGame.git
-   cd SpyGame
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run the application**
-   ```bash
-   python app.py
-   ```
-
-4. **Open your web browser** and navigate to:
-   ```
-   http://127.0.0.1:5000
-   ```
-
-#### Option 2: Docker Deployment with MongoDB
-
 1. **Clone the repository**
    ```bash
    git clone https://github.com/alonso02rupa/SpyGame.git

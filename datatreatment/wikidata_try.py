@@ -1,12 +1,16 @@
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import pandas as pd  # 👈 añadido
+import pandas as pd 
 
 def get_famous_humans(limit=5, offset=0, min_sitelinks=20):
     """
-    Devuelve personas (Q5) con artículo en Wikipedia en español
+    Devuelve personas (Q5) con artículo en Wikipedia en español y con un número minimo de traducciones (sitelinks).
     como un DataFrame de pandas.
+    Parámetros:
+    - limit: número máximo de resultados a devolver.
+    - offset: número de resultados a saltar (para paginación).
+    - min_sitelinks: número mínimo de traducciones (sitelinks) que debe tener la persona.
     """
     url = "https://query.wikidata.org/sparql"
     query = f"""

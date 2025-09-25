@@ -9,7 +9,7 @@ titulo = url.split("/wiki/")[-1]
 # Creamos objeto Wikipedia con user_agent
 wiki_es = wikipediaapi.Wikipedia(
     language='es',
-    user_agent='MiScriptPython/1.0 (contacto@ejemplo.com)'  # <- aquí tu user agent
+    user_agent='SpyGame/1.0 (rupalonso@gmail.com)'
 )
 
 # Obtenemos el artículo
