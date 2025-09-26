@@ -428,6 +428,8 @@ def check_game_status():
         'hints_used': len(hints_used),
         'hints_remaining': MAX_HINTS - len(hints_used)
     })
+
+@app.route('/get_answer', methods=['POST'])
 def get_answer():
     """Reveal the answer and end the game"""
     if 'current_person' not in session:
