@@ -66,6 +66,9 @@ PERSONS_DATA = {
 # File to store game sessions (legacy - now using MongoDB)
 SESSIONS_FILE = 'game_sessions.json'
 
+# Game configuration
+HINT_LIMIT = 5
+
 def get_current_user():
     """Get the current user context (username or 'guest')"""
     return session.get('username', 'guest')
@@ -246,7 +249,8 @@ def start_game():
     
     return jsonify({
         'status': 'success',
-        'message': f'New game started! Try to guess who I am by asking for hints.'
+        'message': f'New game started! Try to guess who I am by asking for hints.',
+        'hints_remaining': HINT_LIMIT
     })
 
 @app.route('/get_hint', methods=['POST'])
@@ -257,6 +261,14 @@ def get_hint():
     
     person = session['current_person']
     hints_used = session.get('hints_used', [])
+    
+    # Check if hint limit is already reached
+    if len(hints_used) >= HINT_LIMIT:
+        return jsonify({
+            'status': 'error', 
+            'message': 'No more hints available! Try to make a guess.'
+        })
+    
     available_hints = [h for h in PERSONS_DATA[person] if h not in hints_used]
     
     if not available_hints:
@@ -278,10 +290,22 @@ def get_hint():
         timestamp=datetime.now().isoformat()
     )
     
+    hints_remaining = HINT_LIMIT - len(hints_used)
+    
+    # Check if this was the last hint - if so, give player one more chance to guess
+    # but don't automatically end the game yet
+    if hints_remaining == 0:
+        return jsonify({
+            'status': 'success',
+            'hint': hint,
+            'hints_remaining': hints_remaining,
+            'last_hint': True
+        })
+    
     return jsonify({
         'status': 'success',
         'hint': hint,
-        'hints_remaining': len(available_hints) - 1
+        'hints_remaining': hints_remaining
     })
 
 @app.route('/make_guess', methods=['POST'])
@@ -291,10 +315,20 @@ def make_guess():
         return jsonify({'status': 'error', 'message': 'No game in progress. Start a new game first!'})
     
     guess = request.json.get('guess', '').strip()
+    person = session['current_person']
+    hints_used = session.get('hints_used', [])
+    
+    # Handle empty guesses - save as null and continue game
     if not guess:
+        save_session(
+            person=person,
+            hint='',
+            guess=None,  # Save as None for empty guesses
+            correct=None,
+            timestamp=datetime.now().isoformat()
+        )
         return jsonify({'status': 'error', 'message': 'Please enter a guess!'})
     
-    person = session['current_person']
     correct = guess.lower() == person.lower()
     
     # Save guess to sessions
@@ -316,11 +350,24 @@ def make_guess():
             'message': f'Congratulations! You guessed correctly. It was {person}!'
         })
     else:
-        return jsonify({
-            'status': 'success',
-            'correct': False,
-            'message': f'Wrong guess! Try asking for more hints.'
-        })
+        # Check if all hints were used and this was a wrong guess
+        if len(hints_used) >= HINT_LIMIT:
+            # This is a loss - end the game
+            session.pop('current_person', None)
+            session.pop('hints_used', None) 
+            session.pop('game_start_time', None)
+            return jsonify({
+                'status': 'game_over',
+                'correct': False,
+                'message': f'Game over! Wrong guess after using all {HINT_LIMIT} hints. The answer was {person}. Better luck next time!',
+                'answer': person
+            })
+        else:
+            return jsonify({
+                'status': 'success',
+                'correct': False,
+                'message': f'Wrong guess! Try asking for more hints.'
+            })
 
 @app.route('/get_answer', methods=['POST'])
 def get_answer():

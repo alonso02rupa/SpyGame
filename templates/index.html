@@ -424,7 +424,7 @@
                     
                     // Reset the user interface to clean state
                     hintsList.innerHTML = '';                    // Clear any old hints
-                    hintsRemaining.textContent = '';             // Clear hint counter
+                    hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`; // Set initial hint count
                     guessInput.value = '';                       // Clear guess input field
                     resultSection.innerHTML = '';                // Clear any old results
                     
@@ -485,6 +485,16 @@
                     } else {
                         updateMessage('Hint added! You can ask for more hints or make a guess.', 'info');
                     }
+                } else if (data.status === 'game_over') {
+                    // Game over due to hint limit reached
+                    gameActive = false;                          // Set game as inactive
+                    updateMessage(data.message, 'error');       // Show game over message
+                    
+                    // Disable all game buttons since game is over
+                    getHintBtn.disabled = true;
+                    revealAnswerBtn.disabled = true;
+                    guessInput.disabled = true;
+                    submitGuessBtn.disabled = true;
                 } else {
                     // Error getting hint
                     updateMessage(data.message, 'error');
@@ -541,6 +551,16 @@
                         guessInput.value = '';                   // Clear the input field
                         guessInput.focus();                      // Put cursor back in input
                     }
+                } else if (data.status === 'game_over') {
+                    // Game over due to wrong guess after using all hints
+                    gameActive = false;                          // Set game as inactive
+                    updateMessage(data.message, 'error');       // Show game over message
+                    
+                    // Disable all game buttons since game is over
+                    getHintBtn.disabled = true;
+                    revealAnswerBtn.disabled = true;
+                    guessInput.disabled = true;
+                    submitGuessBtn.disabled = true;
                 } else {
                     // Server error
                     updateMessage(data.message, 'error');
