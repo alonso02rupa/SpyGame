@@ -66,6 +66,9 @@ PERSONS_DATA = {
 # File to store game sessions (legacy - now using MongoDB)
 SESSIONS_FILE = 'game_sessions.json'
 
+# Game configuration
+MAX_HINTS = 5  # Maximum number of hints allowed per game
+
 def get_current_user():
     """Get the current user context (username or 'guest')"""
     return session.get('username', 'guest')
@@ -87,15 +90,24 @@ def load_sessions(username=None):
     
     # Fallback to JSON file if MongoDB is not available
     if os.path.exists(SESSIONS_FILE):
-        with open(SESSIONS_FILE, 'r') as f:
-            all_sessions = json.load(f)
-            # Filter sessions for the user (legacy sessions don't have username)
-            if username is None:
-                username = get_current_user()
-            if username == 'guest':
-                return [s for s in all_sessions if 'username' not in s]
-            else:
-                return [s for s in all_sessions if s.get('username') == username]
+        try:
+            with open(SESSIONS_FILE, 'r') as f:
+                content = f.read().strip()
+                if content:  # Only try to parse if file is not empty
+                    all_sessions = json.loads(content)
+                else:
+                    all_sessions = []
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error reading sessions file: {e}")
+            all_sessions = []
+            
+        # Filter sessions for the user (legacy sessions don't have username)
+        if username is None:
+            username = get_current_user()
+        if username == 'guest':
+            return [s for s in all_sessions if 'username' not in s]
+        else:
+            return [s for s in all_sessions if s.get('username') == username]
     return []
 
 def save_session(person, hint, guess, correct, timestamp):
@@ -124,11 +136,22 @@ def save_session(person, hint, guess, correct, timestamp):
     # Fallback to JSON file if MongoDB is not available
     sessions = []
     if os.path.exists(SESSIONS_FILE):
-        with open(SESSIONS_FILE, 'r') as f:
-            sessions = json.load(f)
+        try:
+            with open(SESSIONS_FILE, 'r') as f:
+                content = f.read().strip()
+                if content:  # Only try to parse if file is not empty
+                    sessions = json.loads(content)
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error reading sessions file: {e}")
+            sessions = []
+    
     sessions.append(session_data)
-    with open(SESSIONS_FILE, 'w') as f:
-        json.dump(sessions, f, indent=2)
+    
+    try:
+        with open(SESSIONS_FILE, 'w') as f:
+            json.dump(sessions, f, indent=2)
+    except IOError as e:
+        print(f"Error writing sessions file: {e}")
 
 @app.route('/')
 def index():
@@ -257,12 +280,37 @@ def get_hint():
     
     person = session['current_person']
     hints_used = session.get('hints_used', [])
+    
+    # Check if maximum hints reached BEFORE giving another hint
+    if len(hints_used) >= MAX_HINTS:
+        # Game over - save as loss and end game
+        save_session(
+            person=person,
+            hint='',
+            guess=None,  # null for loss due to hint limit
+            correct=False,
+            timestamp=datetime.now().isoformat()
+        )
+        
+        # Clear game session
+        session.pop('current_person', None)
+        session.pop('hints_used', None)
+        session.pop('game_start_time', None)
+        
+        return jsonify({
+            'status': 'game_over', 
+            'message': f'Game over! You\'ve used all {MAX_HINTS} hints. The answer was {person}. Better luck next time!',
+            'answer': person
+        })
+    
     available_hints = [h for h in PERSONS_DATA[person] if h not in hints_used]
     
     if not available_hints:
+        # No more unique hints available, but we haven't reached the MAX_HINTS limit
+        # This shouldn't happen with our current data, but handle it gracefully
         return jsonify({
             'status': 'error', 
-            'message': 'No more hints available! Try to make a guess.'
+            'message': 'No more unique hints available! Try to make a guess.'
         })
     
     hint = random.choice(available_hints)
@@ -278,10 +326,22 @@ def get_hint():
         timestamp=datetime.now().isoformat()
     )
     
+    # Calculate remaining hints based on MAX_HINTS limit
+    hints_remaining = MAX_HINTS - len(hints_used)
+    
+    # Check if this was the last hint allowed
+    if hints_remaining == 0:
+        return jsonify({
+            'status': 'success',
+            'hint': hint,
+            'hints_remaining': hints_remaining,
+            'last_hint': True
+        })
+    
     return jsonify({
         'status': 'success',
         'hint': hint,
-        'hints_remaining': len(available_hints) - 1
+        'hints_remaining': hints_remaining
     })
 
 @app.route('/make_guess', methods=['POST'])
@@ -291,10 +351,19 @@ def make_guess():
         return jsonify({'status': 'error', 'message': 'No game in progress. Start a new game first!'})
     
     guess = request.json.get('guess', '').strip()
+    person = session['current_person']
+    
+    # Handle empty guess - save as null but don't process as error
     if not guess:
+        save_session(
+            person=person,
+            hint='',
+            guess=None,  # Save empty guess as null
+            correct=False,
+            timestamp=datetime.now().isoformat()
+        )
         return jsonify({'status': 'error', 'message': 'Please enter a guess!'})
     
-    person = session['current_person']
     correct = guess.lower() == person.lower()
     
     # Save guess to sessions
@@ -322,13 +391,59 @@ def make_guess():
             'message': f'Wrong guess! Try asking for more hints.'
         })
 
-@app.route('/get_answer', methods=['POST'])
+@app.route('/check_game_status', methods=['POST'])
+def check_game_status():
+    """Check if game should end due to hint limit"""
+    if 'current_person' not in session:
+        return jsonify({'status': 'no_game'})
+    
+    hints_used = session.get('hints_used', [])
+    
+    # If player has used all 5 hints and tries to interact, end the game
+    if len(hints_used) >= MAX_HINTS:
+        person = session['current_person']
+        
+        # Save as loss
+        save_session(
+            person=person,
+            hint='',
+            guess=None,  # null for loss due to hint limit
+            correct=False,
+            timestamp=datetime.now().isoformat()
+        )
+        
+        # Clear game session
+        session.pop('current_person', None)
+        session.pop('hints_used', None)
+        session.pop('game_start_time', None)
+        
+        return jsonify({
+            'status': 'game_over',
+            'message': f'Game over! You\'ve used all {MAX_HINTS} hints without guessing. The answer was {person}.',
+            'answer': person
+        })
+    
+    return jsonify({
+        'status': 'active',
+        'hints_used': len(hints_used),
+        'hints_remaining': MAX_HINTS - len(hints_used)
+    })
 def get_answer():
     """Reveal the answer and end the game"""
     if 'current_person' not in session:
         return jsonify({'status': 'error', 'message': 'No game in progress.'})
     
     person = session['current_person']
+    
+    # Save as loss when revealing answer
+    save_session(
+        person=person,
+        hint='',
+        guess=None,  # null for giving up
+        correct=False,
+        timestamp=datetime.now().isoformat()
+    )
+    
     session.pop('current_person', None)
     session.pop('hints_used', None)
     session.pop('game_start_time', None)
