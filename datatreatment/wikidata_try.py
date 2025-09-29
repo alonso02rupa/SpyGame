@@ -3,7 +3,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import pandas as pd 
 
-def get_famous_humans(limit=5, offset=0, min_sitelinks=20):
+def get_famous_humans(limit=10, offset=0, min_sitelinks=20):
     """
     Devuelve personas (Q5) con artículo en Wikipedia en español y con un número minimo de traducciones (sitelinks).
     como un DataFrame de pandas.

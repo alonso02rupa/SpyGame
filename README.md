@@ -1,42 +1,18 @@
-# 🕵️ SpyGame
+#  SpyGame
 
-A dark purple/noir-themed web-based guessing game where players try to identify famous historical figures based on progressive hints. Built with Flask and featuring a sleek, spy-movie inspired interface.
+A dark purple/noir-themed web-based guessing game where players try to identify famous people based on automatically generated and difficulty progressive hints. Built with Flask and featuring a sleek, spy-movie inspired interface.
 
-## 🎮 Game Overview
+## Game Overview
 
 SpyGame challenges players to guess famous Wikipedia personalities using a hint system. Players can request up to 5 hints per game, with each hint providing more specific information about the historical figure. The game tracks statistics and provides a detailed history of all gameplay sessions.
 
-### Featured Historical Figures
-- **Albert Einstein** - The brilliant physicist
-- **Marie Curie** - The pioneering scientist  
-- **Leonardo da Vinci** - The Renaissance genius
-- **William Shakespeare** - The legendary playwright
-- **Cleopatra** - The last pharaoh of Egypt
 
-## 🎨 Design Features
-
-### Dark Purple/Noir Theme
-- **Deep purple gradient backgrounds** with subtle texture overlays
-- **Glass-morphism effects** with backdrop blur and transparency
-- **Neon purple accents** and glowing button effects
-- **Dramatic typography** with gradient text and shadows
-- **Spy-movie aesthetic** perfect for the guessing game theme
-
-### Interactive Elements
-- **Animated buttons** with hover effects and state changes
-- **Shimmer animations** on message boxes
-- **Smooth transitions** throughout the interface
-- **Responsive design** that works on all devices
-- **Progressive disclosure** - sections appear as the game progresses
-
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
-- Python 3.7 or higher
-- Flask web framework
-- MongoDB (for production/Docker deployment)
+- Docker
 
-### Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
@@ -55,12 +31,12 @@ SpyGame challenges players to guess famous Wikipedia personalities using a hint 
    ```
 
    This setup includes:
-   - Flask web application container
+   - Flask web application container built on an original image
    - MongoDB database container
-   - Persistent data storage
+   - Persistent data storage via volumes
    - Automatic container networking
 
-## 🎯 How to Play
+## How to Play
 
 ### Starting a Game
 1. Click the **"Start New Game"** button on the main page
@@ -79,12 +55,7 @@ SpyGame challenges players to guess famous Wikipedia personalities using a hint 
 3. Get immediate feedback on whether your guess is correct
 4. You can make multiple guesses per game
 
-### Game Options
-- **Reveal Answer**: Give up and see the correct answer (ends the game)
-- **Start New Game**: Begin a fresh game with a new historical figure
-- **View Statistics**: See your gameplay history and performance metrics
-
-## 📊 Statistics & Tracking
+## Statistics & Tracking
 
 The game automatically tracks all your gameplay activities:
 
@@ -100,7 +71,7 @@ The game automatically tracks all your gameplay activities:
 - **Details**: The actual hint text or guess content
 - **Result**: Whether guesses were correct or incorrect
 
-## 🏗️ Technical Architecture
+## Technical Architecture
 
 ### Backend (Python/Flask)
 - **`app.py`**: Main Flask application with game logic
@@ -127,11 +98,10 @@ The game automatically tracks all your gameplay activities:
 
 ### Key Features
 - **RESTful API design** for clean client-server communication
-- **Progressive enhancement** - works without JavaScript for basic functionality
 - **Mobile-responsive** design using CSS Grid and Flexbox
 - **Accessibility features** with proper ARIA labels and semantic HTML
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 SpyGame/
@@ -150,7 +120,7 @@ SpyGame/
 └── README.md            # This file
 ```
 
-## 🎨 CSS Architecture & Styling
+## CSS Architecture & Styling
 
 ### Design System
 - **Color Palette**: Deep purples, neon accents, dark backgrounds
@@ -170,22 +140,10 @@ SpyGame/
 - **Tablet**: 768px and below - Adjusted layouts and sizing
 - **Desktop**: 1200px and above - Enhanced spacing and larger elements
 
-## 🔧 Customization
+## Customization
 
 ### Adding New Historical Figures
 Edit the `PERSONS_DATA` dictionary in `app.py`:
-
-```python
-PERSONS_DATA = {
-    "Your Historical Figure": [
-        "Hint 1 about this person",
-        "Hint 2 about this person", 
-        "Hint 3 about this person",
-        "Hint 4 about this person",
-        "Hint 5 about this person"
-    ]
-}
-```
 
 ### Modifying the Theme
 The CSS is extensively commented and organized by component. Key customization areas:
@@ -195,11 +153,7 @@ The CSS is extensively commented and organized by component. Key customization a
 - **Layout**: Change container widths and spacing values
 - **Typography**: Update font families and sizing scales
 
-## 🤝 Contributing
-
-This project was created as part of a Bachelor's thesis. Contributions are welcome!
-
-### Development Setup
+## Development Setup
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes with appropriate comments
@@ -212,11 +166,11 @@ This project was created as part of a Bachelor's thesis. Contributions are welco
 - **Modular CSS** organized by component and purpose
 - **Clean JavaScript** with clear function names and documentation
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🎓 Academic Context
+## Academic Context
 
 This project was developed as part of a Bachelor's thesis exploring web development with modern design principles. It demonstrates:
 
@@ -225,18 +179,5 @@ This project was developed as part of a Bachelor's thesis exploring web developm
 - **User experience design** with progressive disclosure and feedback
 - **Data visualization** through statistics and history tracking
 - **Responsive design principles** for cross-device compatibility
-
-## 🔮 Future Enhancements
-
-Potential improvements for future versions:
-
-- **Difficulty levels** with varying hint specificity
-- **Multiplayer support** for competitive guessing
-- **Achievement system** with badges and rewards
-- **Expanded person database** with categories and themes
-- **Audio effects** and enhanced animations
-- **Social sharing** of game results and statistics
-
----
 
 **Enjoy playing SpyGame! 🕵️‍♂️🎯**

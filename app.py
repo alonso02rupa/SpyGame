@@ -7,7 +7,7 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'spygame_secret_key_2024'
+app.secret_key = 'spygame_secret_key_2025'
 
 # MongoDB configuration
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
@@ -24,7 +24,7 @@ def get_db_collections():
         print(f"MongoDB connection failed: {e}")
         return None, None, False
 
-# Sample Wikipedia persons data (in a real app, this would come from Wikipedia API)
+# Sample Wikipedia persons data (this will be changed for a DB call in which the person will be stored)
 PERSONS_DATA = {
     "Albert Einstein": [
         "I was born in Germany in 1879",
