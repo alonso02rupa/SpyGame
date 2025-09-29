@@ -2,6 +2,11 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import pandas as pd 
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def get_famous_humans(limit=10, offset=0, min_sitelinks=20):
     """
@@ -29,9 +34,10 @@ def get_famous_humans(limit=10, offset=0, min_sitelinks=20):
     }}
     LIMIT {int(limit)} OFFSET {int(offset)}
     """
+    user_agent = os.getenv('WIKIPEDIA_USER_AGENT', 'SpyGame/1.0.0 (contact: user@example.com)')
     headers = {
         "Accept": "application/sparql-results+json",
-        "User-Agent": "SpyGame/1.0.0 (contact: rupalonso@gmail.com)"
+        "User-Agent": user_agent
     }
     params = {"query": query, "format": "json"}
 
