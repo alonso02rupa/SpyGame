@@ -36,6 +36,47 @@ SpyGame challenges players to guess famous Wikipedia personalities using a hint 
    - Persistent data storage via volumes
    - Automatic container networking
 
+## Environment Configuration
+
+The application uses environment variables for sensitive configuration. Before running the application, set up your environment variables:
+
+### 1. Create Environment File
+Copy the example environment file and customize it:
+```bash
+cp .env.example .env
+```
+
+### 2. Configure Your Variables
+Edit `.env` with your specific values:
+
+```bash
+# Flask Configuration
+FLASK_SECRET_KEY=your_unique_secret_key_here
+FLASK_ENV=development
+FLASK_DEBUG=True
+FLASK_HOST=0.0.0.0
+FLASK_PORT=5000
+
+# Database Configuration
+MONGODB_URI=mongodb://mongodb:27017/spygame
+MONGODB_HOST=mongodb
+MONGODB_PORT=27017
+MONGO_INITDB_DATABASE=spygame
+
+# Wikipedia API Configuration
+WIKIPEDIA_USER_AGENT=YourApp/1.0.0 (contact: your_email@example.com)
+
+# Docker Configuration
+DOCKER_WEB_PORT=5000
+DOCKER_MONGO_PORT=27017
+```
+
+### 3. Important Security Notes
+- **Never commit your `.env` file** to version control
+- The `.env` file contains sensitive information and is excluded via `.gitignore`
+- Use strong, unique values for `FLASK_SECRET_KEY` in production
+- Replace the contact email in `WIKIPEDIA_USER_AGENT` with your actual email
+
 ## How to Play
 
 ### Starting a Game

@@ -1,6 +1,11 @@
 import wikipediaapi
 import regex as re
 import spacy
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # --- 1. Cargar modelo spaCy ---
 # python -m spacy download es_core_news_sm
@@ -17,7 +22,8 @@ def limpiar_texto(texto):
 url = "https://es.wikipedia.org/wiki/Niels_Bohr"
 titulo = url.split("/wiki/")[-1]
 
-wiki_es = wikipediaapi.Wikipedia(language='es', user_agent='SpyGame/1.0 (rupalonso@gmail.com)')
+user_agent = os.getenv('WIKIPEDIA_USER_AGENT', 'SpyGame/1.0 (contact: user@example.com)')
+wiki_es = wikipediaapi.Wikipedia(language='es', user_agent=user_agent)
 articulo = wiki_es.page(titulo)
 
 if not articulo.exists():
