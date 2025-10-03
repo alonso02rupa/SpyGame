@@ -9,3 +9,4 @@ wikipedia-api==0.8.1
 urllib3==2.5.0
 dotenv==0.9.9
 python-dotenv==1.1.1
+huggingface-hub==0.18.1
