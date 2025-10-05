@@ -10,6 +10,7 @@ import json
 from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 from pymongo import MongoClient
+import random
 
 # Load environment variables
 load_dotenv()
@@ -42,14 +43,15 @@ def get_db_connection():
         print(f"MongoDB connection failed: {e}")
         return None, False
 
-def get_famous_humans(limit=10, offset=0, min_sitelinks=20):
+def get_wikidata_items(limit=200 , offset=0, min_sitelinks=150, sample_size=1):
     """
     Devuelve personas (Q5) con artículo en Wikipedia en español y con un número minimo de traducciones (sitelinks).
     como un DataFrame de pandas.
     Parámetros:
-    - limit: número máximo de resultados a devolver.
+    - limit: número máximo de resultados a devolver desde Wikidata.
     - offset: número de resultados a saltar (para paginación).
     - min_sitelinks: número mínimo de traducciones (sitelinks) que debe tener la persona.
+    - sample_size: número de resultados aleatorios a seleccionar del bloque descargado.
     """
     url = "https://query.wikidata.org/sparql"
     query = f"""
@@ -94,6 +96,11 @@ def get_famous_humans(limit=10, offset=0, min_sitelinks=20):
     data = r.json()
 
     bindings = data.get("results", {}).get("bindings", [])
+    
+    # Selección aleatoria de elementos para poder cargar más personas, lo hago limitado por los tokens de huggingface
+    if len(bindings) > sample_size:
+        bindings = random.sample(bindings, sample_size)
+    
     results = []
     for item in bindings:
         results.append({
@@ -168,37 +175,38 @@ def generar_frases_trivia(url, nombre_persona):
 Eres un asistente experto en generar pistas de trivia a partir de biografías. 
 Recibirás un texto con información sobre la vida de una persona. 
 
-Tu tarea es:
+REGLAS CRÍTICAS QUE DEBES SEGUIR:
 
-1. Extraer hechos relevantes de la biografía (hitos, nacimiento, muerte, logros, lugares, curiosidades, etc.).
-2. Transformarlos en pistas en formato JSON.
-3. Cada pista debe tener un campo "dificultad" (1 a 5), donde:
+1. **PROHIBIDO ABSOLUTO:** NO menciones NUNCA el nombre, apellido, apodos, títulos nobiliarios, ni cualquier variante del nombre de la persona. Refiérete a ella SIEMPRE en tercera persona de forma genérica ("esta persona", "este científico", "esta figura histórica", etc.).
 
-   - 1 = muy fácil / general: profesión, nacionalidad, campo de actividad o época histórica. 
-         Ejemplos: "Fue una científica muy reconocida a nivel mundial", "Se destacó en física y química". 
-         *Nunca pongas años, fechas exactas, cifras ni nombres propios aquí.*
-         
-   - 2 = fácil: información conocida pero no obvia, como premios, instituciones importantes o contexto cultural.  
-         Ejemplos: "Trabajó en Francia durante gran parte de su carrera", "Su familia también estuvo vinculada a la ciencia".  
-         
-   - 3 = medio: contribuciones concretas o logros importantes que requieren cierto conocimiento.  
-         Ejemplos: "Realizó estudios pioneros sobre radiactividad", "Fue de las primeras mujeres en recibir reconocimiento académico".  
-         
-   - 4 = difícil: detalles poco conocidos o curiosidades históricas relevantes.  
-         Ejemplos: "Nombró un elemento químico en honor a su país de origen", "Ocupó una cátedra universitaria inédita para su época".  
-         
-   - 5 = muy difícil: hechos muy específicos, poco evidentes, pero sin revelar la identidad directamente.  
-         Ejemplos: "Recibió sepultura con honores en un lugar reservado solo a figuras históricas excepcionales", 
-                   "Fue la primera persona en lograr un hito científico doble único en la historia".
+2. **PROHIBIDO:** NO uses fechas exactas de nacimiento o muerte, números específicos de premios, cifras exactas, ni datos únicos que identifiquen a la persona inmediatamente.
 
-4. Genera **8 pistas en total**, no más, distribuidas según la dificultad, respetando la estructura que te doy en el ejemplo en todo momento.  
-5. Usa **sinónimos y variaciones en el lenguaje**: no empieces todas las pistas con la misma estructura.  
-6. **Bajo ningún concepto menciones nombres reales, apodos, títulos, o variantes del nombre de la persona, es más, solo puedes referirte a ella en voz impropia.**
-7. Nunca incluyas números de elementos, cifras exactas de premios ni fechas exactas de nacimiento o muerte.
-8. Ordena las pistas de **mayor a menor dificultad** (5 → 1).  
-9. Devuelve solo **JSON válido**, sin comentarios ni texto adicional.
+3. Cada pista debe tener un campo "dificultad" (1 a 5):
+   
+   **Dificultad 5 (MUY DIFÍCIL):** Hechos muy específicos, detalles históricos poco conocidos, anécdotas raras.
+   Ejemplo: "Recibió sepultura con honores en un lugar reservado solo a figuras excepcionales de la nación"
+   
+   **Dificultad 4 (DIFÍCIL):** Detalles importantes pero menos conocidos, contribuciones específicas.
+   Ejemplo: "Nombró un elemento químico en honor a su país natal"
+   
+   **Dificultad 3 (MEDIA):** Logros importantes que requieren conocimiento del área.
+   Ejemplo: "Realizó estudios pioneros sobre fenómenos radiactivos"
+   
+   **Dificultad 2 (FÁCIL):** Información general conocida, premios importantes, instituciones.
+   Ejemplo: "Trabajó en una prestigiosa universidad europea durante gran parte de su carrera"
+   
+   **Dificultad 1 (MUY FÁCIL):** Información muy general: profesión, nacionalidad, campo de actividad.
+   Ejemplo: "Fue una científica reconocida a nivel mundial" o "Se destacó en el campo de las ciencias físicas"
 
-Ejemplo de salida esperado (8 pistas):
+4. Genera **8 pistas en total** distribuidas así: 1 de dificultad 5, 1 de dificultad 4, 2 de dificultad 3, 2 de dificultad 2, 2 de dificultad 1.
+
+5. **ORDEN OBLIGATORIO:** Las pistas deben estar ordenadas de MAYOR a MENOR dificultad (5 → 4 → 3 → 3 → 2 → 2 → 1 → 1).
+
+6. Usa lenguaje variado: no empieces todas las pistas igual.
+
+7. Devuelve SOLO JSON válido, sin comentarios ni texto adicional.
+
+Formato de salida (OBLIGATORIO):
 
 [
   {{"dificultad": 5, "pista": "..." }},
@@ -211,7 +219,7 @@ Ejemplo de salida esperado (8 pistas):
   {{"dificultad": 1, "pista": "..." }}
 ]
 
-Aquí está el texto de la biografía:
+Texto de la biografía:
 
 "{"; ".join(frases_sin_puntuacion)}"
 """
@@ -226,15 +234,15 @@ def generar_pistas(url, nombre_persona):
     prompt = generar_frases_trivia(url, nombre_persona)
     
     messages = [
-        {"role": "system", "content": "Eres un asistente experto en generar pistas de trivia."},
+        {"role": "system", "content": "Eres un asistente experto en generar pistas de trivia. NUNCA menciones nombres propios de la persona en las pistas. Sigue las instrucciones AL PIE DE LA LETRA."},
         {"role": "user", "content": prompt}
     ]
     
     response = client.chat_completion(
         messages=messages,
         model=model,
-        max_tokens=600,
-        temperature=0.7
+        max_tokens=800,
+        temperature=0.5
     )
     
     output = response.choices[0].message.content
@@ -254,7 +262,7 @@ def guardar_pistas_json(pistas, nombre_persona, filepath="pistas.json"):
     """
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(pistas, f, indent=4, ensure_ascii=False)
-    print(f"✅ Guardado {nombre_persona} en {filepath}")
+    print(f"Guardado {nombre_persona} en {filepath}")
 
 def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=None):
     """
@@ -269,7 +277,7 @@ def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=No
     db, mongodb_available = get_db_connection()
     
     if not mongodb_available:
-        print("❌ No se pudo conectar a MongoDB. Las pistas no se guardaron en la base de datos.")
+        print("No se pudo conectar a MongoDB.")
         return False
     
     try:
@@ -289,15 +297,12 @@ def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=No
         # Insertar en la colección de pistas
         pistas_collection = db.pistas
         result = pistas_collection.insert_one(documento)
-        
-        print(f"✅ Pistas de {nombre_persona} guardadas en la base de datos con ID: {result.inserted_id}")
         return True
         
     except Exception as e:
-        print(f"❌ Error al guardar pistas en la base de datos: {e}")
         return False
 
-def procesar_persona(url, nombre_persona=None, wikidata_id=None, guardar_json=True, subir_db=True):
+def procesar_persona(url, wikidata_id=None, guardar_json=True, subir_db=True):
     """
     Función completa que procesa una persona: genera pistas y las guarda.
     
@@ -308,10 +313,9 @@ def procesar_persona(url, nombre_persona=None, wikidata_id=None, guardar_json=Tr
     - guardar_json: Si es True, guarda las pistas en un archivo JSON local
     - subir_db: Si es True, sube las pistas a la base de datos MongoDB
     """
-    if nombre_persona is None:
-        nombre_persona = url.split("/wiki/")[-1].replace("_", " ")
+    nombre_persona = url.split("/wiki/")[-1].replace("_", " ")
     
-    print(f"📝 Procesando: {nombre_persona}")
+    print(f"Procesando: {nombre_persona}")
     
     # Generar pistas
     pistas = generar_pistas(url, nombre_persona)
@@ -326,7 +330,13 @@ def procesar_persona(url, nombre_persona=None, wikidata_id=None, guardar_json=Tr
     
     return pistas
 
-if __name__ == "__main__":
-    # Ejemplo de uso
-    url = "https://es.wikipedia.org/wiki/Marie_Curie"
-    procesar_persona(url, guardar_json=True, subir_db=True)
+# USO
+df = get_wikidata_items()
+enlaces = df['articulo_es'].tolist()  # Tomamos los enlaces
+for enlace in enlaces:  
+    procesar_persona(enlace)  # Pasamos las personas una a una 
+
+
+
+
+
