@@ -23,10 +23,10 @@ def get_db_collections():
         # Test the connection
         client.admin.command('ping')
         db = client.spygame
-        return db.sessions, db.users, True
+        return db.sessions, db.users, db.hints, True
     except Exception as e:
         print(f"MongoDB connection failed: {e}")
-        return None, None, False
+        return None, None, None, False
 
 # Sample Wikipedia persons data (this will be changed for a DB call in which the person will be stored)
 PERSONS_DATA = {
@@ -70,13 +70,58 @@ PERSONS_DATA = {
 # File to store game sessions (legacy - now using MongoDB)
 SESSIONS_FILE = 'game_sessions.json'
 
+def get_all_persons_from_db():
+    """Get all available persons from the hints collection"""
+    sessions_collection, users_collection, hints_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        # Fallback to hardcoded data if DB is not available
+        return list(PERSONS_DATA.keys())
+    
+    try:
+        # Get all unique person names from hints collection
+        persons = hints_collection.distinct("nombre")
+        return persons if persons else list(PERSONS_DATA.keys())
+    except Exception as e:
+        print(f"Error loading persons from DB: {e}")
+        return list(PERSONS_DATA.keys())
+
+def get_hints_for_person(person_name):
+    """Get hints for a specific person from the hints collection"""
+    sessions_collection, users_collection, hints_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        # Fallback to hardcoded data if DB is not available
+        return PERSONS_DATA.get(person_name, [])
+    
+    try:
+        # Find the person's hints document
+        person_doc = hints_collection.find_one({"nombre": person_name})
+        
+        if person_doc and "pistas" in person_doc:
+            # Extract hints from the pistas array
+            pistas = person_doc["pistas"]
+            # If pistas is a list of dicts with 'pista' field, extract them
+            if isinstance(pistas, list) and len(pistas) > 0:
+                if isinstance(pistas[0], dict) and 'pista' in pistas[0]:
+                    return [p['pista'] for p in pistas]
+                else:
+                    return pistas
+            return []
+        else:
+            # Fallback to hardcoded data
+            return PERSONS_DATA.get(person_name, [])
+    except Exception as e:
+        print(f"Error loading hints for {person_name}: {e}")
+        return PERSONS_DATA.get(person_name, [])
+
 def get_current_user():
     """Get the current user context (username or 'guest')"""
     return session.get('username', 'guest')
 
 def load_sessions(username=None):
     """Load game sessions from MongoDB, optionally filtered by user"""
-    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    sessions_collection, users_collection, hints_collection, mongodb_available = get_db_collections()
     
     if mongodb_available:
         try:
@@ -104,7 +149,7 @@ def load_sessions(username=None):
 
 def save_session(person, hint, guess, correct, timestamp):
     """Save a game session to MongoDB"""
-    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    sessions_collection, users_collection, hints_collection, mongodb_available = get_db_collections()
     username = get_current_user()
     session_data = {
         'person': person,
@@ -155,7 +200,7 @@ def register():
     if len(password) < 6:
         return jsonify({'status': 'error', 'message': 'Password must be at least 6 characters long'})
     
-    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    sessions_collection, users_collection, hints_collection, mongodb_available = get_db_collections()
     
     if not mongodb_available:
         return jsonify({'status': 'error', 'message': 'User registration requires database connection. Please try again later or play as guest.'})
@@ -195,7 +240,7 @@ def login():
     if not username or not password:
         return jsonify({'status': 'error', 'message': 'Username and password are required'})
     
-    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    sessions_collection, users_collection, hints_collection, mongodb_available = get_db_collections()
     
     if not mongodb_available:
         return jsonify({'status': 'error', 'message': 'User login requires database connection. Please try again later or play as guest.'})
@@ -243,7 +288,16 @@ def play_as_guest():
 @app.route('/start_game', methods=['POST'])
 def start_game():
     """Start a new game by selecting a random person"""
-    person = random.choice(list(PERSONS_DATA.keys()))
+    # Get available persons from database or fallback to hardcoded data
+    available_persons = get_all_persons_from_db()
+    
+    if not available_persons:
+        return jsonify({
+            'status': 'error',
+            'message': 'No persons available for the game. Please add some hints first.'
+        })
+    
+    person = random.choice(available_persons)
     session['current_person'] = person
     session['hints_used'] = []
     session['game_start_time'] = datetime.now().isoformat()
@@ -261,7 +315,10 @@ def get_hint():
     
     person = session['current_person']
     hints_used = session.get('hints_used', [])
-    available_hints = [h for h in PERSONS_DATA[person] if h not in hints_used]
+    
+    # Get hints from database
+    all_hints = get_hints_for_person(person)
+    available_hints = [h for h in all_hints if h not in hints_used]
     
     if not available_hints:
         return jsonify({
@@ -342,6 +399,41 @@ def get_answer():
         'answer': person,
         'message': f'The answer was {person}. Better luck next time!'
     })
+
+@app.route('/generate_hints', methods=['POST'])
+def generate_hints():
+    """Generate hints for a person from Wikipedia and save to database"""
+    data = request.get_json()
+    url = data.get('url', '').strip()
+    wikidata_id = data.get('wikidata_id', None)
+    
+    if not url:
+        return jsonify({'status': 'error', 'message': 'Wikipedia URL is required'})
+    
+    # Import the data processor module
+    try:
+        import sys
+        sys.path.append(os.path.join(os.path.dirname(__file__), 'datatreatment'))
+        from data_processor import procesar_persona
+        
+        # Process the person (generate hints and save to DB)
+        pistas = procesar_persona(url, wikidata_id=wikidata_id, guardar_json=False, subir_db=True)
+        
+        # Extract person name from URL
+        nombre_persona = url.split("/wiki/")[-1].replace("_", " ")
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'Hints generated and saved for {nombre_persona}',
+            'person': nombre_persona,
+            'hints_count': len(pistas) if isinstance(pistas, list) else 0
+        })
+    except Exception as e:
+        print(f"Error generating hints: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Failed to generate hints: {str(e)}'
+        })
 
 @app.route('/stats')
 def stats():

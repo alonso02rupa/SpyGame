@@ -294,15 +294,15 @@ def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=No
         if url_wikipedia:
             documento["url_wikipedia"] = url_wikipedia
         
-        # Insertar en la colección de pistas
-        pistas_collection = db.pistas
-        result = pistas_collection.insert_one(documento)
+        # Insertar en la colección de hints
+        hints_collection = db.hints
+        result = hints_collection.insert_one(documento)
         return True
         
     except Exception as e:
         return False
 
-def procesar_persona(url, wikidata_id=None, guardar_json=True, subir_db=True):
+def procesar_persona(url, wikidata_id=None, guardar_json=False, subir_db=True):
     """
     Función completa que procesa una persona: genera pistas y las guarda.
     
