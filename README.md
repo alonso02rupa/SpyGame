@@ -207,6 +207,35 @@ The CSS is extensively commented and organized by component. Key customization a
 - **Modular CSS** organized by component and purpose
 - **Clean JavaScript** with clear function names and documentation
 
+## Troubleshooting
+
+### Docker Compose Issues
+
+**Problem**: `ModuleNotFoundError: No module named 'dotenv'` or other import errors
+
+**Solution**: Rebuild the Docker images to ensure all dependencies are installed:
+```bash
+docker-compose down
+docker-compose up --build
+```
+
+**Problem**: Port already in use errors
+
+**Solution**: Change the ports in your `.env` file or stop the conflicting service:
+```bash
+# Create .env file and change ports
+cp .env.example .env
+# Edit DOCKER_WEB_PORT and DOCKER_MONGO_PORT to different values
+```
+
+**Problem**: MongoDB connection failures
+
+**Solution**: Ensure MongoDB container is running and accessible:
+```bash
+docker-compose ps
+# Check if mongodb container is up and healthy
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
