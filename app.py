@@ -28,46 +28,6 @@ def get_db_collections():
         print(f"MongoDB connection failed: {e}")
         return None, None, None, False
 
-# Sample Wikipedia persons data (DEPRECATED - Now using MongoDB)
-# Keeping this as fallback only
-PERSONS_DATA = {
-    "Albert Einstein": [
-        "I was born in Germany in 1879",
-        "I developed the theory of relativity", 
-        "I won the Nobel Prize in Physics in 1921",
-        "My most famous equation is E=mc²",
-        "I had wild, unkempt hair"
-    ],
-    "Marie Curie": [
-        "I was the first woman to win a Nobel Prize",
-        "I discovered the elements polonium and radium",
-        "I won Nobel Prizes in both Physics and Chemistry",
-        "I was born in Poland but worked in France",
-        "I died from radiation exposure"
-    ],
-    "Leonardo da Vinci": [
-        "I lived during the Renaissance period",
-        "I painted the Mona Lisa",
-        "I designed flying machines centuries before they were built",
-        "I was both an artist and an inventor",
-        "I studied human anatomy by dissecting corpses"
-    ],
-    "William Shakespeare": [
-        "I wrote Romeo and Juliet",
-        "I lived in England during the 16th and 17th centuries",
-        "I wrote approximately 39 plays",
-        "I invented many words that are still used today",
-        "I married Anne Hathaway"
-    ],
-    "Cleopatra": [
-        "I was the last pharaoh of Egypt",
-        "I spoke nine languages fluently",
-        "I had relationships with Julius Caesar and Mark Antony",
-        "I ruled Egypt for nearly three decades",
-        "I died by snake bite"
-    ]
-}
-
 def get_person_from_db():
     """Get a random person from the database"""
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
@@ -94,9 +54,6 @@ def get_person_from_db():
         except Exception as e:
             print(f"Error al obtener persona de MongoDB: {e}")
     
-    # Fallback a datos hardcodeados si no hay conexión o no hay datos
-    person_name = random.choice(list(PERSONS_DATA.keys()))
-    hints = PERSONS_DATA[person_name]
     
     # Convertir al formato de la base de datos para compatibilidad
     pistas_formateadas = [{"dificultad": 5 - i//2, "pista": hint} for i, hint in enumerate(hints)]
