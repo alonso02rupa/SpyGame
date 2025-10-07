@@ -296,13 +296,21 @@ def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=No
         
         # Insertar en la colección de pistas
         pistas_collection = db.pistas
-        result = pistas_collection.insert_one(documento)
+        
+        # Evitar duplicados: verificar si ya existe
+        existente = pistas_collection.find_one({"nombre": nombre_persona})
+        if existente:
+            pass
+        else:
+            pistas_collection.insert_one(documento)
+        
         return True
         
     except Exception as e:
+        print(f"Error al subir a MongoDB: {e}")
         return False
 
-def procesar_persona(url, wikidata_id=None, guardar_json=True, subir_db=True):
+def procesar_persona(url, wikidata_id=None, guardar_json=False, subir_db=True):
     """
     Función completa que procesa una persona: genera pistas y las guarda.
     
@@ -317,24 +325,92 @@ def procesar_persona(url, wikidata_id=None, guardar_json=True, subir_db=True):
     
     print(f"Procesando: {nombre_persona}")
     
-    # Generar pistas
-    pistas = generar_pistas(url, nombre_persona)
-    
-    # Guardar en JSON si se solicita
-    if guardar_json:
-        guardar_pistas_json(pistas, nombre_persona)
-    
-    # Subir a la base de datos si se solicita
-    if subir_db:
-        subir_pistas_a_db(pistas, nombre_persona, wikidata_id, url)
-    
-    return pistas
+    try:
+        # Generar pistas
+        pistas = generar_pistas(url, nombre_persona)
+        
+        # Guardar en JSON si se solicita
+        if guardar_json:
+            guardar_pistas_json(pistas, nombre_persona)
+        
+        # Subir a la base de datos si se solicita
+        if subir_db:
+            success = subir_pistas_a_db(pistas, nombre_persona, wikidata_id, url)
+            if success:
+                print(f"{nombre_persona} subido exitosamente a MongoDB")
+            else:
+                print(f"Error al subir {nombre_persona} a MongoDB")
+        
+        return pistas
+    except Exception as e:
+        print(f"Error procesando {nombre_persona}: {str(e)}")
+        return None
 
-# USO
-df = get_wikidata_items()
-enlaces = df['articulo_es'].tolist()  # Tomamos los enlaces
-for enlace in enlaces:  
-    procesar_persona(enlace)  # Pasamos las personas una a una 
+def procesar_batch(num_personas=5, limit=200, offset=0, min_sitelinks=150):
+    """
+    Procesa un lote de personas y las sube a la base de datos.
+    
+    Parámetros:
+    - num_personas: Número de personas a procesar
+    - limit: Límite de resultados de Wikidata
+    - offset: Offset para paginación en Wikidata
+    - min_sitelinks: Número mínimo de sitelinks
+    """
+    print(f"\n{'='*60}")
+    print(f"Iniciando procesamiento de {num_personas} personas")
+    print(f"{'='*60}\n")
+    
+    df = get_wikidata_items(limit=limit, offset=offset, min_sitelinks=min_sitelinks, sample_size=num_personas)
+    
+    if df.empty:
+        print("No se encontraron personas en Wikidata")
+        return
+    
+    print(f"Obtenidas {len(df)} personas de Wikidata\n")
+    
+    exitosas = 0
+    fallidas = 0
+    
+    for idx, row in df.iterrows():
+        url = row['articulo_es']
+        wikidata_id = row['id']
+        
+        print(f"\n[{idx+1}/{len(df)}] Procesando: {url}")
+        resultado = procesar_persona(url, wikidata_id=wikidata_id, guardar_json=False, subir_db=True)
+        
+        if resultado is not None:
+            exitosas += 1
+        else:
+            fallidas += 1
+        
+        # Pequeña pausa para no saturar APIs
+        import time
+        time.sleep(1)
+    
+    print(f"\n{'='*60}")
+    print(f"Resumen del procesamiento:")
+    print(f"  Exitosas: {exitosas}")
+    print(f"  Fallidas: {fallidas}")
+    print(f"  Total: {exitosas + fallidas}")
+    print(f"{'='*60}\n")
+
+if __name__ == "__main__":
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Procesar personas de Wikipedia y subir pistas a MongoDB')
+    parser.add_argument('--num', type=int, default=5, help='Número de personas a procesar (default: 5)')
+    parser.add_argument('--limit', type=int, default=200, help='Límite de resultados de Wikidata (default: 200)')
+    parser.add_argument('--offset', type=int, default=0, help='Offset para paginación (default: 0)')
+    parser.add_argument('--min-sitelinks', type=int, default=150, help='Mínimo de sitelinks (default: 150)')
+    
+    args = parser.parse_args()
+    
+    procesar_batch(
+        num_personas=args.num,
+        limit=args.limit,
+        offset=args.offset,
+        min_sitelinks=args.min_sitelinks
+    ) 
 
 
 

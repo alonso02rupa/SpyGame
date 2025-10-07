@@ -1,18 +1,26 @@
 #  SpyGame
 
-A dark purple/noir-themed web-based guessing game where players try to identify famous people based on automatically generated and difficulty progressive hints. Built with Flask and featuring a sleek, spy-movie inspired interface.
+A dark purple/noir-themed web-based guessing game where players try to identify famous people based on automatically generated and difficulty progressive hints. Built with Flask, MongoDB, and AI-powered hint generation featuring a sleek, spy-movie inspired interface.
 
-## Game Overview
+## 🎮 Game Overview
 
-SpyGame challenges players to guess famous Wikipedia personalities using a hint system. Players can request up to 5 hints per game, with each hint providing more specific information about the historical figure. The game tracks statistics and provides a detailed history of all gameplay sessions.
+SpyGame challenges players to guess famous Wikipedia personalities using an AI-powered hint system. Players can request hints per game, with each hint progressively revealing more information. The game uses machine learning to generate contextual and difficulty-graded hints from Wikipedia biographies.
 
+**New Features:**
+- 🤖 AI-generated hints using Hugging Face models
+- 🗄️ MongoDB database for scalable data storage
+- 🌐 Automatic Wikipedia data processing
+- 📊 Advanced statistics tracking
+- 👤 User authentication system
+- 🐳 Full Docker containerization
 
-##  Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Docker
+- Docker & Docker Compose
+- Hugging Face API key (for generating new hints)
 
-## Installation
+### Installation
 
 1. **Clone the repository**
    ```bash
@@ -20,144 +28,205 @@ SpyGame challenges players to guess famous Wikipedia personalities using a hint 
    cd SpyGame
    ```
 
-2. **Run with Docker Compose**
+2. **Configure environment variables**
    ```bash
-   docker-compose up --build
+   cp .env.example .env
+   # Edit .env with your configuration
    ```
 
-3. **Open your web browser** and navigate to:
+3. **Start the application**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Initialize the database with an example**
+   ```bash
+   docker-compose exec web python init_db.py
+   ```
+
+5. **Open your browser**
    ```
    http://localhost:5000
    ```
 
-   This setup includes:
-   - Flask web application container built on an original image
-   - MongoDB database container
-   - Persistent data storage via volumes
-   - Automatic container networking
+**Using helper scripts (recommended):**
 
-## Environment Configuration
-
-The application uses environment variables for sensitive configuration. Before running the application, set up your environment variables:
-
-### 1. Create Environment File
-Copy the example environment file and customize it:
-```bash
-cp .env.example .env
+Windows (PowerShell):
+```powershell
+.\spygame.ps1 start
+.\spygame.ps1 init
 ```
 
-### 2. Configure Your Variables
-Edit `.env` with your specific values:
+Linux/Mac:
+```bash
+chmod +x spygame.sh
+./spygame.sh start
+./spygame.sh init
+```
+
+## 📚 Documentation
+
+- **[USAGE.md](USAGE.md)** - Complete usage guide and Docker commands
+- **[.env.example](.env.example)** - Environment variables template
+
+## 🗄️ Database Management
+
+### Adding People to the Database
+
+The application can automatically process Wikipedia articles and generate AI-powered hints:
+
+```bash
+# Process 5 people from Wikipedia
+docker-compose exec web python process_data.py --num 5
+
+# Process 10 people with custom parameters
+docker-compose exec web python process_data.py --num 10 --min-sitelinks 200
+
+# List all people in the database
+docker-compose exec web python init_db.py --list
+```
+
+**Using helper scripts:**
+
+Windows:
+```powershell
+.\spygame.ps1 process 10
+.\spygame.ps1 list
+```
+
+Linux/Mac:
+```bash
+./spygame.sh process 10
+./spygame.sh list
+```
+
+## 🔧 Environment Configuration
+
+The application requires environment variables for configuration:
+
+### Required Variables
 
 ```bash
 # Flask Configuration
 FLASK_SECRET_KEY=your_unique_secret_key_here
 FLASK_ENV=development
-FLASK_DEBUG=True
+FLASK_DEBUG=False
 FLASK_HOST=0.0.0.0
 FLASK_PORT=5000
 
-# Database Configuration
+# MongoDB Configuration
 MONGODB_URI=mongodb://mongodb:27017/spygame
-MONGODB_HOST=mongodb
-MONGODB_PORT=27017
 MONGO_INITDB_DATABASE=spygame
+MONGODB_PORT=27017
+
+# Hugging Face API (Required for processing new people)
+HUGGINGFACE_API_KEY=your_huggingface_api_key_here
+HUGGINGFACE_MODEL_NAME=meta-llama/Meta-Llama-3-8B-Instruct
 
 # Wikipedia API Configuration
-WIKIPEDIA_USER_AGENT=YourApp/1.0.0 (contact: your_email@example.com)
+WIKIPEDIA_USER_AGENT=SpyGame/1.0.0 (contact: your_email@example.com)
 
-# Docker Configuration
+# Docker Ports
 DOCKER_WEB_PORT=5000
 DOCKER_MONGO_PORT=27017
 ```
 
-### 3. Important Security Notes
-- **Never commit your `.env` file** to version control
-- The `.env` file contains sensitive information and is excluded via `.gitignore`
+### Security Notes
+- ⚠️ **Never commit your `.env` file** to version control
 - Use strong, unique values for `FLASK_SECRET_KEY` in production
+- Get your Hugging Face API key from: https://huggingface.co/settings/tokens
 - Replace the contact email in `WIKIPEDIA_USER_AGENT` with your actual email
 
-## How to Play
+## 🎯 How to Play
 
 ### Starting a Game
-1. Click the **"Start New Game"** button on the main page
-2. The system randomly selects a historical figure for you to guess
+1. Click **"Start New Game"** on the main page
+2. The system randomly selects a person from the database
 3. The hints and guess sections become available
 
 ### Getting Hints
-1. Click **"Get Hint"** to receive a clue about the person
-2. Each game provides up to 5 hints
-3. Hints become progressively more specific
-4. The hint counter shows how many hints remain
+1. Click **"Get Hint"** to receive a clue
+2. Hints are ordered by difficulty (hardest to easiest)
+3. Each hint has a difficulty rating (1-5)
+4. The counter shows remaining hints
 
 ### Making Guesses
 1. Type your guess in the input field
 2. Click **"Submit Guess"** or press Enter
-3. Get immediate feedback on whether your guess is correct
+3. Get immediate feedback on correctness
 4. You can make multiple guesses per game
 
-## Statistics & Tracking
+### User Accounts
+- **Guest Mode**: Play without registration (no stats saved to profile)
+- **Register**: Create an account to track your personal statistics
+- **Login**: Access your game history and stats
 
-The game automatically tracks all your gameplay activities:
+## 📊 Statistics & Tracking
+
+The game automatically tracks all gameplay activities:
 
 ### Summary Statistics
-- **Total Games**: Number of games you've started
-- **Correct Guesses**: How many you've gotten right
-- **Success Rate**: Your percentage of correct guesses
+- **Total Games**: Number of games started
+- **Correct Guesses**: Successfully identified people
+- **Success Rate**: Percentage of correct guesses
+- **Per-User Stats**: When logged in, see your personal performance
 
 ### Detailed History
-- **Date & Time**: When each action occurred
-- **Person**: Which historical figure was being guessed
-- **Action Type**: Whether it was a hint request or guess attempt
-- **Details**: The actual hint text or guess content
-- **Result**: Whether guesses were correct or incorrect
+- **Timestamp**: When each action occurred
+- **Person**: Which figure was being guessed
+- **Action**: Hint request or guess attempt
+- **Details**: Actual hint text or guess content
+- **Result**: Correctness of guesses
 
-## Technical Architecture
+## 🏗️ Technical Architecture
 
-### Backend (Python/Flask)
-- **`app.py`**: Main Flask application with game logic
-- **Session management**: Tracks current game state
-- **Data persistence**: Stores game history in MongoDB (with JSON fallback for local development)
-- **API endpoints**: Handle game actions via AJAX requests
-- **MongoDB integration**: PyMongo for database operations
+### Backend Stack
+- **Flask**: Web framework and API
+- **MongoDB**: Primary database (PyMongo driver)
+- **Python-dotenv**: Environment configuration
+- **Werkzeug**: Password hashing and security
 
-### Database
-- **MongoDB**: Primary database for production deployment
-- **JSON fallback**: Local file storage for development when MongoDB is unavailable
-- **Collections**: Game sessions with timestamps, hints, guesses, and results
+### AI & Data Processing
+- **Hugging Face**: LLM for hint generation
+- **spaCy**: NLP for text processing
+- **Wikipedia API**: Biography data source
+- **Pandas**: Data manipulation
+- **Wikidata SPARQL**: Person discovery
+
+### Frontend
+- **Vanilla JavaScript**: Dynamic interactions
+- **CSS Grid/Flexbox**: Responsive layout
+- **Dark theme**: Spy-movie aesthetic
 
 ### Deployment
-- **Docker support**: Complete containerization with Docker Compose
-- **MongoDB container**: Persistent data storage with volume mounting
-- **Network isolation**: Secure container networking
+- **Docker**: Application containerization
+- **Docker Compose**: Multi-container orchestration
+- **MongoDB**: Persistent data with volume mounting
 
-### Frontend (HTML/CSS/JavaScript)
-- **`templates/index.html`**: Main game interface
-- **`templates/stats.html`**: Statistics and history page  
-- **`static/style.css`**: Complete styling with dark theme
-- **Vanilla JavaScript**: Handles user interactions and API communication
-
-### Key Features
-- **RESTful API design** for clean client-server communication
-- **Mobile-responsive** design using CSS Grid and Flexbox
-- **Accessibility features** with proper ARIA labels and semantic HTML
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 SpyGame/
-├── app.py                 # Flask application and game logic
-├── requirements.txt       # Python dependencies
-├── docker-compose.yml     # Docker Compose configuration
-├── Dockerfile            # Docker container definition
-├── .dockerignore         # Docker build exclusions
-├── game_sessions.json     # Game history storage (fallback for local dev)
+├── app.py                      # Flask application & game logic
+├── init_db.py                  # Database initialization script
+├── process_data.py             # Data processing wrapper
+├── requirements.txt            # Python dependencies
+├── docker-compose.yml          # Docker orchestration
+├── Dockerfile                  # Container definition
+├── spygame.ps1                 # Windows helper script
+├── spygame.sh                  # Linux/Mac helper script
+├── USAGE.md                    # Detailed usage guide
+├── game_sessions.json          # Fallback storage
+├── pistas.json                 # Example hints (for init only)
+├── datatreatment/
+│   └── data_processor.py       # Wikipedia processing & AI
 ├── static/
-│   └── style.css         # Complete CSS styling
+│   └── style.css               # Application styling
 ├── templates/
-│   ├── index.html        # Main game page
-│   └── stats.html        # Statistics page
-├── LICENSE               # MIT License
+│   ├── index.html              # Main game interface
+│   └── stats.html              # Statistics page
+└── LICENSE                     # MIT License
+```
 └── README.md            # This file
 ```
 
