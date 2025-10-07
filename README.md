@@ -96,6 +96,37 @@ DOCKER_MONGO_PORT=27017
 3. Get immediate feedback on whether your guess is correct
 4. You can make multiple guesses per game
 
+## API Endpoints
+
+### Game Endpoints
+- `POST /start_game` - Start a new game
+- `POST /get_hint` - Get a hint for the current game
+- `POST /make_guess` - Submit a guess
+- `POST /get_answer` - Reveal the answer
+
+### Hint Generation Endpoint
+- `POST /generate_hints` - Generate and save hints for a new person from Wikipedia
+
+**Request body:**
+```json
+{
+  "url": "https://es.wikipedia.org/wiki/Person_Name",
+  "wikidata_id": "Q123456" (optional)
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Hints generated and saved for Person Name",
+  "person": "Person Name",
+  "hints_count": 8
+}
+```
+
+This endpoint allows you to dynamically add new persons to the game by providing their Wikipedia URL. The hints are automatically generated using AI and saved directly to the `hints` collection in MongoDB.
+
 ## Statistics & Tracking
 
 The game automatically tracks all your gameplay activities:
@@ -124,7 +155,10 @@ The game automatically tracks all your gameplay activities:
 ### Database
 - **MongoDB**: Primary database for production deployment
 - **JSON fallback**: Local file storage for development when MongoDB is unavailable
-- **Collections**: Game sessions with timestamps, hints, guesses, and results
+- **Collections**: 
+  - `sessions`: Game sessions with timestamps, hints, guesses, and results
+  - `users`: User authentication and profiles
+  - `hints`: Person data with AI-generated hints from Wikipedia
 
 ### Deployment
 - **Docker support**: Complete containerization with Docker Compose
@@ -152,6 +186,9 @@ SpyGame/
 ├── Dockerfile            # Docker container definition
 ├── .dockerignore         # Docker build exclusions
 ├── game_sessions.json     # Game history storage (fallback for local dev)
+├── pistas.json           # Hints storage (legacy, replaced by MongoDB)
+├── datatreatment/
+│   └── data_processor.py  # Wikipedia scraping and hint generation
 ├── static/
 │   └── style.css         # Complete CSS styling
 ├── templates/
@@ -184,7 +221,43 @@ SpyGame/
 ## Customization
 
 ### Adding New Historical Figures
-Edit the `PERSONS_DATA` dictionary in `app.py`:
+
+There are two ways to add new persons to the game:
+
+#### 1. Using the API Endpoint (Recommended)
+Use the `/generate_hints` endpoint to automatically generate hints from Wikipedia:
+
+```bash
+curl -X POST http://localhost:5000/generate_hints \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://es.wikipedia.org/wiki/Person_Name"}'
+```
+
+The hints will be automatically generated using AI and saved to the MongoDB `hints` collection.
+
+#### 2. Manual Database Entry
+Manually add entries to the `hints` collection in MongoDB with the following structure:
+
+```json
+{
+  "nombre": "Person Name",
+  "pistas": [
+    {"dificultad": 5, "pista": "Very difficult hint"},
+    {"dificultad": 4, "pista": "Difficult hint"},
+    {"dificultad": 3, "pista": "Medium hint"},
+    {"dificultad": 3, "pista": "Medium hint"},
+    {"dificultad": 2, "pista": "Easy hint"},
+    {"dificultad": 2, "pista": "Easy hint"},
+    {"dificultad": 1, "pista": "Very easy hint"},
+    {"dificultad": 1, "pista": "Very easy hint"}
+  ],
+  "fecha_creacion": "2024-01-01T00:00:00",
+  "wikidata_id": "Q123456",
+  "url_wikipedia": "https://es.wikipedia.org/wiki/Person_Name"
+}
+```
+
+**Note:** The game now loads persons and hints from the MongoDB `hints` collection. The hardcoded `PERSONS_DATA` dictionary in `app.py` is only used as a fallback when the database is unavailable.
 
 ### Modifying the Theme
 The CSS is extensively commented and organized by component. Key customization areas:
