@@ -7,8 +7,10 @@ services:
       - "${DOCKER_WEB_PORT:-5000}:${FLASK_PORT:-5000}"
     depends_on:
       - mongodb
-    env_file:
-      - .env
+    # Optional: Create a .env file to override default settings
+    # See .env.example for available configuration options
+    # env_file:
+    #   - .env
     environment:
       - FLASK_ENV=${FLASK_ENV:-development}
       - MONGODB_URI=mongodb://mongodb:${MONGODB_PORT:-27017}/${MONGO_INITDB_DATABASE:-spygame}

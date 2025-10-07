@@ -38,9 +38,9 @@ SpyGame challenges players to guess famous Wikipedia personalities using a hint 
 
 ## Environment Configuration
 
-The application uses environment variables for sensitive configuration. Before running the application, set up your environment variables:
+The application uses environment variables for configuration. The application will work with default settings, but you can customize it by creating a `.env` file:
 
-### 1. Create Environment File
+### 1. Create Environment File (Optional)
 Copy the example environment file and customize it:
 ```bash
 cp .env.example .env
