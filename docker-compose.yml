@@ -1,3 +1,5 @@
+name: spygame
+
 services:
   web:
     build: .
