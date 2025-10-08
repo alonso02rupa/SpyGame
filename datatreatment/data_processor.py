@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 from pymongo import MongoClient
 import random
+import google.generativeai as genai
 
 # Load environment variables
 load_dotenv()
@@ -18,15 +19,23 @@ load_dotenv()
 # Initialize spacy for Spanish language processing
 nlp = spacy.load("es_core_news_sm")
 
-# Hugging Face API configuration
-huggingface_api_key = os.getenv('HUGGINGFACE_API_KEY')
-if not huggingface_api_key:
-    raise ValueError("HUGGINGFACE_API_KEY no está configurada en las variables de entorno.")
+AI_BACKEND = os.getenv("AI_BACKEND", "huggingface")  # "gemini" o "huggingface"
 
-client = InferenceClient(token=huggingface_api_key)
-model = os.getenv('HUGGINGFACE_MODEL_NAME')
-if not model:
-    raise ValueError("Configura un modelo de Hugging Face en las variables de entorno.")
+# Configurar modelo según backend
+if AI_BACKEND == "gemini":
+    google_api_key = os.getenv("GOOGLE_API_KEY")
+    if not google_api_key:
+        raise ValueError("GOOGLE_API_KEY no está configurada en las variables de entorno.")
+    genai.configure(api_key=google_api_key)
+    model_gemini = genai.GenerativeModel("gemini-2.0-pro")
+else:
+    huggingface_api_key = os.getenv('HUGGINGFACE_API_KEY')
+    if not huggingface_api_key:
+        raise ValueError("HUGGINGFACE_API_KEY no está configurada en las variables de entorno.")
+    client = InferenceClient(token=huggingface_api_key)
+    model = os.getenv('HUGGINGFACE_MODEL_NAME')
+    if not model:
+        raise ValueError("Configura un modelo de Hugging Face en las variables de entorno.")
 
 # MongoDB configuration
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
@@ -228,33 +237,46 @@ Texto de la biografía:
 
 def generar_pistas(url, nombre_persona):
     """
-    Genera pistas de trivia para una persona dada su URL de Wikipedia.
-    Devuelve las pistas en formato JSON.
+    Genera pistas de trivia usando el backend configurado (Gemini o Hugging Face).
     """
     prompt = generar_frases_trivia(url, nombre_persona)
-    
-    messages = [
-        {"role": "system", "content": "Eres un asistente experto en generar pistas de trivia. NUNCA menciones nombres propios de la persona en las pistas. Sigue las instrucciones AL PIE DE LA LETRA."},
-        {"role": "user", "content": prompt}
-    ]
-    
-    response = client.chat_completion(
-        messages=messages,
-        model=model,
-        max_tokens=800,
-        temperature=0.5
-    )
-    
-    output = response.choices[0].message.content
-    
+
+    if AI_BACKEND == "gemini":
+        try:
+            response = model_gemini.generate_content(
+                prompt,
+                generation_config={
+                    "temperature": 0.5,
+                    "max_output_tokens": 1000,
+                    "response_mime_type": "application/json"
+                }
+            )
+            output = response.text.strip()
+        except Exception as e:
+            print(f"Error con Gemini: {e}")
+            output = "{}"
+    else:
+        # Versión Hugging Face original
+        messages = [
+            {"role": "system", "content": "Eres un asistente experto en generar pistas de trivia. NUNCA menciones nombres propios."},
+            {"role": "user", "content": prompt}
+        ]
+        response = client.chat_completion(
+            messages=messages,
+            model=model,
+            max_tokens=800,
+            temperature=0.5
+        )
+        output = response.choices[0].message.content
+
     # Intentar parsear el JSON
     try:
         pistas = json.loads(output)
-    except:
-        # si no está limpio, lo guardamos como texto bruto
+    except json.JSONDecodeError:
         pistas = {"raw_response": output}
     
     return pistas
+
 
 def guardar_pistas_json(pistas, nombre_persona, filepath="pistas.json"):
     """
