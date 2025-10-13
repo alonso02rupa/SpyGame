@@ -1,6 +1,7 @@
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+import urllib.parse
 import pandas as pd
 import wikipediaapi
 import regex as re
@@ -11,7 +12,6 @@ from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 from pymongo import MongoClient
 import random
-import google.generativeai as genai
 
 # Load environment variables
 load_dotenv()
@@ -19,23 +19,15 @@ load_dotenv()
 # Initialize spacy for Spanish language processing
 nlp = spacy.load("es_core_news_sm")
 
-AI_BACKEND = os.getenv("AI_BACKEND", "huggingface")  # "gemini" o "huggingface"
+# Configurar Hugging Face
+huggingface_api_key = os.getenv('HUGGINGFACE_API_KEY')
+if not huggingface_api_key:
+    raise ValueError("HUGGINGFACE_API_KEY no está configurada en las variables de entorno.")
+model = os.getenv('HUGGINGFACE_MODEL_NAME')
+if not model:
+    raise ValueError("Configura un modelo de Hugging Face en las variables de entorno.")
 
-# Configurar modelo según backend
-if AI_BACKEND == "gemini":
-    google_api_key = os.getenv("GOOGLE_API_KEY")
-    if not google_api_key:
-        raise ValueError("GOOGLE_API_KEY no está configurada en las variables de entorno.")
-    genai.configure(api_key=google_api_key)
-    model_gemini = genai.GenerativeModel("gemini-2.0-pro")
-else:
-    huggingface_api_key = os.getenv('HUGGINGFACE_API_KEY')
-    if not huggingface_api_key:
-        raise ValueError("HUGGINGFACE_API_KEY no está configurada en las variables de entorno.")
-    client = InferenceClient(token=huggingface_api_key)
-    model = os.getenv('HUGGINGFACE_MODEL_NAME')
-    if not model:
-        raise ValueError("Configura un modelo de Hugging Face en las variables de entorno.")
+client = InferenceClient(model=model, token=huggingface_api_key)
 
 # MongoDB configuration
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
@@ -102,7 +94,25 @@ def get_wikidata_items(limit=200 , offset=0, min_sitelinks=150, sample_size=1):
 
     r = session.get(url, params=params, headers=headers, timeout=(10, 60))
     r.raise_for_status()
-    data = r.json()
+    
+    # Decodificar el contenido
+    text = r.content.decode('utf-8', errors='replace')
+
+    try:
+        # Intentar parsear JSON con strict=False para permitir caracteres de control
+        data = json.loads(text, strict=False)
+    except json.JSONDecodeError as e:
+        print("\n--- ERROR AL PARSEAR RESPUESTA DE WIKIDATA ---")
+        print(f"Error: {e}")
+        print(f"Posición del error: {e.pos}")
+        
+        # Mostrar contexto del error
+        inicio_contexto = max(0, e.pos - 100)
+        fin_contexto = min(len(text), e.pos + 100)
+        contexto = text[inicio_contexto:fin_contexto]
+        print(f"Contexto:\n{contexto}")
+        print("--- FIN DEL INFORME ---")
+        raise
 
     bindings = data.get("results", {}).get("bindings", [])
     
@@ -137,7 +147,9 @@ def limpiar_texto(texto):
     return texto.strip()
 
 def generar_frases_trivia(url, nombre_persona):
-    titulo = url.split("/wiki/")[-1]
+    titulo_codificado = url.split("/wiki/")[-1]
+    titulo = urllib.parse.unquote(titulo_codificado)  # Algunas personas como por ejemplo Sadam Huseín dan error por su codificación
+    titulo = titulo.replace('_', ' ')
     user_agent = os.getenv('WIKIPEDIA_USER_AGENT', 'App/1.0 (contact: user@example.com)')
     wiki_es = wikipediaapi.Wikipedia(language='es', user_agent=user_agent)
     articulo = wiki_es.page(titulo)
@@ -232,50 +244,51 @@ Texto de la biografía:
 
 "{"; ".join(frases_sin_puntuacion)}"
 """
-
     return prompt
 
 def generar_pistas(url, nombre_persona):
     """
-    Genera pistas de trivia usando el backend configurado (Gemini o Hugging Face).
+    Genera pistas de trivia usando Hugging Face.
     """
     prompt = generar_frases_trivia(url, nombre_persona)
 
-    if AI_BACKEND == "gemini":
-        try:
-            response = model_gemini.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.5,
-                    "max_output_tokens": 1000,
-                    "response_mime_type": "application/json"
-                }
-            )
-            output = response.text.strip()
-        except Exception as e:
-            print(f"Error con Gemini: {e}")
-            output = "{}"
-    else:
-        # Versión Hugging Face original
+    try:
+        # Usar chat_completion con el modelo especificado
         messages = [
-            {"role": "system", "content": "Eres un asistente experto en generar pistas de trivia. NUNCA menciones nombres propios."},
+            {"role": "system", "content": "Eres un asistente experto en generar pistas de trivia. NUNCA menciones nombres propios de la persona en las pistas. Sigue las instrucciones AL PIE DE LA LETRA."},
             {"role": "user", "content": prompt}
         ]
+        
         response = client.chat_completion(
             messages=messages,
             model=model,
             max_tokens=800,
             temperature=0.5
         )
-        output = response.choices[0].message.content
 
-    # Intentar parsear el JSON
-    try:
-        pistas = json.loads(output)
-    except json.JSONDecodeError:
-        pistas = {"raw_response": output}
-    
-    return pistas
+        output = response.choices[0].message.content.strip()
+
+        # Intentar parsear el JSON de salida
+        try:
+            pistas = json.loads(output)
+        except json.JSONDecodeError:
+            # Si no es JSON válido, intentar extraer el JSON del texto
+            import re
+            json_match = re.search(r'\[.*\]', output, re.DOTALL)
+            if json_match:
+                try:
+                    pistas = json.loads(json_match.group(0))
+                except json.JSONDecodeError:
+                    pistas = {"raw_response": output}
+            else:
+                pistas = {"raw_response": output}
+
+        return pistas
+
+    except Exception as e:
+        print(f"Error al generar pistas con Hugging Face: {e}")
+        return None
+
 
 
 def guardar_pistas_json(pistas, nombre_persona, filepath="pistas.json"):
@@ -343,7 +356,9 @@ def procesar_persona(url, wikidata_id=None, guardar_json=False, subir_db=True):
     - guardar_json: Si es True, guarda las pistas en un archivo JSON local
     - subir_db: Si es True, sube las pistas a la base de datos MongoDB
     """
-    nombre_persona = url.split("/wiki/")[-1].replace("_", " ")
+    titulo_codificado = url.split("/wiki/")[-1]
+    nombre_persona = urllib.parse.unquote(titulo_codificado.replace("_", " "))
+
     
     print(f"Procesando: {nombre_persona}")
     
@@ -432,9 +447,4 @@ if __name__ == "__main__":
         limit=args.limit,
         offset=args.offset,
         min_sitelinks=args.min_sitelinks
-    ) 
-
-
-
-
-
+    )
