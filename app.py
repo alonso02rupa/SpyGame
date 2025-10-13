@@ -23,49 +23,46 @@ def get_db_collections():
         # Test the connection
         client.admin.command('ping')
         db = client.spygame
-        return db.sessions, db.users, True
+        return db.sessions, db.users, db.pistas, True
     except Exception as e:
         print(f"MongoDB connection failed: {e}")
-        return None, None, False
+        return None, None, None, False
 
-# Sample Wikipedia persons data (this will be changed for a DB call in which the person will be stored)
-PERSONS_DATA = {
-    "Albert Einstein": [
-        "I was born in Germany in 1879",
-        "I developed the theory of relativity", 
-        "I won the Nobel Prize in Physics in 1921",
-        "My most famous equation is E=mc²",
-        "I had wild, unkempt hair"
-    ],
-    "Marie Curie": [
-        "I was the first woman to win a Nobel Prize",
-        "I discovered the elements polonium and radium",
-        "I won Nobel Prizes in both Physics and Chemistry",
-        "I was born in Poland but worked in France",
-        "I died from radiation exposure"
-    ],
-    "Leonardo da Vinci": [
-        "I lived during the Renaissance period",
-        "I painted the Mona Lisa",
-        "I designed flying machines centuries before they were built",
-        "I was both an artist and an inventor",
-        "I studied human anatomy by dissecting corpses"
-    ],
-    "William Shakespeare": [
-        "I wrote Romeo and Juliet",
-        "I lived in England during the 16th and 17th centuries",
-        "I wrote approximately 39 plays",
-        "I invented many words that are still used today",
-        "I married Anne Hathaway"
-    ],
-    "Cleopatra": [
-        "I was the last pharaoh of Egypt",
-        "I spoke nine languages fluently",
-        "I had relationships with Julius Caesar and Mark Antony",
-        "I ruled Egypt for nearly three decades",
-        "I died by snake bite"
-    ]
-}
+def get_person_from_db():
+    """Get a random person from the database"""
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if mongodb_available and pistas_collection is not None:
+        try:
+            # Contar cuántas personas hay en la base de datos
+            count = pistas_collection.count_documents({})
+            
+            if count > 0:
+                # Seleccionar una persona aleatoria usando aggregation
+                pipeline = [{"$sample": {"size": 1}}]
+                result = list(pistas_collection.aggregate(pipeline))
+                
+                if result:
+                    persona = result[0]
+                    return {
+                        'nombre': persona['nombre'],
+                        'pistas': persona['pistas'],
+                        'from_db': True
+                    }
+            else:
+                print("No hay personas en la base de datos. Usando datos de fallback.")
+        except Exception as e:
+            print(f"Error al obtener persona de MongoDB: {e}")
+    
+    
+    # Convertir al formato de la base de datos para compatibilidad
+    pistas_formateadas = [{"dificultad": 5 - i//2, "pista": hint} for i, hint in enumerate(hints)]
+    
+    return {
+        'nombre': person_name,
+        'pistas': pistas_formateadas,
+        'from_db': False
+    }
 
 # File to store game sessions (legacy - now using MongoDB)
 SESSIONS_FILE = 'game_sessions.json'
@@ -76,7 +73,7 @@ def get_current_user():
 
 def load_sessions(username=None):
     """Load game sessions from MongoDB, optionally filtered by user"""
-    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
     if mongodb_available:
         try:
@@ -104,7 +101,7 @@ def load_sessions(username=None):
 
 def save_session(person, hint, guess, correct, timestamp):
     """Save a game session to MongoDB"""
-    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     username = get_current_user()
     session_data = {
         'person': person,
@@ -155,7 +152,7 @@ def register():
     if len(password) < 6:
         return jsonify({'status': 'error', 'message': 'Password must be at least 6 characters long'})
     
-    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
     if not mongodb_available:
         return jsonify({'status': 'error', 'message': 'User registration requires database connection. Please try again later or play as guest.'})
@@ -195,7 +192,7 @@ def login():
     if not username or not password:
         return jsonify({'status': 'error', 'message': 'Username and password are required'})
     
-    sessions_collection, users_collection, mongodb_available = get_db_collections()
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
     if not mongodb_available:
         return jsonify({'status': 'error', 'message': 'User login requires database connection. Please try again later or play as guest.'})
@@ -243,14 +240,17 @@ def play_as_guest():
 @app.route('/start_game', methods=['POST'])
 def start_game():
     """Start a new game by selecting a random person"""
-    person = random.choice(list(PERSONS_DATA.keys()))
-    session['current_person'] = person
+    persona_data = get_person_from_db()
+    
+    session['current_person'] = persona_data['nombre']
+    session['current_pistas'] = persona_data['pistas']
     session['hints_used'] = []
     session['game_start_time'] = datetime.now().isoformat()
     
     return jsonify({
         'status': 'success',
-        'message': f'New game started! Try to guess who I am by asking for hints.'
+        'message': f'New game started! Try to guess who I am by asking for hints.',
+        'source': 'database' if persona_data['from_db'] else 'fallback'
     })
 
 @app.route('/get_hint', methods=['POST'])
@@ -260,8 +260,14 @@ def get_hint():
         return jsonify({'status': 'error', 'message': 'No game in progress. Start a new game first!'})
     
     person = session['current_person']
+    pistas = session.get('current_pistas', [])
     hints_used = session.get('hints_used', [])
-    available_hints = [h for h in PERSONS_DATA[person] if h not in hints_used]
+    
+    # Ordenar pistas por dificultad (de mayor a menor)
+    pistas_ordenadas = sorted(pistas, key=lambda x: x.get('dificultad', 0), reverse=True)
+    
+    # Filtrar pistas que ya se usaron
+    available_hints = [p for p in pistas_ordenadas if p['pista'] not in hints_used]
     
     if not available_hints:
         return jsonify({
@@ -269,7 +275,9 @@ def get_hint():
             'message': 'No more hints available! Try to make a guess.'
         })
     
-    hint = random.choice(available_hints)
+    # Tomar la siguiente pista (la más difícil disponible)
+    hint_obj = available_hints[0]
+    hint = hint_obj['pista']
     hints_used.append(hint)
     session['hints_used'] = hints_used
     
@@ -285,6 +293,7 @@ def get_hint():
     return jsonify({
         'status': 'success',
         'hint': hint,
+        'difficulty': hint_obj.get('dificultad', 0),
         'hints_remaining': len(available_hints) - 1
     })
 
