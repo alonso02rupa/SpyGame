@@ -3,6 +3,7 @@ import json
 import os
 from datetime import datetime
 import random
+import uuid
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
@@ -99,16 +100,17 @@ def load_sessions(username=None):
                 return [s for s in all_sessions if s.get('username') == username]
     return []
 
-def save_session(person, hint, guess, correct, timestamp):
-    """Save a game session to MongoDB"""
+def create_game_session(person, session_id, first_hint):
+    """Create a new game session in MongoDB with first hint"""
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     username = get_current_user()
     session_data = {
+        'session_id': session_id,
         'person': person,
-        'hint': hint,
-        'guess': guess,
-        'correct': correct,
-        'timestamp': timestamp
+        'pista': [first_hint],  # Array of hints requested
+        'acierto': False,  # Will be set to true only on correct guess
+        'timestamp': datetime.now().isoformat(),
+        'last_updated': datetime.now().isoformat()
     }
     
     # Add username for registered users
@@ -130,6 +132,74 @@ def save_session(person, hint, guess, correct, timestamp):
     sessions.append(session_data)
     with open(SESSIONS_FILE, 'w') as f:
         json.dump(sessions, f, indent=2)
+
+def update_game_session_hint(session_id, hint):
+    """Update game session with a new hint (sets acierto to false)"""
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if mongodb_available:
+        try:
+            sessions_collection.update_one(
+                {'session_id': session_id},
+                {
+                    '$push': {'pista': hint},
+                    '$set': {
+                        'acierto': False,
+                        'last_updated': datetime.now().isoformat()
+                    }
+                }
+            )
+            return
+        except Exception as e:
+            print(f"MongoDB error: {e}")
+    
+    # Fallback to JSON file if MongoDB is not available
+    if os.path.exists(SESSIONS_FILE):
+        with open(SESSIONS_FILE, 'r') as f:
+            sessions = json.load(f)
+        
+        for sess in sessions:
+            if sess.get('session_id') == session_id:
+                sess['pista'].append(hint)
+                sess['acierto'] = False
+                sess['last_updated'] = datetime.now().isoformat()
+                break
+        
+        with open(SESSIONS_FILE, 'w') as f:
+            json.dump(sessions, f, indent=2)
+
+def update_game_session_result(session_id, correct):
+    """Update game session with guess result (sets acierto to true if correct)"""
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if mongodb_available:
+        try:
+            sessions_collection.update_one(
+                {'session_id': session_id},
+                {
+                    '$set': {
+                        'acierto': correct,
+                        'last_updated': datetime.now().isoformat()
+                    }
+                }
+            )
+            return
+        except Exception as e:
+            print(f"MongoDB error: {e}")
+    
+    # Fallback to JSON file if MongoDB is not available
+    if os.path.exists(SESSIONS_FILE):
+        with open(SESSIONS_FILE, 'r') as f:
+            sessions = json.load(f)
+        
+        for sess in sessions:
+            if sess.get('session_id') == session_id:
+                sess['acierto'] = correct
+                sess['last_updated'] = datetime.now().isoformat()
+                break
+        
+        with open(SESSIONS_FILE, 'w') as f:
+            json.dump(sessions, f, indent=2)
 
 @app.route('/')
 def index():
@@ -221,6 +291,7 @@ def logout():
     session.pop('current_person', None)
     session.pop('hints_used', None)
     session.pop('game_start_time', None)
+    session.pop('game_session_id', None)
     
     message = f'Goodbye, {username}!' if username else 'Logged out successfully!'
     return jsonify({
@@ -239,19 +310,53 @@ def play_as_guest():
 
 @app.route('/start_game', methods=['POST'])
 def start_game():
-    """Start a new game by selecting a random person"""
+    """Start a new game by selecting a random person and providing first hint automatically"""
     persona_data = get_person_from_db()
+    
+    # Generate unique session ID for this game
+    game_session_id = str(uuid.uuid4())
     
     session['current_person'] = persona_data['nombre']
     session['current_pistas'] = persona_data['pistas']
-    session['hints_used'] = []
+    session['game_session_id'] = game_session_id
     session['game_start_time'] = datetime.now().isoformat()
     
-    return jsonify({
-        'status': 'success',
-        'message': f'New game started! Try to guess who I am by asking for hints.',
-        'source': 'database' if persona_data['from_db'] else 'fallback'
-    })
+    # Ordenar pistas por dificultad (de mayor a menor)
+    pistas_ordenadas = sorted(persona_data['pistas'], key=lambda x: x.get('dificultad', 0), reverse=True)
+    
+    # Get the first hint automatically
+    if pistas_ordenadas:
+        first_hint_obj = pistas_ordenadas[0]
+        first_hint = first_hint_obj['pista']
+        hints_used = [first_hint]
+        session['hints_used'] = hints_used
+        
+        # Create game session with first hint
+        create_game_session(
+            person=persona_data['nombre'],
+            session_id=game_session_id,
+            first_hint=first_hint
+        )
+        
+        # Calculate remaining hints
+        hints_remaining = len(pistas_ordenadas) - 1
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'New game started! Here is your first hint:',
+            'source': 'database' if persona_data['from_db'] else 'fallback',
+            'first_hint': first_hint,
+            'difficulty': first_hint_obj.get('dificultad', 0),
+            'hints_remaining': hints_remaining
+        })
+    else:
+        # No hints available (shouldn't happen but handle gracefully)
+        session['hints_used'] = []
+        return jsonify({
+            'status': 'error',
+            'message': 'Error: No hints available for this person.',
+            'source': 'database' if persona_data['from_db'] else 'fallback'
+        })
 
 @app.route('/get_hint', methods=['POST'])
 def get_hint():
@@ -262,6 +367,7 @@ def get_hint():
     person = session['current_person']
     pistas = session.get('current_pistas', [])
     hints_used = session.get('hints_used', [])
+    game_session_id = session.get('game_session_id')
     
     # Ordenar pistas por dificultad (de mayor a menor)
     pistas_ordenadas = sorted(pistas, key=lambda x: x.get('dificultad', 0), reverse=True)
@@ -281,14 +387,9 @@ def get_hint():
     hints_used.append(hint)
     session['hints_used'] = hints_used
     
-    # Save hint request to sessions
-    save_session(
-        person=person,
-        hint=hint,
-        guess='',
-        correct=None,
-        timestamp=datetime.now().isoformat()
-    )
+    # Update game session with new hint (sets acierto to false)
+    if game_session_id:
+        update_game_session_hint(game_session_id, hint)
     
     return jsonify({
         'status': 'success',
@@ -308,21 +409,18 @@ def make_guess():
         return jsonify({'status': 'error', 'message': 'Please enter a guess!'})
     
     person = session['current_person']
+    game_session_id = session.get('game_session_id')
     correct = guess.lower() == person.lower()
     
-    # Save guess to sessions
-    save_session(
-        person=person,
-        hint='',
-        guess=guess,
-        correct=correct,
-        timestamp=datetime.now().isoformat()
-    )
+    # Update game session with guess result
+    if game_session_id:
+        update_game_session_result(game_session_id, correct)
     
     if correct:
         session.pop('current_person', None)
         session.pop('hints_used', None)
         session.pop('game_start_time', None)
+        session.pop('game_session_id', None)
         return jsonify({
             'status': 'success',
             'correct': True,
@@ -342,9 +440,16 @@ def get_answer():
         return jsonify({'status': 'error', 'message': 'No game in progress.'})
     
     person = session['current_person']
+    game_session_id = session.get('game_session_id')
+    
+    # Mark session as not successful (revealed answer)
+    if game_session_id:
+        update_game_session_result(game_session_id, False)
+    
     session.pop('current_person', None)
     session.pop('hints_used', None)
     session.pop('game_start_time', None)
+    session.pop('game_session_id', None)
     
     return jsonify({
         'status': 'success',
