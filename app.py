@@ -256,7 +256,8 @@ def add_guess_to_session(session_id, guess):
 @app.route('/')
 def index():
     """Main game page"""
-    return render_template('index.html')
+    current_user = get_current_user()
+    return render_template('index.html', current_user=current_user)
 
 @app.route('/register', methods=['POST'])
 def register():

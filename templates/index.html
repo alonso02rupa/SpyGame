@@ -314,8 +314,8 @@
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
 
-        // User authentication state
-        let currentUser = 'guest';
+        // User authentication state - initialize from server session
+        let currentUser = '{{ current_user }}';
 
         /* 
          * Event Listeners: These "listen" for user interactions and respond to them
