@@ -89,5 +89,58 @@
     "guess": "",
     "correct": null,
     "timestamp": "2025-09-24T06:54:11.533600"
+  },
+  {
+    "session_id": "5fe12b14-8277-4453-8acf-e8d83146de64",
+    "person": "Donald Trump",
+    "pista": [
+      "Empresario estadounidense y figura de la televisi\u00f3n",
+      "Fue presidente de Estados Unidos entre 2017 y 2021",
+      "Propietario de varios edificios y hoteles de lujo con su apellido"
+    ],
+    "guesses": [
+      "Barack Obama",
+      "Joe Biden",
+      "Donald Trump"
+    ],
+    "acierto": true,
+    "timestamp": "2025-10-23T15:09:21.847115",
+    "last_updated": "2025-10-23T15:10:18.444690"
+  },
+  {
+    "session_id": "4ce5ecf2-9705-434d-86cd-f6c2e231b2f8",
+    "person": "Donald Trump",
+    "pista": [
+      "Empresario estadounidense y figura de la televisi\u00f3n",
+      "Fue presidente de Estados Unidos entre 2017 y 2021",
+      "Propietario de varios edificios y hoteles de lujo con su apellido",
+      "Presentador del programa de televisi\u00f3n 'The Apprentice'",
+      "Su eslogan de campa\u00f1a fue 'Make America Great Again'"
+    ],
+    "guesses": [
+      "Wrong Guess 1",
+      "Wrong Guess 2",
+      "Wrong Guess 3",
+      "Wrong Guess 4",
+      "Wrong Guess 5"
+    ],
+    "acierto": false,
+    "timestamp": "2025-10-23T15:11:03.343034",
+    "last_updated": "2025-10-23T15:12:04.599547"
+  },
+  {
+    "session_id": "8484dfe6-5275-4d11-adc8-c851e5d46db3",
+    "person": "Donald Trump",
+    "pista": [
+      "Empresario estadounidense y figura de la televisi\u00f3n",
+      "Fue presidente de Estados Unidos entre 2017 y 2021"
+    ],
+    "guesses": [
+      "Barack Obama",
+      "Donald Trump"
+    ],
+    "acierto": true,
+    "timestamp": "2025-10-23T15:13:11.006313",
+    "last_updated": "2025-10-23T15:14:36.365062"
   }
 ]

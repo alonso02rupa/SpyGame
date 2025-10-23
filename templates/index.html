@@ -549,10 +549,25 @@
                         guessInput.disabled = true;
                         submitGuessBtn.disabled = true;
                     } else {
-                        // Wrong guess - let them try again
+                        // Wrong guess - server may have provided a new hint automatically
                         updateMessage(data.message, 'warning');
                         guessInput.value = '';                   // Clear the input field
                         guessInput.focus();                      // Put cursor back in input
+                        
+                        // If a new hint was provided, add it to the list
+                        if (data.new_hint) {
+                            const li = document.createElement('li');
+                            li.textContent = data.new_hint;
+                            hintsList.appendChild(li);
+                            
+                            // Update hints remaining counter
+                            hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
+                            
+                            // Disable hint button if no more hints available
+                            if (data.hints_remaining === 0) {
+                                getHintBtn.disabled = true;
+                            }
+                        }
                     }
                 } else {
                     // Server error

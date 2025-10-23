@@ -128,6 +128,7 @@
                                     <th>Person</th>             <!-- Column for which historical figure -->
                                     <th>Hints Used</th>         <!-- Column for number of hints requested -->
                                     <th>Hints</th>              <!-- Column for list of hints -->
+                                    <th>Guesses</th>            <!-- Column for list of guesses -->
                                     <th>Result</th>             <!-- Column for outcome (correct/wrong) -->
                                 </tr>
                             </thead>
@@ -168,6 +169,19 @@
                                                 <li>{{ hint }}</li>
                                             {% endfor %}
                                         </ul>
+                                    </td>
+                                    
+                                    <td>
+                                        <!-- Show all guesses made in this game -->
+                                        {% if session.guesses %}
+                                            <ul style="margin: 0; padding-left: 20px; text-align: left;">
+                                                {% for guess in session.guesses %}
+                                                    <li>{{ guess }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <span style="color: #888;">No guesses</span>
+                                        {% endif %}
                                     </td>
                                     
                                     <td>
