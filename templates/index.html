@@ -438,6 +438,19 @@
                     revealAnswerBtn.disabled = false;            // Enable reveal button
                     guessInput.disabled = false;                 // Enable guess input
                     submitGuessBtn.disabled = false;             // Enable submit button
+                    
+                    // Display the first hint automatically if provided
+                    if (data.first_hint) {
+                        const li = document.createElement('li');
+                        li.textContent = data.first_hint;
+                        hintsList.appendChild(li);
+                        hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
+                        
+                        // Disable hint button if no more hints
+                        if (data.hints_remaining === 0) {
+                            getHintBtn.disabled = true;
+                        }
+                    }
                 } else {
                     // Something went wrong - show error message
                     updateMessage(data.message, 'error');

@@ -75,10 +75,10 @@
                             <div class="summary-card">
                                 <!-- Card showing successful guesses -->
                                 <h4>Correct Guesses</h4>
-                                <p class="stat-number">{{ sessions|selectattr('correct', 'equalto', true)|list|length }}</p>
+                                <p class="stat-number">{{ sessions|selectattr('acierto', 'equalto', true)|list|length }}</p>
                                 <!-- 
                                     This template expression:
-                                    1. Filters sessions to only those where 'correct' equals true
+                                    1. Filters sessions to only those where 'acierto' equals true
                                     2. Converts the result to a list and gets the length (count)
                                 -->
                             </div>
@@ -87,19 +87,19 @@
                                 <!-- Card showing success percentage -->
                                 <h4>Success Rate</h4>
                                 <p class="stat-number">
-                                    {% set correct_guesses = sessions|selectattr('correct', 'equalto', true)|list|length %}
-                                    {% set total_guesses = sessions|selectattr('guess', 'ne', '')|list|length %}
+                                    {% set correct_guesses = sessions|selectattr('acierto', 'equalto', true)|list|length %}
+                                    {% set total_games = sessions|length %}
                                     <!-- 
                                         Set variables for calculation:
-                                        - correct_guesses: Count of sessions where correct=true
-                                        - total_guesses: Count of sessions where guess is not empty
+                                        - correct_guesses: Count of sessions where acierto=true
+                                        - total_games: Total number of game sessions
                                     -->
-                                    {% if total_guesses > 0 %}
-                                        {{ "%.1f"|format((correct_guesses / total_guesses) * 100) }}%
+                                    {% if total_games > 0 %}
+                                        {{ "%.1f"|format((correct_guesses / total_games) * 100) }}%
                                         <!-- Calculate percentage and format to 1 decimal place -->
                                     {% else %}
                                         0%
-                                        <!-- Show 0% if no guesses have been made -->
+                                        <!-- Show 0% if no games have been played -->
                                     {% endif %}
                                 </p>
                             </div>
@@ -124,10 +124,10 @@
                                 -->
                                 <tr>
                                     <!-- Table row containing header cells -->
-                                    <th>Date & Time</th>        <!-- Column for when action occurred -->
+                                    <th>Date & Time</th>        <!-- Column for when game started -->
                                     <th>Person</th>             <!-- Column for which historical figure -->
-                                    <th>Action</th>             <!-- Column for type of action (hint/guess) -->
-                                    <th>Details</th>            <!-- Column for hint text or guess content -->
+                                    <th>Hints Used</th>         <!-- Column for number of hints requested -->
+                                    <th>Hints</th>              <!-- Column for list of hints -->
                                     <th>Result</th>             <!-- Column for outcome (correct/wrong) -->
                                 </tr>
                             </thead>
@@ -158,45 +158,26 @@
                                     <td>{{ session.person }}</td>
                                     <!-- Display which historical person this session was about -->
                                     
-                                    <td>
-                                        <!-- Determine what type of action this was -->
-                                        {% if session.hint %}
-                                            Hint Request
-                                            <!-- If session has hint data, it was a hint request -->
-                                        {% elif session.guess %}
-                                            Guess
-                                            <!-- If session has guess data, it was a guess attempt -->
-                                        {% else %}
-                                            Other
-                                            <!-- Fallback for any other type of session -->
-                                        {% endif %}
-                                    </td>
+                                    <td>{{ session.pista|length }}</td>
+                                    <!-- Display the number of hints used in this game -->
                                     
                                     <td>
-                                        <!-- Show the details of what happened -->
-                                        {% if session.hint %}
-                                            {{ session.hint }}
-                                            <!-- Display the hint text that was given -->
-                                        {% elif session.guess %}
-                                            "{{ session.guess }}"
-                                            <!-- Display the guess in quotes -->
-                                        {% else %}
-                                            -
-                                            <!-- Show dash if no specific content -->
-                                        {% endif %}
+                                        <!-- Show all hints used in this game -->
+                                        <ul style="margin: 0; padding-left: 20px; text-align: left;">
+                                            {% for hint in session.pista %}
+                                                <li>{{ hint }}</li>
+                                            {% endfor %}
+                                        </ul>
                                     </td>
                                     
                                     <td>
                                         <!-- Show the result/outcome with appropriate styling -->
-                                        {% if session.correct == true %}
+                                        {% if session.acierto == true %}
                                             <span class="result-correct">✓ Correct</span>
                                             <!-- Green styling for correct guesses -->
-                                        {% elif session.correct == false %}
-                                            <span class="result-incorrect">✗ Wrong</span>
-                                            <!-- Red styling for incorrect guesses -->
                                         {% else %}
-                                            <span class="result-neutral">-</span>
-                                            <!-- Neutral styling for non-guess actions -->
+                                            <span class="result-incorrect">✗ Wrong</span>
+                                            <!-- Red styling for incorrect guesses or gave up -->
                                         {% endif %}
                                     </td>
                                 </tr>
