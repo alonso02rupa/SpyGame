@@ -256,7 +256,8 @@ def add_guess_to_session(session_id, guess):
 @app.route('/')
 def index():
     """Main game page"""
-    return render_template('index.html')
+    current_user = get_current_user()
+    return render_template('index.html', current_user=current_user)
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -350,6 +351,96 @@ def logout():
         'status': 'success',
         'message': message
     })
+
+@app.route('/save_knowledge_profile', methods=['POST'])
+def save_knowledge_profile():
+    """Save the optional knowledge profile survey for a user"""
+    data = request.get_json()
+    username = session.get('username')
+    
+    if not username or username == 'guest':
+        return jsonify({'status': 'error', 'message': 'Knowledge profile is only available for registered users'})
+    
+    # Validate the survey data
+    required_fields = [
+        'cultura_general',
+        'geografia',
+        'actualidad_noticias',
+        'cultura_popular',
+        'tecnologia_tendencias',
+        'uso_wikipedia',
+        'habilidad_busqueda',
+        'pensamiento_critico'
+    ]
+    
+    profile_data = {}
+    for field in required_fields:
+        value = data.get(field)
+        if value is None:
+            return jsonify({'status': 'error', 'message': f'Missing field: {field}'})
+        
+        # Validate that value is between 1 and 5
+        try:
+            value_int = int(value)
+            if value_int < 1 or value_int > 5:
+                return jsonify({'status': 'error', 'message': f'Invalid value for {field}. Must be between 1 and 5.'})
+            profile_data[field] = value_int
+        except (ValueError, TypeError):
+            return jsonify({'status': 'error', 'message': f'Invalid value for {field}. Must be a number between 1 and 5.'})
+    
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        return jsonify({'status': 'error', 'message': 'Database connection required to save profile.'})
+    
+    try:
+        # Update user with knowledge profile and timestamp
+        profile_data['profile_completed_at'] = datetime.now().isoformat()
+        
+        users_collection.update_one(
+            {'username': username},
+            {
+                '$set': {
+                    'knowledge_profile': profile_data
+                }
+            }
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Knowledge profile saved successfully. Thank you for your participation!'
+        })
+        
+    except Exception as e:
+        print(f"Error saving knowledge profile: {e}")
+        return jsonify({'status': 'error', 'message': 'Failed to save knowledge profile. Please try again.'})
+
+@app.route('/check_knowledge_profile', methods=['GET'])
+def check_knowledge_profile():
+    """Check if the current user has completed the knowledge profile survey"""
+    username = session.get('username')
+    
+    if not username or username == 'guest':
+        return jsonify({'status': 'success', 'has_profile': False, 'is_guest': True})
+    
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        return jsonify({'status': 'success', 'has_profile': False})
+    
+    try:
+        user = users_collection.find_one({'username': username})
+        has_profile = user and 'knowledge_profile' in user and user['knowledge_profile'] is not None
+        
+        return jsonify({
+            'status': 'success',
+            'has_profile': has_profile,
+            'is_guest': False
+        })
+        
+    except Exception as e:
+        print(f"Error checking knowledge profile: {e}")
+        return jsonify({'status': 'error', 'message': 'Failed to check profile status.'})
 
 @app.route('/play_as_guest', methods=['POST'])
 def play_as_guest():
