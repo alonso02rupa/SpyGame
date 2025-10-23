@@ -1018,6 +1018,161 @@ thead tr:hover {
         flex-direction: column;                                 /* Stack buttons vertically */
     }
     
+}
+
+/* Knowledge Profile Survey Styles */
+.survey-intro {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(139, 92, 246, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #a855f7;
+}
+
+.survey-intro p {
+    color: #e2e8f0;
+    font-size: 0.95em;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.survey-intro p:last-child {
+    margin-bottom: 0;
+}
+
+.survey-question {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.survey-question:last-of-type {
+    border-bottom: none;
+}
+
+.question-label {
+    display: block;
+    color: #e2e8f0;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.question-description {
+    display: block;
+    color: rgba(226, 232, 240, 0.7);
+    font-size: 0.9em;
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.rating-scale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.rating-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rating-option input[type="radio"] {
+    display: none;  /* Hide default radio button */
+}
+
+.rating-option label {
+    width: 100%;
+    padding: 10px 5px;
+    text-align: center;
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    border-radius: 6px;
+    background: rgba(88, 28, 135, 0.2);
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.rating-option input[type="radio"]:checked + label {
+    background: rgba(168, 85, 247, 0.4);
+    border-color: #a855f7;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+    color: #fff;
+}
+
+.rating-option label:hover {
+    border-color: rgba(168, 85, 247, 0.6);
+    background: rgba(88, 28, 135, 0.3);
+}
+
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 0.8em;
+    color: rgba(226, 232, 240, 0.6);
+}
+
+.survey-modal .modal-content {
+    max-width: 600px;  /* Wider modal for survey */
+    max-height: 90vh;  /* Max height for scrolling */
+    overflow-y: auto;  /* Enable scrolling */
+}
+
+.survey-modal .modal-body {
+    padding: 25px;
+}
+
+/* Scrollbar styling for survey modal */
+.survey-modal .modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.survey-modal .modal-content::-webkit-scrollbar-track {
+    background: rgba(88, 28, 135, 0.2);
+    border-radius: 4px;
+}
+
+.survey-modal .modal-content::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.5);
+    border-radius: 4px;
+}
+
+.survey-modal .modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.7);
+}
+
+/* Responsive adjustments for survey */
+@media (max-width: 768px) {
+    .survey-modal .modal-content {
+        max-width: 95%;
+    }
+    
+    .rating-option label {
+        padding: 8px 3px;
+        font-size: 0.85em;
+    }
+    
+    .scale-labels {
+        font-size: 0.75em;
+    }
+}
+
+@media (max-width: 480px) {
+    .rating-scale {
+        gap: 4px;
+    }
+    
+    .rating-option label {
+        padding: 6px 2px;
+        font-size: 0.8em;
+    }
+    
     .form-actions .btn {
         width: 100%;                                            /* Full width buttons on mobile */
     }

@@ -273,6 +273,287 @@
         </div>
     </div>
 
+    <!-- Knowledge Profile Survey Modal -->
+    <div id="knowledge-profile-modal" class="modal survey-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cuestionario de Conocimientos (Opcional)</h3>
+                <span class="close" id="knowledge-profile-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="survey-intro">
+                    <p><strong>¡Gracias por registrarte!</strong></p>
+                    <p>Para nuestro proyecto de investigación, nos gustaría conocer tu nivel de conocimientos en diferentes áreas.</p>
+                    <p>Este cuestionario es <strong>totalmente opcional</strong> y anónimo. Puedes saltar esta sección si lo prefieres.</p>
+                    <p>Por favor, evalúa tu nivel del 1 al 5 en cada área:</p>
+                </div>
+                
+                <form id="knowledge-profile-form">
+                    <!-- Question 1: Cultura General -->
+                    <div class="survey-question">
+                        <label class="question-label">1. Cultura General</label>
+                        <span class="question-description">Tu nivel general de conocimientos sobre hechos, personas y eventos conocidos por la sociedad.</span>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="cg-1" name="cultura_general" value="1" required>
+                                <label for="cg-1">1</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="cg-2" name="cultura_general" value="2">
+                                <label for="cg-2">2</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="cg-3" name="cultura_general" value="3">
+                                <label for="cg-3">3</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="cg-4" name="cultura_general" value="4">
+                                <label for="cg-4">4</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="cg-5" name="cultura_general" value="5">
+                                <label for="cg-5">5</label>
+                            </div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Ni idea</span>
+                            <span>Muy versado</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 2: Geografía -->
+                    <div class="survey-question">
+                        <label class="question-label">2. Geografía</label>
+                        <span class="question-description">Tu conocimiento sobre países, capitales, mapas y fenómenos geográficos.</span>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="geo-1" name="geografia" value="1" required>
+                                <label for="geo-1">1</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="geo-2" name="geografia" value="2">
+                                <label for="geo-2">2</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="geo-3" name="geografia" value="3">
+                                <label for="geo-3">3</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="geo-4" name="geografia" value="4">
+                                <label for="geo-4">4</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="geo-5" name="geografia" value="5">
+                                <label for="geo-5">5</label>
+                            </div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Ni idea</span>
+                            <span>Muy versado</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 3: Actualidad y Noticias -->
+                    <div class="survey-question">
+                        <label class="question-label">3. Actualidad y Noticias</label>
+                        <span class="question-description">Tu nivel de seguimiento y comprensión de las noticias y la política actual.</span>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="act-1" name="actualidad_noticias" value="1" required>
+                                <label for="act-1">1</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="act-2" name="actualidad_noticias" value="2">
+                                <label for="act-2">2</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="act-3" name="actualidad_noticias" value="3">
+                                <label for="act-3">3</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="act-4" name="actualidad_noticias" value="4">
+                                <label for="act-4">4</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="act-5" name="actualidad_noticias" value="5">
+                                <label for="act-5">5</label>
+                            </div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Ni idea</span>
+                            <span>Muy versado</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 4: Cultura Popular -->
+                    <div class="survey-question">
+                        <label class="question-label">4. Cultura Popular</label>
+                        <span class="question-description">Tu familiaridad con las tendencias actuales en música, cine y series de televisión.</span>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="cp-1" name="cultura_popular" value="1" required>
+                                <label for="cp-1">1</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="cp-2" name="cultura_popular" value="2">
+                                <label for="cp-2">2</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="cp-3" name="cultura_popular" value="3">
+                                <label for="cp-3">3</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="cp-4" name="cultura_popular" value="4">
+                                <label for="cp-4">4</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="cp-5" name="cultura_popular" value="5">
+                                <label for="cp-5">5</label>
+                            </div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Ni idea</span>
+                            <span>Muy versado</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 5: Tecnología y Tendencias Digitales -->
+                    <div class="survey-question">
+                        <label class="question-label">5. Tecnología y Tendencias Digitales</label>
+                        <span class="question-description">Tu comprensión de cómo funcionan las nuevas tecnologías, aplicaciones y redes sociales.</span>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="tech-1" name="tecnologia_tendencias" value="1" required>
+                                <label for="tech-1">1</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="tech-2" name="tecnologia_tendencias" value="2">
+                                <label for="tech-2">2</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="tech-3" name="tecnologia_tendencias" value="3">
+                                <label for="tech-3">3</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="tech-4" name="tecnologia_tendencias" value="4">
+                                <label for="tech-4">4</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="tech-5" name="tecnologia_tendencias" value="5">
+                                <label for="tech-5">5</label>
+                            </div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Ni idea</span>
+                            <span>Muy versado</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 6: Uso de Wikipedia -->
+                    <div class="survey-question">
+                        <label class="question-label">6. Uso de Wikipedia</label>
+                        <span class="question-description">Tu familiaridad con Wikipedia (no solo como lector, sino entendiendo cómo se crea, se edita y se verifica su contenido).</span>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="wiki-1" name="uso_wikipedia" value="1" required>
+                                <label for="wiki-1">1</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="wiki-2" name="uso_wikipedia" value="2">
+                                <label for="wiki-2">2</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="wiki-3" name="uso_wikipedia" value="3">
+                                <label for="wiki-3">3</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="wiki-4" name="uso_wikipedia" value="4">
+                                <label for="wiki-4">4</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="wiki-5" name="uso_wikipedia" value="5">
+                                <label for="wiki-5">5</label>
+                            </div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Ni idea</span>
+                            <span>Muy versado</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 7: Habilidad de Búsqueda -->
+                    <div class="survey-question">
+                        <label class="question-label">7. Habilidad de Búsqueda</label>
+                        <span class="question-description">Tu habilidad para encontrar información fiable y de calidad en Internet (más allá de la primera búsqueda en Google).</span>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="search-1" name="habilidad_busqueda" value="1" required>
+                                <label for="search-1">1</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="search-2" name="habilidad_busqueda" value="2">
+                                <label for="search-2">2</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="search-3" name="habilidad_busqueda" value="3">
+                                <label for="search-3">3</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="search-4" name="habilidad_busqueda" value="4">
+                                <label for="search-4">4</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="search-5" name="habilidad_busqueda" value="5">
+                                <label for="search-5">5</label>
+                            </div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Ni idea</span>
+                            <span>Muy versado</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 8: Pensamiento Crítico / Verificación -->
+                    <div class="survey-question">
+                        <label class="question-label">8. Pensamiento Crítico / Verificación</label>
+                        <span class="question-description">Tu interés o habilidad para verificar la información, detectar 'fake news' y analizar argumentos.</span>
+                        <div class="rating-scale">
+                            <div class="rating-option">
+                                <input type="radio" id="crit-1" name="pensamiento_critico" value="1" required>
+                                <label for="crit-1">1</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="crit-2" name="pensamiento_critico" value="2">
+                                <label for="crit-2">2</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="crit-3" name="pensamiento_critico" value="3">
+                                <label for="crit-3">3</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="crit-4" name="pensamiento_critico" value="4">
+                                <label for="crit-4">4</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="crit-5" name="pensamiento_critico" value="5">
+                                <label for="crit-5">5</label>
+                            </div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Ni idea</span>
+                            <span>Muy versado</span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Enviar Respuestas</button>
+                        <button type="button" class="btn btn-secondary" id="skip-survey">Saltar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* 
          * JavaScript Section: This adds interactivity to our HTML page
@@ -313,6 +594,12 @@
         const registerModal = document.getElementById('register-modal');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
+
+        // Knowledge Profile Survey elements
+        const knowledgeProfileModal = document.getElementById('knowledge-profile-modal');
+        const knowledgeProfileForm = document.getElementById('knowledge-profile-form');
+        const skipSurveyBtn = document.getElementById('skip-survey');
+        const knowledgeProfileClose = document.getElementById('knowledge-profile-close');
 
         // User authentication state - initialize from server session
         let currentUser = '{{ current_user }}';
@@ -368,10 +655,16 @@
             if (cancelLogin) cancelLogin.addEventListener('click', hideLoginModal);
             if (cancelRegister) cancelRegister.addEventListener('click', hideRegisterModal);
             
+            // Knowledge Profile Survey event listeners
+            if (knowledgeProfileForm) knowledgeProfileForm.addEventListener('submit', handleKnowledgeProfileSubmit);
+            if (skipSurveyBtn) skipSurveyBtn.addEventListener('click', hideKnowledgeProfileModal);
+            if (knowledgeProfileClose) knowledgeProfileClose.addEventListener('click', hideKnowledgeProfileModal);
+            
             // Close modals when clicking outside them
             window.addEventListener('click', function(e) {
                 if (e.target === loginModal) hideLoginModal();
                 if (e.target === registerModal) hideRegisterModal();
+                if (e.target === knowledgeProfileModal) hideKnowledgeProfileModal();
             });
 
             // Initialize user display on page load
@@ -682,6 +975,8 @@
                     hideLoginModal();
                     updateUserDisplay();
                     updateMessage(data.message, 'success');
+                    // Check if user needs to complete knowledge profile
+                    checkAndShowKnowledgeProfile();
                 } else {
                     updateMessage(data.message, 'error');
                 }
@@ -711,10 +1006,19 @@
                     hideRegisterModal();
                     updateUserDisplay();
                     updateMessage(data.message, 'success');
+                    // Show knowledge profile survey for new users
+                    setTimeout(() => {
+                        showKnowledgeProfileModal();
+                    }, 500);  // Small delay for better UX
                 } else {
                     updateMessage(data.message, 'error');
                 }
             })
+            .catch(error => {
+                console.error('Registration error:', error);
+                updateMessage('Registration failed. Please try again.', 'error');
+            });
+        }
             .catch(error => {
                 console.error('Registration error:', error);
                 updateMessage('Registration failed. Please try again.', 'error');
@@ -798,6 +1102,80 @@ Data Collection:
 Thank you for your collaboration in this research project! Your participation helps advance our understanding of how people solve puzzles and make guesses.`;
 
             alert(message);
+        }
+
+        /* Knowledge Profile Survey Functions */
+        
+        function showKnowledgeProfileModal() {
+            if (knowledgeProfileModal) {
+                knowledgeProfileModal.style.display = 'block';
+            }
+        }
+
+        function hideKnowledgeProfileModal() {
+            if (knowledgeProfileModal) {
+                knowledgeProfileModal.style.display = 'none';
+                knowledgeProfileForm.reset();
+            }
+        }
+
+        function checkAndShowKnowledgeProfile() {
+            /**
+             * Check if the user has already completed the knowledge profile
+             * If not, show the survey modal
+             */
+            fetch('/check_knowledge_profile', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && !data.has_profile && !data.is_guest) {
+                    // User is logged in but hasn't completed the survey
+                    setTimeout(() => {
+                        showKnowledgeProfileModal();
+                    }, 500);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking knowledge profile:', error);
+            });
+        }
+
+        function handleKnowledgeProfileSubmit(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(knowledgeProfileForm);
+            const surveyData = {};
+            
+            for (let [key, value] of formData.entries()) {
+                surveyData[key] = parseInt(value);
+            }
+            
+            // Submit to server
+            fetch('/save_knowledge_profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(surveyData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    hideKnowledgeProfileModal();
+                    updateMessage(data.message, 'success');
+                } else {
+                    updateMessage(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving knowledge profile:', error);
+                updateMessage('Failed to save knowledge profile. Please try again.', 'error');
+            });
         }
     </script>
     <!-- End of JavaScript section -->
