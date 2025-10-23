@@ -108,6 +108,7 @@ def create_game_session(person, session_id, first_hint):
         'session_id': session_id,
         'person': person,
         'pista': [first_hint],  # Array of hints requested
+        'guesses': [],  # Array of user guesses (same length as pista when game ends)
         'acierto': False,  # Will be set to true only on correct guess
         'timestamp': datetime.now().isoformat(),
         'last_updated': datetime.now().isoformat()
@@ -195,6 +196,39 @@ def update_game_session_result(session_id, correct):
         for sess in sessions:
             if sess.get('session_id') == session_id:
                 sess['acierto'] = correct
+                sess['last_updated'] = datetime.now().isoformat()
+                break
+        
+        with open(SESSIONS_FILE, 'w') as f:
+            json.dump(sessions, f, indent=2)
+
+def add_guess_to_session(session_id, guess):
+    """Add a guess to the game session"""
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if mongodb_available:
+        try:
+            sessions_collection.update_one(
+                {'session_id': session_id},
+                {
+                    '$push': {'guesses': guess},
+                    '$set': {'last_updated': datetime.now().isoformat()}
+                }
+            )
+            return
+        except Exception as e:
+            print(f"MongoDB error: {e}")
+    
+    # Fallback to JSON file if MongoDB is not available
+    if os.path.exists(SESSIONS_FILE):
+        with open(SESSIONS_FILE, 'r') as f:
+            sessions = json.load(f)
+        
+        for sess in sessions:
+            if sess.get('session_id') == session_id:
+                if 'guesses' not in sess:
+                    sess['guesses'] = []
+                sess['guesses'].append(guess)
                 sess['last_updated'] = datetime.now().isoformat()
                 break
         
@@ -410,28 +444,70 @@ def make_guess():
     
     person = session['current_person']
     game_session_id = session.get('game_session_id')
+    pistas = session.get('current_pistas', [])
+    hints_used = session.get('hints_used', [])
     correct = guess.lower() == person.lower()
     
-    # Update game session with guess result
+    # Store the guess
     if game_session_id:
-        update_game_session_result(game_session_id, correct)
+        add_guess_to_session(game_session_id, guess)
     
     if correct:
+        # Correct guess - update session and end game
+        if game_session_id:
+            update_game_session_result(game_session_id, True)
+        
         session.pop('current_person', None)
         session.pop('hints_used', None)
         session.pop('game_start_time', None)
         session.pop('game_session_id', None)
+        session.pop('current_pistas', None)
+        
         return jsonify({
             'status': 'success',
             'correct': True,
             'message': f'Congratulations! You guessed correctly. It was {person}!'
         })
     else:
-        return jsonify({
-            'status': 'success',
-            'correct': False,
-            'message': f'Wrong guess! Try asking for more hints.'
-        })
+        # Wrong guess - give another hint automatically
+        # Sort hints by difficulty (highest to lowest)
+        pistas_ordenadas = sorted(pistas, key=lambda x: x.get('dificultad', 0), reverse=True)
+        
+        # Find available hints (not yet used)
+        available_hints = [p for p in pistas_ordenadas if p['pista'] not in hints_used]
+        
+        if available_hints:
+            # Give next hint automatically
+            hint_obj = available_hints[0]
+            hint = hint_obj['pista']
+            hints_used.append(hint)
+            session['hints_used'] = hints_used
+            
+            # Update session with new hint
+            if game_session_id:
+                update_game_session_hint(game_session_id, hint)
+            
+            hints_remaining = len(available_hints) - 1
+            
+            return jsonify({
+                'status': 'success',
+                'correct': False,
+                'message': f'Wrong guess! Here is another hint to help you.',
+                'new_hint': hint,
+                'difficulty': hint_obj.get('dificultad', 0),
+                'hints_remaining': hints_remaining
+            })
+        else:
+            # No more hints available
+            if game_session_id:
+                update_game_session_result(game_session_id, False)
+            
+            return jsonify({
+                'status': 'success',
+                'correct': False,
+                'message': f'Wrong guess! No more hints available. Try again or reveal the answer.',
+                'hints_remaining': 0
+            })
 
 @app.route('/get_answer', methods=['POST'])
 def get_answer():
