@@ -55,13 +55,31 @@ def get_person_from_db():
         except Exception as e:
             print(f"Error al obtener persona de MongoDB: {e}")
     
+    # Fallback: usar pistas.json si existe
+    pistas_file = 'pistas.json'
+    if os.path.exists(pistas_file):
+        try:
+            with open(pistas_file, 'r', encoding='utf-8') as f:
+                pistas = json.load(f)
+            
+            return {
+                'nombre': 'Donald Trump',
+                'pistas': pistas,
+                'from_db': False
+            }
+        except Exception as e:
+            print(f"Error al leer pistas.json: {e}")
     
-    # Convertir al formato de la base de datos para compatibilidad
-    pistas_formateadas = [{"dificultad": 5 - i//2, "pista": hint} for i, hint in enumerate(hints)]
-    
+    # Last resort fallback with minimal data
     return {
-        'nombre': person_name,
-        'pistas': pistas_formateadas,
+        'nombre': 'Unknown Person',
+        'pistas': [
+            {"dificultad": 5, "pista": "This is a test person"},
+            {"dificultad": 4, "pista": "No database available"},
+            {"dificultad": 3, "pista": "Please set up MongoDB"},
+            {"dificultad": 2, "pista": "Or provide pistas.json"},
+            {"dificultad": 1, "pista": "Check the documentation"}
+        ],
         'from_db': False
     }
 
