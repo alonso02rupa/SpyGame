@@ -442,6 +442,8 @@ def get_hint():
     # Update game session with new hint (sets acierto to false)
     if game_session_id:
         update_game_session_hint(game_session_id, hint)
+        # Add empty string to guesses to maintain correspondence with hints
+        add_guess_to_session(game_session_id, "")
     
     return jsonify({
         'status': 'success',
