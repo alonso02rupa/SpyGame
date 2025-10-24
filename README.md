@@ -100,6 +100,40 @@ Linux/Mac:
 ./spygame.sh list
 ```
 
+### 🧠 DIRT System - Language Diversification
+
+The project includes a **DIRT (Discovery of Inference Rules from Text)** system that learns semantic equivalences between verbs to diversify the language used in hint generation.
+
+**Building the DIRT model:**
+
+```bash
+# Generate inference model from biographies
+python dirt_builder.py
+```
+
+This creates `modelo_inferencias.json` with learned verb equivalences (e.g., "fundó" ≈ "estableció").
+
+**Testing the system:**
+
+```bash
+# Run interactive test
+python test_dirt.py
+```
+
+**How it works:**
+1. Extracts subject-verb-object triples from biographical texts using spaCy
+2. Calculates verb similarities based on shared contexts
+3. Generates equivalence pairs with confidence scores
+4. Automatically applies reformulations during hint generation
+
+The system integrates seamlessly - hints are automatically diversified when `modelo_inferencias.json` exists. See **[DIRT_README.md](DIRT_README.md)** for detailed documentation.
+
+**Benefits:**
+- ✨ Increases language variety in generated hints
+- 🔄 Reduces repetitive phrasing
+- 📚 Learns from your own corpus of biographies
+- 🎯 Improves hint quality and player experience
+
 ## 🔧 Environment Configuration
 
 The application requires environment variables for configuration:
@@ -189,6 +223,7 @@ The game automatically tracks all gameplay activities:
 ### AI & Data Processing
 - **Hugging Face**: LLM for hint generation
 - **spaCy**: NLP for text processing
+- **DIRT System**: Discovery of Inference Rules from Text for language diversification
 - **Wikipedia API**: Biography data source
 - **Pandas**: Data manipulation
 - **Wikidata SPARQL**: Person discovery
@@ -210,14 +245,19 @@ SpyGame/
 ├── app.py                      # Flask application & game logic
 ├── init_db.py                  # Database initialization script
 ├── process_data.py             # Data processing wrapper
+├── dirt_builder.py             # DIRT model builder
+├── utils_dirt.py               # DIRT utilities for reformulation
+├── test_dirt.py                # DIRT system testing script
 ├── requirements.txt            # Python dependencies
 ├── docker-compose.yml          # Docker orchestration
 ├── Dockerfile                  # Container definition
 ├── spygame.ps1                 # Windows helper script
 ├── spygame.sh                  # Linux/Mac helper script
 ├── USAGE.md                    # Detailed usage guide
+├── DIRT_README.md              # DIRT system documentation
 ├── game_sessions.json          # Fallback storage
 ├── pistas.json                 # Example hints (for init only)
+├── modelo_inferencias.json     # DIRT inference model (generated)
 ├── datatreatment/
 │   └── data_processor.py       # Wikipedia processing & AI
 ├── static/

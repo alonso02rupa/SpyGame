@@ -12,6 +12,16 @@ from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 from pymongo import MongoClient
 import random
+import sys
+
+# Importar utilidades DIRT (añadir el directorio raíz al path)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+try:
+    from utils_dirt import aplicar_DIRT
+    DIRT_DISPONIBLE = True
+except ImportError:
+    DIRT_DISPONIBLE = False
+    print("⚠ utils_dirt no disponible. Continuando sin reformulación DIRT.")
 
 # Load environment variables
 load_dotenv()
@@ -187,6 +197,14 @@ def generar_frases_trivia(url, nombre_persona):
 
     # Limitar número de frases
     frases_lista = frases[:12]
+    
+    # ===== APLICAR DIRT: Reformular frases con equivalencias de verbos =====
+    if DIRT_DISPONIBLE:
+        try:
+            print(f"  Aplicando reformulación DIRT...")
+            frases_lista = aplicar_DIRT(frases_lista, probabilidad=0.3, min_score=0.2)
+        except Exception as e:
+            print(f"  ⚠ Error en DIRT, continuando sin reformulación: {e}")
     
     # Limpiar puntos y comas justo antes del prompt para ahorrar tokens
     frases_sin_puntuacion = [re.sub(r'[.,]', '', frase) for frase in frases_lista]
