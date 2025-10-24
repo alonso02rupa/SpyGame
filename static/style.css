@@ -900,18 +900,30 @@ thead tr:hover {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);                      /* Dark semi-transparent overlay */
     backdrop-filter: blur(5px);                                 /* Blur the background */
+    overflow-y: auto;                                           /* Allow vertical scrolling */
+    align-items: center;                                        /* Center vertically when flex */
+    justify-content: center;                                    /* Center horizontally when flex */
+    padding: 20px;                                              /* Padding around modal */
+}
+
+/* When modal is shown, use flexbox for centering */
+.modal[style*="display: block"] {
+    display: flex !important;
 }
 
 .modal-content {
     background: linear-gradient(135deg, #2d1b69, #4c1d95);     /* Purple gradient background */
-    margin: 10% auto;                                           /* Center the modal */
+    margin: auto;                                               /* Center the modal */
     padding: 0;                                                 /* No padding on container */
     border: 1px solid rgba(139, 92, 246, 0.5);                 /* Purple border */
     border-radius: 12px;                                        /* Rounded corners */
     width: 90%;                                                 /* Responsive width */
     max-width: 400px;                                           /* Maximum width */
+    max-height: 90vh;                                           /* Max height to allow scrolling */
+    overflow-y: auto;                                           /* Allow content scrolling */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);               /* Strong shadow */
     animation: modalSlideIn 0.3s ease-out;                     /* Slide-in animation */
+    position: relative;                                         /* Relative positioning */
 }
 
 @keyframes modalSlideIn {
@@ -954,6 +966,25 @@ thead tr:hover {
 
 .modal-body {
     padding: 20px;                                              /* Comfortable padding */
+}
+
+/* Scrollbar styling for modal content */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(88, 28, 135, 0.2);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.5);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.7);
 }
 
 /* Form styles within modals */
@@ -1120,12 +1151,20 @@ thead tr:hover {
 
 .survey-modal .modal-content {
     max-width: 600px;  /* Wider modal for survey */
-    max-height: 90vh;  /* Max height for scrolling */
+    max-height: 85vh;  /* Max height for scrolling */
     overflow-y: auto;  /* Enable scrolling */
+    margin: 20px auto; /* Vertical margin for spacing */
 }
 
 .survey-modal .modal-body {
     padding: 25px;
+}
+
+/* Ensure survey modal is centered when visible */
+.survey-modal[style*="display: block"] {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Scrollbar styling for survey modal */
