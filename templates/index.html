@@ -288,6 +288,11 @@
                     <p>Por favor, evalúa tu nivel del 1 al 5 en cada área:</p>
                 </div>
                 
+                <!-- Skip button at the top -->
+                <div class="form-actions" style="margin-bottom: 20px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" id="skip-survey">Saltar Cuestionario</button>
+                </div>
+                
                 <form id="knowledge-profile-form">
                     <!-- Question 1: Cultura General -->
                     <div class="survey-question">
@@ -545,9 +550,8 @@
                         </div>
                     </div>
 
-                    <div class="form-actions">
+                    <div class="form-actions" style="margin-top: 20px;">
                         <button type="submit" class="btn btn-primary">Enviar Respuestas</button>
-                        <button type="button" class="btn btn-secondary" id="skip-survey">Saltar</button>
                     </div>
                 </form>
             </div>
@@ -602,7 +606,11 @@
         const knowledgeProfileClose = document.getElementById('knowledge-profile-close');
 
         // User authentication state - initialize from server session
-        let currentUser = '{{ current_user }}';
+        let currentUser = '{{ current_user }}' || 'guest';
+        // Ensure we treat empty strings as guest
+        if (!currentUser || currentUser.trim() === '') {
+            currentUser = 'guest';
+        }
 
         /* 
          * Event Listeners: These "listen" for user interactions and respond to them
@@ -975,8 +983,7 @@
                     hideLoginModal();
                     updateUserDisplay();
                     updateMessage(data.message, 'success');
-                    // Check if user needs to complete knowledge profile
-                    checkAndShowKnowledgeProfile();
+                    // Don't show survey on login, only on registration
                 } else {
                     updateMessage(data.message, 'error');
                 }
@@ -1014,11 +1021,6 @@
                     updateMessage(data.message, 'error');
                 }
             })
-            .catch(error => {
-                console.error('Registration error:', error);
-                updateMessage('Registration failed. Please try again.', 'error');
-            });
-        }
             .catch(error => {
                 console.error('Registration error:', error);
                 updateMessage('Registration failed. Please try again.', 'error');

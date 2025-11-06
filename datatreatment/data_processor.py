@@ -44,7 +44,7 @@ def get_db_connection():
         print(f"MongoDB connection failed: {e}")
         return None, False
 
-def get_wikidata_items(limit=200 , offset=0, min_sitelinks=150, sample_size=1):
+def get_wikidata_items(limit=150 , offset=0, min_sitelinks=200, sample_size=1):
     """
     Devuelve personas (Q5) con artículo en Wikipedia en español y con un número minimo de traducciones (sitelinks).
     como un DataFrame de pandas.
