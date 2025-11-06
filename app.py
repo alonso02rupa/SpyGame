@@ -253,6 +253,34 @@ def add_guess_to_session(session_id, guess):
         with open(SESSIONS_FILE, 'w') as f:
             json.dump(sessions, f, indent=2)
 
+def is_guess_correct(guess, person_name):
+    """
+    Check if a guess matches a person's name.
+    Accepts full name or any individual part (first name, last name, etc.)
+    Case-insensitive matching.
+    
+    Examples:
+        - "Niels Bohr" matches: "niels bohr", "Niels", "bohr", "BOHR"
+        - "Marie Curie" matches: "marie", "Curie", "marie curie"
+    """
+    # Normalize both strings: lowercase and strip whitespace
+    guess_normalized = guess.lower().strip()
+    person_normalized = person_name.lower().strip()
+    
+    # Check for exact match first (most common case)
+    if guess_normalized == person_normalized:
+        return True
+    
+    # Split person's name into parts (words)
+    name_parts = person_normalized.split()
+    
+    # Check if guess matches any individual part of the name
+    for part in name_parts:
+        if guess_normalized == part:
+            return True
+    
+    return False
+
 @app.route('/')
 def index():
     """Main game page"""
@@ -557,7 +585,7 @@ def make_guess():
     game_session_id = session.get('game_session_id')
     pistas = session.get('current_pistas', [])
     hints_used = session.get('hints_used', [])
-    correct = guess.lower() == person.lower()
+    correct = is_guess_correct(guess, person)
     
     # Store the guess
     if game_session_id:
