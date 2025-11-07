@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 """
 Script de inicialización de la base de datos.
-Carga una persona de ejemplo desde pistas.json a MongoDB.
+Carga personas desde archivos JSON a MongoDB.
+
+Uso:
+    python init_db.py --from-json file.json  # Carga múltiples personas desde JSON
+    python init_db.py --list                 # Lista personas en DB
+    python init_db.py --clear                # Limpia la base de datos
 """
 
 import json
@@ -9,39 +14,36 @@ import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import sys
+import argparse
 
-# Cargar variables de entorno
 load_dotenv()
 
-# MongoDB configuration
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
 
 def get_db_connection():
     """Establish connection to MongoDB"""
     try:
         client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
-        # Test the connection
         client.admin.command('ping')
         db = client.spygame
         return db, True
     except Exception as e:
-        print(f"❌ MongoDB connection failed: {e}")
+        print(f"MongoDB connection failed: {e}")
         return None, False
 
-def cargar_ejemplo_trump():
-    """Carga el ejemplo de Donald Trump desde pistas.json"""
-    
-    # Leer el archivo pistas.json
-    pistas_file = 'pistas.json'
-    
-    if not os.path.exists(pistas_file):
-        print(f"❌ No se encontró el archivo {pistas_file}")
+def cargar_desde_json(filepath):
+    """
+    Carga múltiples personas desde un archivo JSON generado por process_local.py
+    """
+    if not os.path.exists(filepath):
+        print(f"No se encontró el archivo {filepath}")
         return False
     
-    with open(pistas_file, 'r', encoding='utf-8') as f:
-        pistas = json.load(f)
+    print(f"Cargando personas desde {filepath}...")
     
-    # Conectar a la base de datos
+    with open(filepath, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
     db, connected = get_db_connection()
     
     if not connected:
@@ -50,36 +52,89 @@ def cargar_ejemplo_trump():
     try:
         pistas_collection = db.pistas
         
-        # Crear documento para Donald Trump
-        documento = {
-            "nombre": "Donald Trump",
-            "pistas": pistas,
-            "url_wikipedia": "https://es.wikipedia.org/wiki/Donald_Trump",
-            "fecha_creacion": "2025-10-07T00:00:00"
-        }
+        insertadas = 0
+        actualizadas = 0
+        errores = 0
         
-        # Verificar si ya existe
-        existente = pistas_collection.find_one({"nombre": "Donald Trump"})
-        
-        if existente:
-            print("Donald Trump ya existe en la base de datos. Actualizando...")
-            pistas_collection.update_one(
-                {"nombre": "Donald Trump"},
-                {"$set": documento}
-            )
-            print("Donald Trump actualizado en la base de datos")
+        if isinstance(data, dict):
+            personas = data.values()
+            total = len(data)
+        elif isinstance(data, list):
+            print("Formato antiguo detectado (lista). Se esperaba un diccionario.")
+            return False
         else:
-            pistas_collection.insert_one(documento)
-            print("Donald Trump agregado a la base de datos")
+            print("Formato de JSON no reconocido")
+            return False
         
-        # Mostrar estadísticas
-        total_personas = pistas_collection.count_documents({})
-        print(f"\nTotal de personas en la base de datos: {total_personas}")
+        print(f"\nProcesando {total} personas...")
+        
+        for i, persona_data in enumerate(personas, 1):
+            nombre = persona_data.get('nombre', 'Desconocido')
+            
+            try:
+                if 'pistas' not in persona_data or not persona_data['pistas']:
+                    print(f"[{i}/{total}] {nombre}: Sin pistas, saltando...")
+                    errores += 1
+                    continue
+                
+                existente = pistas_collection.find_one({"nombre": nombre})
+                
+                if existente:
+                    pistas_collection.update_one(
+                        {"nombre": nombre},
+                        {"$set": persona_data}
+                    )
+                    actualizadas += 1
+                    print(f"[{i}/{total}] {nombre}: Actualizado")
+                else:
+                    pistas_collection.insert_one(persona_data)
+                    insertadas += 1
+                    print(f"[{i}/{total}] {nombre}: Insertado")
+                    
+            except Exception as e:
+                errores += 1
+                print(f"[{i}/{total}] {nombre}: Error - {e}")
+        
+        print(f"\nResumen:")
+        print(f"Insertadas: {insertadas}")
+        print(f"Actualizadas: {actualizadas}")
+        print(f"Errores: {errores}")
+        print(f"Total en DB: {pistas_collection.count_documents({})}")
         
         return True
         
     except Exception as e:
         print(f"Error al cargar datos: {e}")
+        return False
+
+def limpiar_db():
+    """Limpia completamente la base de datos"""
+    db, connected = get_db_connection()
+    
+    if not connected:
+        return False
+    
+    try:
+        pistas_collection = db.pistas
+        count = pistas_collection.count_documents({})
+        
+        if count == 0:
+            print("\nLa base de datos ya está vacía")
+            return True
+        
+        print(f"\nEsto eliminará {count} personas de la base de datos")
+        respuesta = input("¿Estás seguro? (sí/no): ")
+        
+        if respuesta.lower() in ['sí', 'si', 's', 'yes', 'y']:
+            result = pistas_collection.delete_many({})
+            print(f"Eliminadas {result.deleted_count} personas")
+            return True
+        else:
+            print("Operación cancelada")
+            return False
+            
+    except Exception as e:
+        print(f"Error al limpiar base de datos: {e}")
         return False
 
 def listar_personas():
@@ -91,43 +146,18 @@ def listar_personas():
     
     try:
         pistas_collection = db.pistas
-        personas = list(pistas_collection.find({}, {"_id": 0, "nombre": 1, "fecha_creacion": 1}))
+        personas = list(pistas_collection.find({}, {"_id": 0, "nombre": 1, "fecha_creacion": 1, "wikidata_id": 1}))
         
         if not personas:
             print("\nNo hay personas en la base de datos")
             return
         
         print(f"\nPersonas en la base de datos ({len(personas)}):")
-        print("=" * 60)
         for i, persona in enumerate(personas, 1):
             nombre = persona.get('nombre', 'Desconocido')
             fecha = persona.get('fecha_creacion', 'N/A')
-            print(f"{i}. {nombre} (creado: {fecha})")
-        print("=" * 60)
+            wikidata = persona.get('wikidata_id', 'N/A')
+            print(f"{i:3d}. {nombre:40s} | {wikidata:10s} | {fecha}")
         
     except Exception as e:
         print(f"Error al listar personas: {e}")
-
-if __name__ == "__main__":
-    print("=" * 60)
-    print("SpyGame - Inicialización de Base de Datos")
-    print("=" * 60)
-    print()
-    
-    # Verificar argumentos
-    if len(sys.argv) > 1 and sys.argv[1] == '--list':
-        listar_personas()
-    else:
-        print("Cargando ejemplo de Donald Trump desde pistas.json...")
-        print()
-        
-        if cargar_ejemplo_trump():
-            print()
-            listar_personas()
-        else:
-            print("\nNo se pudo completar la inicialización")
-            sys.exit(1)
-    
-    print()
-    print("Proceso completado")
-    print()

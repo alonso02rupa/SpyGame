@@ -18,7 +18,7 @@ SpyGame challenges players to guess famous Wikipedia personalities using an AI-p
 
 ### Prerequisites
 - Docker & Docker Compose
-- Hugging Face API key (for generating new hints)
+- Hugging Face API key (para generar pistas)
 
 ### Installation
 
@@ -31,7 +31,7 @@ SpyGame challenges players to guess famous Wikipedia personalities using an AI-p
 2. **Configure environment variables**
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
+   # Edit .env with your Hugging Face API key
    ```
 
 3. **Start the application**
@@ -39,9 +39,9 @@ SpyGame challenges players to guess famous Wikipedia personalities using an AI-p
    docker-compose up -d
    ```
 
-4. **Initialize the database with an example**
+4. **Initialize the database**
    ```bash
-   docker-compose exec web python init_db.py
+   python init_db.py --from-json pistas.json
    ```
 
 5. **Open your browser**

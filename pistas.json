@@ -1,22 +1,207 @@
-[
-  {
-    "dificultad": 5,
-    "pista": "Empresario estadounidense y figura de la televisión"
+{
+  "Pablo Picasso": {
+    "nombre": "Pablo Picasso",
+    "pistas": [
+      {
+        "dificultad": 5,
+        "pista": "Está enterrado en un lugar reservado solo a figuras excepcionales de la nación"
+      },
+      {
+        "dificultad": 4,
+        "pista": "Nombró un elemento químico en honor a su país natal"
+      },
+      {
+        "dificultad": 3,
+        "pista": "Realizó estudios pioneros sobre fenómenos radiactivos"
+      },
+      {
+        "dificultad": 3,
+        "pista": "Fue miembro del Partido Comunista de España y del Partido Comunista Francés"
+      },
+      {
+        "dificultad": 2,
+        "pista": "Trabajó en una prestigiosa universidad europea durante gran parte de su carrera"
+      },
+      {
+        "dificultad": 2,
+        "pista": "Se destacó en el campo de las artes visuales"
+      },
+      {
+        "dificultad": 1,
+        "pista": "Fue una figura reconocida a nivel mundial en el campo de las artes visuales"
+      },
+      {
+        "dificultad": 1,
+        "pista": "Se destacó en el campo de las ciencias visuales"
+      }
+    ],
+    "url_wikipedia": "https://es.wikipedia.org/wiki/Pablo_Picasso",
+    "wikidata_id": "Q5593",
+    "sitelinks": 258,
+    "fecha_creacion": "2025-11-06T18:56:33.700602"
   },
-  {
-    "dificultad": 4,
-    "pista": "Fue presidente de Estados Unidos entre 2017 y 2021"
+  "Marco Polo": {
+    "nombre": "Marco Polo",
+    "pistas": [
+      {
+        "dificultad": 5,
+        "pista": "Este científico viajó a Asia Oriental y se encontró con el líder mongol Kublai Kan"
+      },
+      {
+        "dificultad": 4,
+        "pista": "Llegó a Acre, posiblemente en relación con una cruzada, y se encontró de nuevo con un personaje que más tarde sería rey de Inglaterra"
+      },
+      {
+        "dificultad": 3,
+        "pista": "Fue capturado y encarcelado por los genoveses en un momento dado de su vida"
+      },
+      {
+        "dificultad": 3,
+        "pista": "Nació y aprendió a comerciar en Venecia"
+      },
+      {
+        "dificultad": 2,
+        "pista": "Se le atribuyen viajes a Mongolia y China, pero hay discrepancias entre los historiadores sobre su autenticidad"
+      },
+      {
+        "dificultad": 2,
+        "pista": "Murió en 1324 y fue enterrado en la iglesia de San Lorenzo de su ciudad"
+      },
+      {
+        "dificultad": 1,
+        "pista": "Fue un científico reconocido a nivel mundial"
+      },
+      {
+        "dificultad": 1,
+        "pista": "Se destacó en el campo de las exploraciones"
+      }
+    ],
+    "url_wikipedia": "https://es.wikipedia.org/wiki/Marco_Polo",
+    "wikidata_id": "Q6101",
+    "sitelinks": 208,
+    "fecha_creacion": "2025-11-06T18:56:37.630277"
   },
-  {
-    "dificultad": 3,
-    "pista": "Propietario de varios edificios y hoteles de lujo con su apellido"
+  "George Washington": {
+    "nombre": "George Washington",
+    "pistas": [
+      {
+        "dificultad": 5,
+        "pista": "Fue el primer presidente de los Estados Unidos en tener dientes postizos, hechos de marfil de elefante y de hipopótamo."
+      },
+      {
+        "dificultad": 5,
+        "pista": "Combatió la Guerra Franco-Indígena, aunque inadvertidamente ayudó a iniciarla."
+      },
+      {
+        "dificultad": 4,
+        "pista": "Su Proclama de la Neutralidad de 1793 sirvió de base para evitar cualquier implicación en conflictos extranjeros."
+      },
+      {
+        "dificultad": 3,
+        "pista": "Lideró la victoria estadounidense en la guerra de la Independencia y renunció a sus cargos militares."
+      },
+      {
+        "dificultad": 3,
+        "pista": "Fue comandante en jefe del Ejército Continental revolucionario en la guerra de la Independencia de los Estados Unidos."
+      },
+      {
+        "dificultad": 2,
+        "pista": "Se destacó en el campo de la política y fue el primer presidente de los Estados Unidos."
+      },
+      {
+        "dificultad": 2,
+        "pista": "Trató de crear una nación capaz de sostener la paz con sus países vecinos."
+      },
+      {
+        "dificultad": 1,
+        "pista": "Fue un político y militar reconocido a nivel mundial."
+      }
+    ],
+    "url_wikipedia": "https://es.wikipedia.org/wiki/George_Washington",
+    "wikidata_id": "Q23",
+    "sitelinks": 263,
+    "fecha_creacion": "2025-11-06T18:56:41.920860"
   },
-  {
-    "dificultad": 2,
-    "pista": "Presentador del programa de televisión 'The Apprentice'"
+  "Leonardo da Vinci": {
+    "nombre": "Leonardo da Vinci",
+    "pistas": [
+      {
+        "dificultad": 5,
+        "pista": "Fue acompañado en su muerte por un individuo al que heredó sus diseños, proyectos y obras de arte"
+      },
+      {
+        "dificultad": 4,
+        "pista": "Su obra más conocida, La Gioconda, ha sido copiada y parodiada en varias ocasiones"
+      },
+      {
+        "dificultad": 3,
+        "pista": "Trabajó inicialmente bajo la tutela de un pintor florentino llamado Andrea de Verrocchio"
+      },
+      {
+        "dificultad": 3,
+        "pista": "Su obra La Última Cena también ha sido copiada y parodiada en varias ocasiones"
+      },
+      {
+        "dificultad": 2,
+        "pista": "Realizó gran parte de su carrera al servicio de un duque italiano llamado Ludovico Sforza"
+      },
+      {
+        "dificultad": 2,
+        "pista": "Sus obras incluyen un dibujo del Hombre de Vitruvio"
+      },
+      {
+        "dificultad": 1,
+        "pista": "Fue un polímata florentino del Renacimiento italiano"
+      },
+      {
+        "dificultad": 1,
+        "pista": "Se destacó en el campo de las artes"
+      }
+    ],
+    "url_wikipedia": "https://es.wikipedia.org/wiki/Leonardo_da_Vinci",
+    "wikidata_id": "Q762",
+    "sitelinks": 301,
+    "fecha_creacion": "2025-11-06T18:56:45.392032"
   },
-  {
-    "dificultad": 1,
-    "pista": "Su eslogan de campaña fue 'Make America Great Again'"
+  "Bill Gates": {
+    "nombre": "Bill Gates",
+    "pistas": [
+      {
+        "dificultad": 5,
+        "pista": "Esta persona adquirió una versión del sistema operativo CP/M para adaptarlo y venderlo a Apple, sin contar con su compra a un programador joven por un precio bajo."
+      },
+      {
+        "dificultad": 4,
+        "pista": "Es cofundador de una empresa conocida por Microsoft, junto con su amigo de la infancia, y su fortuna se calcula en cifras que la convierten en la décima persona más rica de la historia."
+      },
+      {
+        "dificultad": 3,
+        "pista": "Fue criticado por tácticas de negocios consideradas anticompetitivas, lo que ha llevado a algunas sentencias judiciales en su contra."
+      },
+      {
+        "dificultad": 3,
+        "pista": "Ha estado casado con Melinda Gates, con quien comparte la presidencia de la Fundación Bill y Melinda Gates."
+      },
+      {
+        "dificultad": 2,
+        "pista": "Se destacó en los inicios de los ordenadores personales."
+      },
+      {
+        "dificultad": 2,
+        "pista": "Ha participado en programas para erradicar la polio en países como Nigeria."
+      },
+      {
+        "dificultad": 1,
+        "pista": "Es reconocido a nivel mundial como magnate empresarial y filántropo."
+      },
+      {
+        "dificultad": 1,
+        "pista": "Se destacó en el campo de las ciencias de la computación."
+      }
+    ],
+    "url_wikipedia": "https://es.wikipedia.org/wiki/Bill_Gates",
+    "wikidata_id": "Q5284",
+    "sitelinks": 235,
+    "fecha_creacion": "2025-11-06T18:56:49.120456"
   }
-]
+}
