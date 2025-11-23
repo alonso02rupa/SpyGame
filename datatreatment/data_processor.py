@@ -44,7 +44,9 @@ def get_db_connection():
         print(f"MongoDB connection failed: {e}")
         return None, False
 
-def get_wikidata_items(limit=150 , offset=0, min_sitelinks=200, sample_size=1):
+def get_wikidata_items(limit=150 , offset=None, min_sitelinks=200, sample_size=1):
+    if offset == None:
+        offset = random.randint(0, 5000)
     """
     Devuelve personas (Q5) con artículo en Wikipedia en español y con un número minimo de traducciones (sitelinks).
     como un DataFrame de pandas.
@@ -147,6 +149,124 @@ def limpiar_texto(texto):
     return texto.strip()
 
 def generar_frases_trivia(url, nombre_persona):
+    # --- 1. Obtención y limpieza básica ---
+    titulo_codificado = url.split("/wiki/")[-1]
+    titulo = urllib.parse.unquote(titulo_codificado).replace('_', ' ')
+    user_agent = os.getenv('WIKIPEDIA_USER_AGENT', 'SpyGame/1.0')
+    
+    wiki_es = wikipediaapi.Wikipedia(language='es', user_agent=user_agent)
+    articulo = wiki_es.page(titulo)
+    if not articulo.exists():
+        raise ValueError("El artículo no existe.")
+
+    # Tomamos resumen + 4 primeras secciones para tener contexto suficiente
+    texto_base = articulo.summary
+    for section in articulo.sections[:4]:
+        texto_base += " " + section.text
+    texto_limpio = limpiar_texto(texto_base)
+
+    # --- 2. Procesamiento Inteligente con SpaCy ---
+    doc = nlp(texto_limpio)
+    frases_candidatas = []
+    nombre_tokens = nombre_persona.lower().split() # Para detectar si hablan de él/ella
+
+    for sent in doc.sents:
+        s_text = sent.text.strip()
+        
+        # Filtros de ruido (muy cortas o muy largas)
+        if len(s_text.split()) < 6 or len(s_text.split()) > 60:
+            continue
+            
+        # Sistema de Puntuación (Scoring)
+        score = 0
+        entidades = [ent.label_ for ent in sent.ents]
+        
+        # Si tiene FECHA (vital para biografías) -> +2 puntos
+        if "DATE" in entidades:
+            score += 2
+        # Si tiene LUGAR u ORG -> +1 punto
+        if "LOC" in entidades or "ORG" in entidades:
+            score += 1
+            
+        # Análisis sintáctico: ¿El sujeto es la persona?
+        # Buscamos pronombres o verbos principales que indiquen acción de la persona
+        for token in sent:
+            if token.dep_ == "nsubj":
+                if token.pos_ == "PRON": # "Ella ganó..."
+                    score += 2
+                elif token.text.lower() in nombre_tokens: # "Einstein ganó..."
+                    score += 3
+        
+        # Si empieza por verbo (Sujeto tácito en español: "Nació en...") -> +1 punto
+        if sent[0].pos_ == "VERB":
+            score += 1
+
+        # Solo guardamos si tiene algo de "chicha" (score >= 2)
+        if score >= 2:
+            frases_candidatas.append({"texto": s_text, "score": score})
+
+    # --- 3. Selección de las mejores ---
+    # Ordenamos por score (de mejor a peor) y nos quedamos con las 15 mejores
+    frases_candidatas.sort(key=lambda x: x["score"], reverse=True)
+    top_frases = [item["texto"] for item in frases_candidatas[:15]]
+    
+    # Unimos las frases. IMPORTANTE: Dejamos la puntuación original.
+    texto_biografia_final = " ".join(top_frases)
+
+    # --- 4. TU PROMPT ORIGINAL (INTACTO) ---
+    prompt = f"""
+Eres un asistente experto en generar pistas de trivia a partir de biografías. 
+Recibirás un texto con información sobre la vida de una persona. 
+
+REGLAS CRÍTICAS QUE DEBES SEGUIR:
+
+1. **PROHIBIDO ABSOLUTO:** NO menciones NUNCA el nombre, apellido, apodos, títulos nobiliarios, ni cualquier variante del nombre de la persona. Refiérete a ella SIEMPRE en tercera persona de forma genérica ("esta persona", "este científico", "esta figura histórica", etc.).
+
+2. **PROHIBIDO:** NO uses fechas exactas de nacimiento o muerte, números específicos de premios, cifras exactas, ni datos únicos que identifiquen a la persona inmediatamente.
+
+3. Cada pista debe tener un campo "dificultad" (1 a 5):
+   
+   **Dificultad 5 (MUY DIFÍCIL):** Hechos muy específicos, detalles históricos poco conocidos, anécdotas raras.
+   Ejemplo: "Recibió sepultura con honores en un lugar reservado solo a figuras excepcionales de la nación"
+   
+   **Dificultad 4 (DIFÍCIL):** Detalles importantes pero menos conocidos, contribuciones específicas.
+   Ejemplo: "Nombró un elemento químico en honor a su país natal"
+   
+   **Dificultad 3 (MEDIA):** Logros importantes que requieren conocimiento del área.
+   Ejemplo: "Realizó estudios pioneros sobre fenómenos radiactivos"
+   
+   **Dificultad 2 (FÁCIL):** Información general conocida, premios importantes, instituciones.
+   Ejemplo: "Trabajó en una prestigiosa universidad europea durante gran parte de su carrera"
+   
+   **Dificultad 1 (MUY FÁCIL):** Información muy general: profesión, nacionalidad, campo de actividad.
+   Ejemplo: "Fue una científica reconocida a nivel mundial" o "Se destacó en el campo de las ciencias físicas"
+
+4. Genera **8 pistas en total** distribuidas así: 1 de dificultad 5, 1 de dificultad 4, 2 de dificultad 3, 2 de dificultad 2, 2 de dificultad 1.
+
+5. **ORDEN OBLIGATORIO:** Las pistas deben estar ordenadas de MAYOR a MENOR dificultad (5 → 4 → 3 → 3 → 2 → 2 → 1 → 1).
+
+6. Usa lenguaje variado: no empieces todas las pistas igual.
+
+7. Devuelve SOLO JSON válido, sin comentarios ni texto adicional.
+
+Formato de salida (OBLIGATORIO):
+
+[
+  {{"dificultad": 5, "pista": "..." }},
+  {{"dificultad": 4, "pista": "..." }},
+  {{"dificultad": 3, "pista": "..." }},
+  {{"dificultad": 3, "pista": "..." }},
+  {{"dificultad": 2, "pista": "..." }},
+  {{"dificultad": 2, "pista": "..." }},
+  {{"dificultad": 1, "pista": "..." }},
+  {{"dificultad": 1, "pista": "..." }}
+]
+
+Texto de la biografía:
+
+"{texto_biografia_final}"
+"""
+    return prompt
     titulo_codificado = url.split("/wiki/")[-1]
     titulo = urllib.parse.unquote(titulo_codificado)  # Algunas personas como por ejemplo Sadam Huseín dan error por su codificación
     titulo = titulo.replace('_', ' ')
@@ -291,12 +411,38 @@ def generar_pistas(url, nombre_persona):
 
 
 
-def guardar_pistas_json(pistas, nombre_persona, filepath="pistas.json"):
+def guardar_pistas_json(pistas, nombre_persona, wikidata_id=None, url_wikipedia=None, filepath="pistas.json"):
     """
-    Guarda las pistas en un archivo JSON local.
+    Guarda las pistas en un archivo JSON local con el mismo formato que se usa en la base de datos.
     """
+    datos = {
+        "nombre": nombre_persona,
+        "pistas": pistas,
+        "ultima_actualizacion": pd.Timestamp.now().isoformat()
+    }
+    
+    # Añadir datos opcionales si existen
+    if wikidata_id:
+        datos["wikidata_id"] = wikidata_id
+    if url_wikipedia:
+        datos["url_wikipedia"] = url_wikipedia
+    
+    # Si el archivo ya existe, leer el contenido actual para añadir la nueva entrada
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            contenido_actual = json.load(f)
+            # Si no es una lista, convertirlo en una lista
+            if not isinstance(contenido_actual, list):
+                contenido_actual = [contenido_actual]
+    except (FileNotFoundError, json.JSONDecodeError):
+        contenido_actual = []
+    
+    # Añadir la nueva entrada
+    contenido_actual.append(datos)
+    
+    # Guardar todo el contenido
     with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(pistas, f, indent=4, ensure_ascii=False)
+        json.dump(contenido_actual, f, indent=4, ensure_ascii=False)
     print(f"Guardado {nombre_persona} en {filepath}")
 
 def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=None):
@@ -312,40 +458,44 @@ def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=No
     db, mongodb_available = get_db_connection()
     
     if not mongodb_available:
-        print("No se pudo conectar a MongoDB.")
         return False
     
     try:
-        # Preparar documento para la base de datos
-        documento = {
-            "nombre": nombre_persona,
-            "pistas": pistas,
-            "fecha_creacion": pd.Timestamp.now().isoformat()
-        }
-        
-        if wikidata_id:
-            documento["wikidata_id"] = wikidata_id
-        
-        if url_wikipedia:
-            documento["url_wikipedia"] = url_wikipedia
-        
-        # Insertar en la colección de pistas
         pistas_collection = db.pistas
         
-        # Evitar duplicados: verificar si ya existe
-        existente = pistas_collection.find_one({"nombre": nombre_persona})
-        if existente:
-            pass
-        else:
-            pistas_collection.insert_one(documento)
+        # Filtro: buscamos por nombre (o idealmente por wikidata_id si siempre lo tienes)
+        filtro = {"nombre": nombre_persona}
         
+        # Datos a guardar
+        datos_actualizar = {
+            "$set": { # $set actualiza solo estos campos
+                "nombre": nombre_persona,
+                "pistas": pistas,
+                "ultima_actualizacion": pd.Timestamp.now().isoformat(),
+                # Guardamos estos solo si existen
+                **({"wikidata_id": wikidata_id} if wikidata_id else {}),
+                **({"url_wikipedia": url_wikipedia} if url_wikipedia else {})
+            },
+            "$setOnInsert": { # Esto solo se guarda si es un documento nuevo
+                "fecha_creacion": pd.Timestamp.now().isoformat()
+            }
+        }
+        
+        # Upsert = True es la magia
+        result = pistas_collection.update_one(filtro, datos_actualizar, upsert=True)
+        
+        if result.upserted_id:
+            print(f" [DB] Nueva entrada creada para: {nombre_persona}")
+        else:
+            print(f" [DB] Entrada actualizada para: {nombre_persona}")
+            
         return True
         
     except Exception as e:
         print(f"Error al subir a MongoDB: {e}")
         return False
 
-def procesar_persona(url, wikidata_id=None, guardar_json=False, subir_db=True):
+def procesar_persona(url, wikidata_id=None, guardar_json=True, subir_db=True):
     """
     Función completa que procesa una persona: genera pistas y las guarda.
     
@@ -368,7 +518,7 @@ def procesar_persona(url, wikidata_id=None, guardar_json=False, subir_db=True):
         
         # Guardar en JSON si se solicita
         if guardar_json:
-            guardar_pistas_json(pistas, nombre_persona)
+            guardar_pistas_json(pistas, nombre_persona, wikidata_id, url)
         
         # Subir a la base de datos si se solicita
         if subir_db:
@@ -413,7 +563,7 @@ def procesar_batch(num_personas=5, limit=200, offset=0, min_sitelinks=150):
         wikidata_id = row['id']
         
         print(f"\n[{idx+1}/{len(df)}] Procesando: {url}")
-        resultado = procesar_persona(url, wikidata_id=wikidata_id, guardar_json=False, subir_db=True)
+        resultado = procesar_persona(url, wikidata_id=wikidata_id, guardar_json=True, subir_db=True)
         
         if resultado is not None:
             exitosas += 1
