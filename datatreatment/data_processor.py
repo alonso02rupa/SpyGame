@@ -414,11 +414,14 @@ def generar_pistas(url, nombre_persona):
 def guardar_pistas_json(pistas, nombre_persona, wikidata_id=None, url_wikipedia=None, filepath="pistas.json"):
     """
     Guarda las pistas en un archivo JSON local con el mismo formato que se usa en la base de datos.
+    Si el archivo no existe, lo crea. Si existe, añade las nuevas pistas sin eliminar las anteriores.
     """
+    timestamp = pd.Timestamp.now().isoformat()
     datos = {
         "nombre": nombre_persona,
         "pistas": pistas,
-        "ultima_actualizacion": pd.Timestamp.now().isoformat()
+        "ultima_actualizacion": timestamp,
+        "fecha_creacion": timestamp
     }
     
     # Añadir datos opcionales si existen
