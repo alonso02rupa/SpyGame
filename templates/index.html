@@ -52,18 +52,6 @@
         The <body> element contains all the visible content of the page.
         Everything users see and interact with goes inside here.
     -->
-    
-    <!-- Top-left user status bar (like game stats) -->
-    <div id="user-status" class="user-status-corner">
-        <span id="user-display">Guest</span>
-        <div class="auth-buttons">
-            <button id="login-btn" class="btn btn-tiny">Login</button>
-            <button id="register-btn" class="btn btn-tiny">Register</button>
-            <button id="guest-btn" class="btn btn-tiny" style="display: none;">Guest</button>
-            <button id="logout-btn" class="btn btn-tiny" style="display: none;">Logout</button>
-            <a href="/stats" id="stats-link" class="btn btn-tiny btn-stats" style="display: none;">Stats</a>
-        </div>
-    </div>
 
     <div class="container">
         <!-- 
@@ -71,23 +59,29 @@
             The "container" class is defined in our CSS file and sets max-width and centering.
         -->
         
-        <header>
-            <!-- 
-                The <header> element represents the top section of our page.
-                It typically contains headings, logos, and introductory content.
-            -->
-            <h1>🕵️ SpyGame</h1>
-            <!-- 
-                <h1> is the main heading of the page (largest and most important).
-                The 🕵️ emoji adds visual appeal and reinforces the spy theme.
-            -->
-            
-            <p>Guess the Wikipedia person based on hints!</p>
-            <!-- 
-                <p> creates a paragraph of text that explains what the game is about.
-                This gives users context about what they're about to play.
-            -->
-        </header>
+        <!-- Header row with title and user status sections -->
+        <div class="header-row">
+            <header>
+                <!-- 
+                    The <header> element represents the top section of our page.
+                    It typically contains headings, logos, and introductory content.
+                -->
+                <h1>🕵️ SpyGame</h1>
+                <p>Guess the Wikipedia person based on hints!</p>
+            </header>
+
+            <div id="user-status" class="user-status-section">
+                <!-- User authentication status area -->
+                <span id="user-display">GUEST</span>
+                <div class="auth-buttons">
+                    <button id="login-btn" class="btn btn-tiny">Login</button>
+                    <button id="register-btn" class="btn btn-tiny">Register</button>
+                    <button id="guest-btn" class="btn btn-tiny" style="display: none;">Guest</button>
+                    <button id="logout-btn" class="btn btn-tiny" style="display: none;">Logout</button>
+                    <a href="/stats" id="stats-link" class="btn btn-tiny btn-stats" style="display: none;">Stats</a>
+                </div>
+            </div>
+        </div>
 
         <main>
             <!-- 

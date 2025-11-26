@@ -97,21 +97,34 @@ body::after {
 }
 
 /* 
- * Header Styles: The top section containing the game title and description
+ * Header Row: Flex container for title and user status sections
+ */
+.header-row {
+    display: flex;                                                /* Flex layout for side-by-side sections */
+    gap: 15px;                                                    /* Space between sections */
+    margin-bottom: 30px;                                          /* Space below header row */
+    align-items: stretch;                                         /* Equal height sections */
+}
+
+/* 
+ * Header Styles: The left section containing the game title and description
  * Features a dark, glassy appearance with subtle transparency
  */
 header {
-    text-align: center;                                            /* Center all header content */
+    flex: 1;                                                      /* Take remaining space */
+    text-align: left;                                             /* Left-align content */
     background: rgba(30, 20, 60, 0.85);                          /* Dark purple with transparency */
     border: 1px solid rgba(139, 92, 246, 0.3);                   /* Subtle purple border */
     border-radius: 20px;                                          /* Rounded corners for modern look */
-    padding: 40px 30px;                                           /* Generous padding for breathing room */
-    margin-bottom: 30px;                                          /* Space below header */
+    padding: 20px 25px;                                           /* Compact padding */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),                 /* Large shadow for depth */
                 0 0 30px rgba(139, 92, 246, 0.2),                /* Purple glow effect */
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);          /* Inner highlight for glass effect */
     backdrop-filter: blur(20px);                                  /* Blur effect for modern glass look */
     -webkit-backdrop-filter: blur(20px);                          /* Safari compatibility */
+    display: flex;                                                /* Flex layout */
+    flex-direction: column;                                       /* Stack title and subtitle */
+    justify-content: center;                                      /* Center vertically */
 }
 
 /* 
@@ -119,9 +132,9 @@ header {
  * Uses multiple effects to create a spy movie poster feel
  */
 header h1 {
-    font-size: 3.5em;                                             /* Large, attention-grabbing size */
+    font-size: 2.2em;                                             /* Smaller, compact size */
     color: #a855f7;                                               /* Bright purple color */
-    margin-bottom: 15px;                                          /* Space below title */
+    margin-bottom: 5px;                                           /* Small space below title */
     text-shadow: 0 0 20px rgba(168, 85, 247, 0.8),              /* Purple glow around text */
                  0 4px 8px rgba(0, 0, 0, 0.7),                   /* Drop shadow for depth */
                  0 2px 4px rgba(0, 0, 0, 0.9);                   /* Additional shadow for contrast */
@@ -138,10 +151,63 @@ header h1 {
  * Provides context about what the game does
  */
 header p {
-    font-size: 1.3em;                                             /* Slightly larger than normal text */
+    font-size: 1em;                                               /* Smaller text */
     color: #c4b5fd;                                               /* Light purple color */
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                  /* Shadow for readability on dark background */
     font-weight: 300;                                             /* Light font weight for elegance */
+    margin: 0;                                                    /* Remove default margin */
+}
+
+/* 
+ * User Status Section: Right section with same style as header
+ */
+.user-status-section {
+    background: rgba(30, 20, 60, 0.85);                          /* Same as header */
+    border: 1px solid rgba(139, 92, 246, 0.3);                   /* Same border */
+    border-radius: 20px;                                          /* Same rounded corners */
+    padding: 20px 25px;                                           /* Same padding */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),                 /* Same shadow */
+                0 0 30px rgba(139, 92, 246, 0.2),                /* Same glow */
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);          /* Same highlight */
+    backdrop-filter: blur(20px);                                  /* Same blur */
+    -webkit-backdrop-filter: blur(20px);                          /* Safari compatibility */
+    display: flex;                                                /* Flex layout */
+    flex-direction: column;                                       /* Stack username and buttons */
+    justify-content: center;                                      /* Center vertically */
+    align-items: center;                                          /* Center horizontally */
+    min-width: 160px;                                             /* Minimum width */
+}
+
+#user-display {
+    font-family: 'JetBrains Mono', 'Share Tech Mono', monospace; /* Terminal font */
+    font-weight: 600;                                             /* Bold weight */
+    color: #c4b5fd;                                               /* Light purple text */
+    font-size: 1.1em;                                             /* Slightly larger */
+    margin-bottom: 10px;                                          /* Space below username */
+    text-transform: uppercase;                                    /* Uppercase text */
+    letter-spacing: 1px;                                          /* Spaced letters */
+}
+
+.auth-buttons {
+    display: flex;                                                /* Flex layout for buttons */
+    gap: 6px;                                                     /* Small space between buttons */
+    flex-wrap: wrap;                                              /* Allow wrapping */
+    justify-content: center;                                      /* Center buttons */
+}
+
+/* Tiny button variant for auth buttons */
+.btn-tiny {
+    padding: 4px 10px !important;                                /* Small padding */
+    font-size: 0.75em !important;                                /* Small font size */
+    min-width: auto !important;                                   /* Override minimum width */
+    border-radius: 4px !important;                               /* Small border radius */
+}
+
+/* Stats button special styling */
+.btn-stats {
+    background: rgba(139, 92, 246, 0.3) !important;              /* Purple tint */
+    color: #c4b5fd !important;                                    /* Light purple text */
+    text-decoration: none !important;                            /* Remove underline */
 }
 
 /* 
@@ -878,16 +944,28 @@ thead tr:hover {
     }
     
     /* 
+     * Header row stacks vertically on mobile
+     */
+    .header-row {
+        flex-direction: column;                                   /* Stack sections vertically */
+        gap: 10px;                                                /* Smaller gap */
+    }
+    
+    .user-status-section {
+        min-width: auto;                                          /* Remove min-width on mobile */
+    }
+    
+    /* 
      * Header title size adjustment
      * Make title smaller to fit mobile screens
      */
     header h1 {
-        font-size: 2.5em;                                        /* Smaller title on mobile */
+        font-size: 1.8em;                                         /* Smaller title on mobile */
         letter-spacing: 1px;                                     /* Reduce letter spacing */
     }
     
     header p {
-        font-size: 1.1em;                                        /* Slightly smaller subtitle */
+        font-size: 0.9em;                                         /* Slightly smaller subtitle */
     }
     
     /* 
@@ -1001,62 +1079,12 @@ thead tr:hover {
     }
     
     header h1 {
-        font-size: 4em;                                          /* Larger title on big screens */
+        font-size: 2.8em;                                        /* Larger title on big screens */
     }
     
     .summary-cards {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Wider cards on large screens */
     }
-}
-
-/* 
- * User Authentication Styles
- * Styles for login/register functionality and user status display
- */
-
-/* User status bar - fixed top-left corner like game stats */
-.user-status-corner {
-    position: fixed;                                            /* Fixed positioning */
-    top: 10px;                                                  /* Distance from top */
-    left: 10px;                                                 /* Distance from left */
-    background: rgba(0, 0, 0, 0.7);                            /* Dark semi-transparent background */
-    border: 1px solid rgba(139, 92, 246, 0.3);                 /* Subtle purple border */
-    border-radius: 4px;                                         /* Small rounded corners */
-    padding: 6px 10px;                                          /* Compact padding */
-    backdrop-filter: blur(10px);                                /* Glass effect blur */
-    z-index: 100;                                               /* Above other content */
-    display: flex;                                              /* Flex layout */
-    align-items: center;                                        /* Center vertically */
-    gap: 8px;                                                   /* Space between items */
-    font-family: 'JetBrains Mono', 'Share Tech Mono', monospace; /* Terminal font */
-}
-
-#user-display {
-    font-weight: 500;                                           /* Medium weight */
-    color: #c4b5fd;                                             /* Light purple text */
-    font-size: 0.75em;                                          /* Small text */
-    white-space: nowrap;                                        /* No wrap */
-}
-
-.auth-buttons {
-    display: flex;                                              /* Flex layout for buttons */
-    gap: 4px;                                                   /* Small space between buttons */
-    flex-wrap: nowrap;                                          /* No wrapping */
-}
-
-/* Tiny button variant for corner auth buttons */
-.btn-tiny {
-    padding: 2px 6px !important;                               /* Very small padding */
-    font-size: 0.7em !important;                               /* Very small font size */
-    min-width: auto !important;                                 /* Override minimum width */
-    border-radius: 3px !important;                             /* Small border radius */
-}
-
-/* Stats button special styling */
-.btn-stats {
-    background: rgba(139, 92, 246, 0.3) !important;            /* Purple tint */
-    color: #c4b5fd !important;                                 /* Light purple text */
-    text-decoration: none !important;                          /* Remove underline */
 }
 
 /* Modal styles for login/register forms */
