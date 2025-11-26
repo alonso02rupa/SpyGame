@@ -402,59 +402,76 @@ main {
 }
 
 /* 
- * Hints Section: Displays the list of hints received during gameplay
- * Features a dark, contained design that fits the noir theme
+ * Hints Section: Terminal-style container for hints
+ * Fixed height scrollable area that fits the spy/hacker theme
  */
 .hints-section {
-    background: rgba(15, 10, 30, 0.8);                          /* Very dark background */
-    border: 1px solid rgba(139, 92, 246, 0.3);                  /* Purple border */
-    border-radius: 15px;                                         /* Rounded corners */
-    padding: 25px;                                               /* Comfortable internal spacing */
-    margin-bottom: 25px;                                         /* Space below section */
-    backdrop-filter: blur(15px);                                 /* Blur effect */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5),                /* Large shadow for depth */
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);         /* Inner highlight */
+    background: rgba(0, 0, 0, 0.85);                             /* Dark terminal background */
+    border: 1px solid rgba(139, 92, 246, 0.4);                   /* Purple border */
+    border-radius: 10px;                                          /* Rounded corners */
+    padding: 0;                                                   /* Remove padding, handled by children */
+    margin-bottom: 25px;                                          /* Space below section */
+    backdrop-filter: blur(15px);                                  /* Blur effect */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6),                  /* Large shadow for depth */
+                0 0 20px rgba(139, 92, 246, 0.15),               /* Purple glow */
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);         /* Inner highlight */
+    overflow: hidden;                                             /* Clip children to border-radius */
 }
 
 /* 
- * Hints section heading: Title for the hints area
+ * Terminal header bar: Simulates a terminal window title bar
  */
 .hints-section h3 {
+    background: linear-gradient(135deg, rgba(45, 27, 105, 0.9), rgba(76, 29, 149, 0.8)); /* Terminal header gradient */
     color: #c4b5fd;                                              /* Light purple color */
-    margin-bottom: 20px;                                         /* Space below heading */
-    font-size: 1.4em;                                           /* Larger font size */
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                 /* Shadow for contrast */
+    margin: 0;                                                   /* Remove margin */
+    padding: 12px 15px;                                          /* Comfortable padding */
+    font-size: 1.1em;                                            /* Font size */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);                   /* Shadow for contrast */
     font-weight: 600;                                            /* Semi-bold weight */
+    border-bottom: 1px solid rgba(139, 92, 246, 0.3);            /* Bottom border */
+    display: flex;                                               /* Flex for alignment */
+    align-items: center;                                         /* Center vertically */
+    gap: 10px;                                                   /* Space between elements */
+}
+
+/* Terminal window buttons (decorative) */
+.hints-section h3::before {
+    content: '● ● ●';                                            /* Simulated window buttons */
+    font-size: 0.6em;                                            /* Small size */
+    color: rgba(168, 85, 247, 0.6);                              /* Purple color */
+    letter-spacing: 3px;                                         /* Space between dots */
 }
 
 /* 
- * Hints scroll container: Makes hints scrollable with maximum height
- * Allows viewing 5-6 hints at a time, with scroll for more
+ * Hints scroll container: Fixed height terminal output area
+ * Fixed height ensures buttons stay in place below
  */
 .hints-scroll-container {
-    max-height: 350px;                                           /* Maximum height for ~5-6 hints */
+    height: 220px;                                               /* Fixed height for consistent layout */
     overflow-y: auto;                                            /* Enable vertical scrolling */
-    padding-right: 10px;                                         /* Space for scrollbar */
-    margin-bottom: 10px;                                         /* Space below container */
+    padding: 15px;                                               /* Internal padding */
+    background: rgba(0, 0, 0, 0.4);                              /* Slightly lighter than container */
 }
 
-/* Custom scrollbar styling for hints container */
+/* Custom scrollbar styling for hints container - terminal style */
 .hints-scroll-container::-webkit-scrollbar {
-    width: 8px;                                                  /* Scrollbar width */
+    width: 10px;                                                 /* Scrollbar width */
 }
 
 .hints-scroll-container::-webkit-scrollbar-track {
-    background: rgba(88, 28, 135, 0.2);                         /* Track background */
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3);                              /* Dark track background */
+    border-left: 1px solid rgba(139, 92, 246, 0.2);              /* Border on track */
 }
 
 .hints-scroll-container::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.5);                        /* Scrollbar thumb color */
-    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(168, 85, 247, 0.6), rgba(124, 58, 237, 0.4)); /* Gradient thumb */
+    border-radius: 0;                                            /* Sharp edges for terminal look */
+    border: 1px solid rgba(139, 92, 246, 0.3);                   /* Border around thumb */
 }
 
 .hints-scroll-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(168, 85, 247, 0.7);                        /* Darker on hover */
+    background: linear-gradient(180deg, rgba(168, 85, 247, 0.8), rgba(124, 58, 237, 0.6)); /* Brighter on hover */
 }
 
 /* 
@@ -468,41 +485,54 @@ main {
 }
 
 /* 
- * Individual hint items: Each hint appears as a styled card
- * Features subtle animations and hover effects
+ * Individual hint items: Terminal-style output lines
+ * Each hint appears as a command output in a terminal
  */
 #hints-list li {
-    background: linear-gradient(135deg, rgba(30, 20, 60, 0.9), rgba(45, 27, 105, 0.7)); /* Dark gradient background */
-    color: #e2e8f0;                                              /* Light text color */
-    padding: 16px 20px;                                          /* Comfortable padding */
-    margin: 12px 0;                                              /* Space between hints */
-    border-radius: 10px;                                         /* Rounded corners */
-    border-left: 4px solid #a855f7;                             /* Purple accent border */
-    border: 1px solid rgba(139, 92, 246, 0.4);                  /* Overall border */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4),                 /* Shadow for depth */
-                0 0 15px rgba(168, 85, 247, 0.1);               /* Purple glow */
-    transition: all 0.3s ease;                                   /* Smooth hover transitions */
-    backdrop-filter: blur(10px);                                 /* Blur effect */
+    font-family: 'JetBrains Mono', monospace;                    /* Monospace terminal font */
+    font-size: 0.9rem;                                           /* Slightly smaller for terminal feel */
+    background: transparent;                                     /* Transparent background */
+    color: #86efac;                                              /* Green terminal text color */
+    padding: 8px 12px;                                           /* Compact padding */
+    margin: 6px 0;                                               /* Space between hints */
+    border-radius: 0;                                            /* Sharp edges for terminal look */
+    border-left: 3px solid #a855f7;                              /* Purple accent border */
+    border: none;                                                /* No border on other sides */
+    box-shadow: none;                                            /* No shadow */
+    transition: all 0.2s ease;                                   /* Smooth transitions */
+    backdrop-filter: none;                                       /* No blur */
+    position: relative;                                          /* For pseudo-element positioning */
+}
+
+/* Terminal prompt symbol before each hint */
+#hints-list li::before {
+    content: '>';                                                /* Terminal prompt symbol */
+    color: #a855f7;                                              /* Purple color */
+    font-weight: bold;                                           /* Bold prompt */
+    margin-right: 10px;                                          /* Space after prompt */
 }
 
 /* Hover effect for hint items */
 #hints-list li:hover {
-    transform: translateX(5px);                                   /* Slight slide effect */
-    border-left-color: #c084fc;                                  /* Brighter purple on hover */
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6),                /* Enhanced shadow */
-                0 0 20px rgba(168, 85, 247, 0.2);               /* Stronger glow */
+    transform: none;                                             /* No transform on hover */
+    background: rgba(168, 85, 247, 0.1);                         /* Subtle purple highlight */
+    box-shadow: none;                                            /* No shadow on hover */
 }
 
 /* 
- * Hints remaining counter: Shows how many hints are left
+ * Hints remaining counter: Terminal-style status line
  */
 #hints-remaining {
+    font-family: 'JetBrains Mono', monospace;                    /* Terminal font */
     font-weight: 500;                                            /* Medium font weight */
-    color: #a855f7;                                              /* Purple color */
-    margin-top: 15px;                                            /* Space above counter */
-    text-align: center;                                          /* Center the text */
-    font-size: 1.1em;                                           /* Slightly larger text */
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);                 /* Shadow for readability */
+    color: #fcd34d;                                              /* Amber/yellow color for status */
+    padding: 10px 15px;                                          /* Padding to match container */
+    background: rgba(0, 0, 0, 0.3);                              /* Darker background */
+    border-top: 1px solid rgba(139, 92, 246, 0.2);               /* Top border separator */
+    text-align: left;                                            /* Left align like terminal */
+    font-size: 0.9em;                                            /* Slightly smaller text */
+    text-shadow: 0 0 10px rgba(252, 211, 77, 0.4);               /* Glowing effect */
+    margin: 0;                                                   /* No margin, part of container */
 }
 
 /* 
