@@ -773,10 +773,8 @@
             setTimeout(() => {
                 toast.classList.add('hiding');
                 setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
-                }, 300); // Match animation duration
+                    toast.remove();
+                }, 300); // Match CSS animation duration
             }, 4000);
         }
 
