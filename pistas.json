@@ -1,34 +1,402 @@
 [
     {
-        "dificultad": 5,
-        "pista": "Fue inspirado por la indulgencia de sus padres desde muy temprana edad, lo que fomentó su gran imaginación"
+        "nombre": "Nelson Mandela",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Esta persona fue sentenciada a prisión perpetua durante el Proceso de Rivonia y estuvo encarcelada durante veintisiete años."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Esta persona fue secretario general del Movimiento de Países No Alineados entre 1998 y 2002."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Esta persona presidió el Congreso Nacional Africano (CNA) entre 1991 y 1997 y lideró al CNA al triunfo en las urnas en las elecciones generales de 1994."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Esta persona fundó la organización guerrillera Umkhonto we Sizwe (MK) o 'La Lanza de la Nación' en 1961."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Esta persona nació en la Provincia Cabo Oriental y estudió Derecho en la Universidad de Fort Hare y la Universidad de Witwatersrand."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Esta persona fue abogado, activista contra el apartheid, político y filántropo."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Esta persona es conocida como el Padre de la Nación sudafricana."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Esta persona fue el primer presidente de raza negra en la historia de Sudáfrica."
+            }
+        ],
+        "wikidata_id": "Q8023",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Nelson_Mandela",
+        "ultima_actualizacion": "2025-11-25T14:05:43.755964"
     },
     {
-        "dificultad": 4,
-        "pista": "Sus cuentos infantiles estuvieron influenciados por cuentos y leyendas nórdicas"
+        "nombre": "Vincent van Gogh",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Esta persona pintó la naturaleza de los alrededores de Arlés, incluyendo los campos de trigo, los pantanos del delta del Ródano y el canal del sur de Arlés."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Esta persona realizó más de 1600 dibujos y pintó unos 800 cuadros, incluyendo 43 autorretratos y 148 acuarelas."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Esta persona influyó grandemente en el arte del siglo XX, especialmente entre los expresionistas alemanes y los fauvistas."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Esta persona pintó la naturaleza con pinceladas ondulantes y colores intensos, como amarillos, verdes y azules."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Esta persona nació en los Países Bajos y estudió francés y alemán."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Esta persona se convirtió en pastor protestante y luego se marchó como misionero a una región minera de Bélgica."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Esta persona es un pintor neerlandés conocido por sus obras de arte expresionistas y fauvistas."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Esta persona es conocido por pintar con colores vivos y preferir la luz en sus obras de arte."
+            }
+        ],
+        "wikidata_id": "Q5582",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Vincent_van_Gogh",
+        "ultima_actualizacion": "2025-11-25T14:05:50.947992"
     },
     {
-        "dificultad": 3,
-        "pista": "Sus obras literarias incluyen cuentos como El patito feo y La sirenita"
+        "nombre": "Tomás de Aquino",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "En su obra, encontramos una glosa de los Padres de la Iglesia sobre los Evangelios, conocida como Catena aurea, que se cree que fue escrita por él en su vejez."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue nombrado Doctor de la Iglesia en 1567, un honor que reconocía su contribución a la teología y la filosofía."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su principal obra, la Summa theologiae, es un compendio de la doctrina católica que trata 495 cuestiones divididas en artículos."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Se le debe el rescate y reinterpretación de la metafísica y una teoría del Derecho que sería muy consultada posteriormente."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en el siglo XIII y estudió exhaustivamente a los intelectuales referenciales de su época, incluyendo a Aristóteles y Platón."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue canonizado en 1323 y se le considera uno de los principales introductores de la filosofía de Aristóteles en la corriente escolástica del siglo XIII."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es recordado como uno de los grandes pensadores de la historia, cuya obra ha influido en la teología, la filosofía y la ciencia durante siglos."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Su legado universal es inmenso, y su influencia se puede ver en la Iglesia católica, la filosofía y la ciencia modernas."
+            }
+        ],
+        "wikidata_id": "Q9438",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Tom%C3%A1s_de_Aquino",
+        "ultima_actualizacion": "2025-11-25T14:09:06.183692"
     },
     {
-        "dificultad": 3,
-        "pista": "Sus escritos estaban a menudo ilustrados por un artista destacado"
+        "nombre": "Rabindranath Tagore",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "En su último viaje a China, la figura fue obligada a cancelar su gira debido a una campaña desplegada contra él por el Partido Comunista Chino, que lo acusaba de ser un 'virus imperialista europeo'."
+            },
+            {
+                "dificultad": 4,
+                "pista": "La figura fue un defensor del cosmopolitismo asiático y creía que la autorrealización de la India debía comenzar en sus aldeas, ideas que expresó en su obra 'La civilización oriental y occidental'."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Se le recuerda por ser el primer asiático en ganar un Premio Nobel de Literatura en 1913, y por ser conocido como 'el bardo de Bengala'."
+            },
+            {
+                "dificultad": 3,
+                "pista": "La figura revolucionó la literatura bengalí con obras como 'El hogar y el mundo' y 'Gitanjali', y extendió el arte bengalí con multitud de poemas, historias cortas, cartas y ensayos."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en una familia de artistas y escritores, y desde muy joven estuvo en contacto con la sociedad y la cultura europeas."
+            },
+            {
+                "dificultad": 2,
+                "pista": "La figura fue un sabio y reformador cultural que modernizó el arte bengalí desafiando las críticas que hasta entonces lo vinculaban a formas clasicistas."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un poeta y escritor que dejó una huella imborrable en la literatura y la cultura de Asia, y su legado sigue inspirando a generaciones de artistas y pensadores."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Su poesía y escritos se caracterizan por su profundo sentido de la espiritualidad y su compromiso con la justicia social y la paz."
+            }
+        ],
+        "wikidata_id": "Q7241",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Rabindranath_Tagore",
+        "ultima_actualizacion": "2025-11-25T14:09:15.036814"
     },
     {
-        "dificultad": 2,
-        "pista": "Fue un escritor y poeta famoso en su país natal"
+        "nombre": "Gengis Kan",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue enterrado en un lugar secreto, rodeado de un lago y una montaña, en la región de Ordos, en Mongolia Interior, China."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue el primer líder de un imperio que unificó a las tribus nómadas de Asia y extendió su dominio hasta Europa Oriental y el océano Pacífico."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Realizó reformas en su ejército que le dieron muchas claves de la victoria militar, reforzó la disciplina y dividió sus ejércitos en unidades decimales."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Promulgó la 'Yassa', una ley general que regía la vida ciudadana y estableció un sistema de justicia y administración."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en la región de Khentii, en Mongolia, en el año 1162, en un clan nómada de la tribu de los Yeke Juu."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se convirtió en el líder de su tribu a la edad de 20 años y comenzó a unificar a las tribus nómadas de Asia."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un líder militar y político que unificó a las tribus nómadas de Asia y creó el Imperio Mongol, uno de los imperios más grandes de la historia."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es considerado uno de los líderes más importantes de la historia, conocido por su habilidad militar y su capacidad para unificar a las tribus nómadas de Asia."
+            }
+        ],
+        "wikidata_id": "Q720",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Gengis_Kan",
+        "ultima_actualizacion": "2025-11-25T14:11:57.434253"
     },
     {
-        "dificultad": 2,
-        "pista": "Su formación literaria fue apoyada por personalidades destacadas del país"
+        "nombre": "Benjamin Franklin",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "En su juventud, este visionario estadounidense publicó artículos satíricos contra el gobierno de Massachusetts, lo que le valió la cárcel a su hermano por desacato."
+            },
+            {
+                "dificultad": 4,
+                "pista": "A los 24 años, este hombre de acción reconoció la paternidad de un hijo ilegítimo y lo acogió en su hogar, demostrando su humanidad y comprensión."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Este polímata estadounidense fue un líder clave en la lucha por la independencia de las colonias, y su influencia en la creación de la Constitución de los Estados Unidos es incalculable."
+            },
+            {
+                "dificultad": 3,
+                "pista": "En 1753, este inventor y científico estadounidense creó un invento que cambiaría la forma en que las personas protegen sus hogares de los rayos, y que aún hoy en día se utiliza en todo el mundo."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Este estadounidense nació en la calle Milk de Boston, Massachusetts, en 1706, y creció en una familia numerosa con 22 hermanos."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Este hombre de ciencia y política se convirtió en un héroe nacional en América después de liderar un esfuerzo en Londres para que el Parlamento de Gran Bretaña derogara la ley del timbre."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Este estadounidense fue un líder clave en la lucha por la independencia de las colonias y se convirtió en uno de los padres fundadores de los Estados Unidos."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Este hombre de acción y ciencia fue un polímata que contribuyó significativamente a la historia de los Estados Unidos en múltiples campos."
+            }
+        ],
+        "wikidata_id": "Q34969",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Benjamin_Franklin",
+        "ultima_actualizacion": "2025-11-25T14:12:07.303422"
     },
     {
-        "dificultad": 1,
-        "pista": "Era un escritor y poeta"
+        "nombre": "Oscar Wilde",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue enterrado en una tumba anónima en el cementerio de Bagneux, en París, a pesar de sus deseos de ser enterrado en Irlanda."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Escribió cuatro comedias divertidas para gente seria, que se convirtieron en un éxito en el Londres victoriano tardío."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su obra maestra, La importancia de llamarse Ernesto, sigue siendo una de las comedias más famosas de la literatura inglesa."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Incorporó temas de decadencia, duplicidad y belleza en su novela El retrato de Dorian Gray."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Dublín, en el Reino Unido, en 1854, y era de origen irlandés."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se convirtió al catolicismo en su lecho de muerte, después de haber explorado mucho la religión durante su vida."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un escritor, poeta y dramaturgo británico de origen irlandés, conocido por su ingenio mordaz y su vestir extravagante."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Se convirtió en una de las mayores personalidades de su tiempo, gracias a su brillante conversación y su obra literaria."
+            }
+        ],
+        "wikidata_id": "Q30875",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Oscar_Wilde",
+        "ultima_actualizacion": "2025-11-25T14:17:29.090519"
     },
     {
-        "dificultad": 1,
-        "pista": "Fue un autor de cuentos para niños"
+        "nombre": "Lenin",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue enterrado en la Necrópolis de las Murallas del Kremlin, en Moscú, en un mausoleo diseñado por Alexéi Shchúsev."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue un firme defensor de la Nueva Política Económica, que combinaba elementos socialistas y capitalistas."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Lideró la Revolución de Octubre de 1917 y se convirtió en el principal dirigente de la Unión de Repúblicas Socialistas Soviéticas."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Escribió su obra maestra en el exilio, donde aprendió a valorar la importancia de la organización y la disciplina."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Simbirsk, Rusia, el 22 de abril de 1870, en una familia de origen noble."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Estudió en la Universidad de Kazán, donde se interesó por la filosofía y la política."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un político y revolucionario ruso que luchó por la creación de un estado socialista en Rusia."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Su legado es controvertido y ha sido objeto de debate en la historia del comunismo y la política mundial."
+            }
+        ],
+        "wikidata_id": "Q1394",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Lenin",
+        "ultima_actualizacion": "2025-11-25T14:17:38.010089"
+    },
+    {
+        "nombre": "Miguel Ángel",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "En un momento de su vida, se deshizo de algunos de sus dibujos para evitar que se conocieran sus procesos creativos."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue un destacado autor de sonetos y madrigales, géneros poéticos que exploró en sus obras."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Sus formas métricas favoritas eran los sonetos y los madrigales, aunque también escribió algunos tercetos."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Entre sus obras más destacadas se encuentran los frescos de la Capilla Sixtina y la Capilla Paulina."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Es famoso por sus esculturas, pinturas y frescos, que se conservan en museos y monumentos importantes."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Sus obras más famosas incluyen la Capilla Sixtina y la Capilla Paulina, que son consideradas algunas de las mejores obras de arte de la historia."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es el famoso artista italiano que creó la Capilla Sixtina y es conocido por sus obras maestras en escultura, pintura y arquitectura."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es el pintor y escultor italiano que creó algunas de las obras más famosas de la historia, incluyendo la Capilla Sixtina y la estatua de la Noche."
+            }
+        ],
+        "wikidata_id": "Q5592",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Miguel_%C3%81ngel",
+        "ultima_actualizacion": "2025-11-25T15:06:40.241275"
+    },
+    {
+        "nombre": "Mahatma Gandhi",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue asesinado en 1948 por un fanático hinduista que compartía su visión de un país sin castas, pero con una visión más extremista."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue el líder de la izquierda del partido del Congreso, pero tuvo conflictos con su discípulo Nehru, que representaba a la izquierda."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Instauró métodos de lucha social novedosos como la huelga de hambre y predicó la áhimsa (no violencia) como medio para resistir al dominio británico."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue un estudiante mediocre en Porbandar y posteriormente en Rajkot, pero logró pasar el examen de admisión de la Universidad de Mumbai y estudiar en Inglaterra."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue un defensor de la no violencia y la paz, y escribió frases célebres como 'Ojo por ojo y todo el mundo acabará ciego'."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue un líder importante en la lucha por la independencia de la India y fue asesinado en 1948."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un líder hinduista indio que luchó por la independencia de la India y fue asesinado en 1948. Se le conoce como 'Bapu' y fue un defensor de la no violencia y la paz."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un líder hinduista indio que luchó por la independencia de la India y fue asesinado en 1948. Se le conoce como 'Mahatma' y fue un defensor de la no violencia y la paz."
+            }
+        ],
+        "wikidata_id": "Q1001",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Mahatma_Gandhi",
+        "ultima_actualizacion": "2025-11-25T15:06:50.113335"
     }
 ]
