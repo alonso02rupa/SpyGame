@@ -383,11 +383,11 @@ main {
 }
 
 /* 
- * Hints scroll container: Makes hints scrollable with fixed height
+ * Hints scroll container: Makes hints scrollable with maximum height
  * Allows viewing 5-6 hints at a time, with scroll for more
  */
 .hints-scroll-container {
-    max-height: 350px;                                           /* Fixed height for ~5-6 hints */
+    max-height: 350px;                                           /* Maximum height for ~5-6 hints */
     overflow-y: auto;                                            /* Enable vertical scrolling */
     padding-right: 10px;                                         /* Space for scrollbar */
     margin-bottom: 10px;                                         /* Space below container */
