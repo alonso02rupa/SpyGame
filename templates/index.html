@@ -53,6 +53,18 @@
         Everything users see and interact with goes inside here.
     -->
     
+    <!-- Top-left user status bar (like game stats) -->
+    <div id="user-status" class="user-status-corner">
+        <span id="user-display">Guest</span>
+        <div class="auth-buttons">
+            <button id="login-btn" class="btn btn-tiny">Login</button>
+            <button id="register-btn" class="btn btn-tiny">Register</button>
+            <button id="guest-btn" class="btn btn-tiny" style="display: none;">Guest</button>
+            <button id="logout-btn" class="btn btn-tiny" style="display: none;">Logout</button>
+            <a href="/stats" id="stats-link" class="btn btn-tiny btn-stats" style="display: none;">Stats</a>
+        </div>
+    </div>
+
     <div class="container">
         <!-- 
             This div wraps all our content and centers it on the page.
@@ -76,19 +88,6 @@
                 This gives users context about what they're about to play.
             -->
         </header>
-
-        <div id="user-status" class="user-status">
-            <!-- User authentication status area -->
-            <div id="user-info" class="user-info">
-                <span id="user-display">Playing as Guest</span>
-                <div class="auth-buttons">
-                    <button id="login-btn" class="btn btn-small">Login</button>
-                    <button id="register-btn" class="btn btn-small">Register</button>
-                    <button id="guest-btn" class="btn btn-small" style="display: none;">Play as Guest</button>
-                    <button id="logout-btn" class="btn btn-small" style="display: none;">Logout</button>
-                </div>
-            </div>
-        </div>
 
         <main>
             <!-- 
@@ -200,19 +199,6 @@
                 <!-- 
                     This div will contain game results and outcome messages.
                     Initially empty - JavaScript adds content here when games end
-                -->
-            </div>
-
-            <div class="stats-link">
-                <!-- 
-                    Container for the navigation link to the statistics page.
-                    class="stats-link": CSS class that centers the link and adds styling
-                -->
-                <a href="/stats" class="btn btn-link">View Game Statistics</a>
-                <!-- 
-                    <a> creates a hyperlink to another page.
-                    href="/stats": The URL path to the statistics page
-                    class="btn btn-link": Styles the link to look like a button
                 -->
             </div>
         </main>
@@ -609,6 +595,7 @@
         const registerBtn = document.getElementById('register-btn');
         const guestBtn = document.getElementById('guest-btn');
         const logoutBtn = document.getElementById('logout-btn');
+        const statsLink = document.getElementById('stats-link');
         const loginModal = document.getElementById('login-modal');
         const registerModal = document.getElementById('register-modal');
         const loginForm = document.getElementById('login-form');
@@ -1064,17 +1051,19 @@
              * Update the user status display based on current authentication state
              */
             if (currentUser === 'guest') {
-                userDisplay.textContent = 'Playing as Guest';
+                userDisplay.textContent = 'Guest';
                 loginBtn.style.display = 'inline-block';
                 registerBtn.style.display = 'inline-block';
                 guestBtn.style.display = 'none';
                 logoutBtn.style.display = 'none';
+                statsLink.style.display = 'none';  // Hide stats for guests
             } else {
-                userDisplay.textContent = `Welcome, ${currentUser}!`;
+                userDisplay.textContent = currentUser;
                 loginBtn.style.display = 'none';
                 registerBtn.style.display = 'none';
                 guestBtn.style.display = 'inline-block';
                 logoutBtn.style.display = 'inline-block';
+                statsLink.style.display = 'inline-block';  // Show stats for logged in users
             }
         }
 

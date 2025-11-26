@@ -1014,42 +1014,49 @@ thead tr:hover {
  * Styles for login/register functionality and user status display
  */
 
-/* User status bar - compact inline display */
-.user-status {
-    background: rgba(88, 28, 135, 0.2);                        /* Lighter semi-transparent purple */
-    border: 1px solid rgba(139, 92, 246, 0.2);                 /* Subtle purple border */
-    border-radius: 6px;                                         /* Smaller rounded corners */
-    padding: 8px 12px;                                          /* Compact padding */
-    margin-bottom: 15px;                                        /* Reduced space below */
+/* User status bar - fixed top-left corner like game stats */
+.user-status-corner {
+    position: fixed;                                            /* Fixed positioning */
+    top: 10px;                                                  /* Distance from top */
+    left: 10px;                                                 /* Distance from left */
+    background: rgba(0, 0, 0, 0.7);                            /* Dark semi-transparent background */
+    border: 1px solid rgba(139, 92, 246, 0.3);                 /* Subtle purple border */
+    border-radius: 4px;                                         /* Small rounded corners */
+    padding: 6px 10px;                                          /* Compact padding */
     backdrop-filter: blur(10px);                                /* Glass effect blur */
-}
-
-.user-info {
-    display: flex;                                              /* Flex layout for user info */
-    justify-content: space-between;                             /* Space between user display and buttons */
-    align-items: center;                                        /* Vertically center items */
-    flex-wrap: wrap;                                            /* Allow wrapping on small screens */
-    gap: 8px;                                                   /* Reduced space between items */
+    z-index: 100;                                               /* Above other content */
+    display: flex;                                              /* Flex layout */
+    align-items: center;                                        /* Center vertically */
+    gap: 8px;                                                   /* Space between items */
+    font-family: 'JetBrains Mono', 'Share Tech Mono', monospace; /* Terminal font */
 }
 
 #user-display {
-    font-family: 'JetBrains Mono', 'Share Tech Mono', monospace; /* Terminal font */
     font-weight: 500;                                           /* Medium weight */
     color: #c4b5fd;                                             /* Light purple text */
-    font-size: 0.85em;                                          /* Smaller text */
+    font-size: 0.75em;                                          /* Small text */
+    white-space: nowrap;                                        /* No wrap */
 }
 
 .auth-buttons {
     display: flex;                                              /* Flex layout for buttons */
-    gap: 6px;                                                   /* Reduced space between buttons */
-    flex-wrap: wrap;                                            /* Allow wrapping on small screens */
+    gap: 4px;                                                   /* Small space between buttons */
+    flex-wrap: nowrap;                                          /* No wrapping */
 }
 
-/* Small button variant for auth buttons */
-.btn-small {
-    padding: 4px 10px !important;                              /* Even smaller padding */
-    font-size: 0.8em !important;                               /* Smaller font size */
+/* Tiny button variant for corner auth buttons */
+.btn-tiny {
+    padding: 2px 6px !important;                               /* Very small padding */
+    font-size: 0.7em !important;                               /* Very small font size */
     min-width: auto !important;                                 /* Override minimum width */
+    border-radius: 3px !important;                             /* Small border radius */
+}
+
+/* Stats button special styling */
+.btn-stats {
+    background: rgba(139, 92, 246, 0.3) !important;            /* Purple tint */
+    color: #c4b5fd !important;                                 /* Light purple text */
+    text-decoration: none !important;                          /* Remove underline */
 }
 
 /* Modal styles for login/register forms */
