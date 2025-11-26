@@ -609,8 +609,10 @@ def get_hint():
     
     if not available_hints:
         return jsonify({
-            'status': 'error', 
-            'message': 'No more hints available! Try to make a guess.'
+            'status': 'success', 
+            'hint': '',
+            'message': 'No more hints available! Try to make a guess.',
+            'hints_remaining': 0
         })
     
     # Tomar la siguiente pista (la más difícil disponible)

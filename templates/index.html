@@ -125,12 +125,18 @@
                         It labels this section so users know what the content below represents.
                     -->
                     
-                    <ul id="hints-list"></ul>
-                    <!-- 
-                        <ul> creates an unordered (bulleted) list.
-                        id="hints-list": JavaScript will add hint items to this list
-                        Initially empty - hints are added dynamically via JavaScript
-                    -->
+                    <div class="hints-scroll-container">
+                        <!-- 
+                            Scrollable container for hints list.
+                            Maximum height allows viewing 5-6 hints with scroll for more.
+                        -->
+                        <ul id="hints-list"></ul>
+                        <!-- 
+                            <ul> creates an unordered (bulleted) list.
+                            id="hints-list": JavaScript will add hint items to this list
+                            Initially empty - hints are added dynamically via JavaScript
+                        -->
+                    </div>
                     
                     <p id="hints-remaining"></p>
                     <!-- 
@@ -143,6 +149,7 @@
                     <!-- 
                         This div contains all the main action buttons for the game.
                         The class="game-controls" applies CSS styling to center and space the buttons.
+                        Placed below hints section but above guess section for fixed position.
                     -->
                     
                     <button id="start-game-btn" class="btn btn-primary">Start New Game</button>
@@ -808,6 +815,17 @@
             });
         }
 
+        /*
+         * Helper function to scroll the hints container to the bottom
+         * Called after adding a new hint so the user sees the latest hint
+         */
+        function scrollHintsToBottom() {
+            const hintsContainer = document.querySelector('.hints-scroll-container');
+            if (hintsContainer) {
+                hintsContainer.scrollTop = hintsContainer.scrollHeight;
+            }
+        }
+
         /* 
          * Function to start a new game
          * This function sends a request to the Flask server to begin a new game session
@@ -867,6 +885,7 @@
                         const li = document.createElement('li');
                         hintsList.appendChild(li);
                         await typeWriter(li, data.first_hint, 25);
+                        scrollHintsToBottom();                       // Scroll to show new hint
                         hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
                         
                         // Disable hint button if no more hints
@@ -910,22 +929,29 @@
                 hideLoading();
                 
                 if (data.status === 'success') {
-                    // Hint received successfully - add it to the page with typewriter effect
-                    
-                    // Create a new list item (<li>) element for this hint
-                    const li = document.createElement('li');
-                    hintsList.appendChild(li);
-                    await typeWriter(li, data.hint, 25);         // Typewriter effect
-                    
-                    // Update the remaining hints counter
-                    hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
-                    
-                    // Check if this was the last hint
-                    if (data.hints_remaining === 0) {
+                    // Check if there are no more hints available
+                    if (data.hints_remaining === 0 && !data.hint) {
                         getHintBtn.disabled = true;              // Disable the hint button
                         showToast('No more hints available! Make your guess.', 'warning');
-                    } else {
-                        showToast('Hint added! You can ask for more hints or make a guess.', 'info');
+                    } else if (data.hint) {
+                        // Hint received successfully - add it to the page with typewriter effect
+                        
+                        // Create a new list item (<li>) element for this hint
+                        const li = document.createElement('li');
+                        hintsList.appendChild(li);
+                        await typeWriter(li, data.hint, 25);         // Typewriter effect
+                        scrollHintsToBottom();                       // Scroll to show new hint
+                        
+                        // Update the remaining hints counter
+                        hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
+                        
+                        // Check if this was the last hint
+                        if (data.hints_remaining === 0) {
+                            getHintBtn.disabled = true;              // Disable the hint button
+                            showToast('No more hints available! Make your guess.', 'warning');
+                        } else {
+                            showToast('Hint added! You can ask for more hints or make a guess.', 'info');
+                        }
                     }
                 } else {
                     // Error getting hint
@@ -999,6 +1025,7 @@
                             const li = document.createElement('li');
                             hintsList.appendChild(li);
                             await typeWriter(li, data.new_hint, 25);
+                            scrollHintsToBottom();                   // Scroll to show new hint
                             
                             // Update hints remaining counter
                             hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
