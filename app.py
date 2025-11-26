@@ -29,6 +29,67 @@ def get_db_collections():
         print(f"MongoDB connection failed: {e}")
         return None, None, None, False
 
+def load_hints_from_json(filepath='pistas.json'):
+    """
+    Load hints from a JSON file into the database on startup.
+    If the file doesn't exist or MongoDB is not available, the app starts normally.
+    """
+    if not os.path.exists(filepath):
+        print(f"No hints file found at {filepath}. Starting without loading hints.")
+        return
+    
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available:
+        print("MongoDB not available. Skipping hints loading from JSON.")
+        return
+    
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # Handle both list and dictionary formats
+        if isinstance(data, list):
+            personas = data
+        elif isinstance(data, dict):
+            personas = list(data.values())
+        else:
+            print(f"Unrecognized JSON format in {filepath}. Skipping hints loading.")
+            return
+        
+        if not personas:
+            print(f"No persons found in {filepath}. Skipping hints loading.")
+            return
+        
+        loaded = 0
+        
+        for person_data in personas:
+            nombre = person_data.get('nombre')
+            if not nombre:
+                continue
+            
+            if 'pistas' not in person_data or not person_data['pistas']:
+                continue
+            
+            try:
+                # Use upsert to insert or update in a single operation
+                pistas_collection.update_one(
+                    {"nombre": nombre},
+                    {"$set": person_data},
+                    upsert=True
+                )
+                loaded += 1
+            except Exception as e:
+                print(f"Error loading person {nombre}: {e}")
+        
+        total = pistas_collection.count_documents({})
+        print(f"Hints loaded from {filepath}: {loaded} persons processed. Total in DB: {total}")
+        
+    except json.JSONDecodeError as e:
+        print(f"Error parsing JSON file {filepath}: {e}")
+    except Exception as e:
+        print(f"Error loading hints from {filepath}: {e}")
+
 def get_person_from_db():
     """Get a random person from the database"""
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
@@ -680,6 +741,9 @@ def stats():
     return render_template('stats.html', sessions=sessions, current_user=current_user)
 
 if __name__ == '__main__':
+    # Load hints from pistas.json into the database on startup
+    load_hints_from_json()
+    
     debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() in ['true', '1', 'yes']
     host = os.getenv('FLASK_HOST', '0.0.0.0')
     port = int(os.getenv('FLASK_PORT', 5000))
