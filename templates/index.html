@@ -76,7 +76,6 @@
                 <div class="auth-buttons">
                     <button id="login-btn" class="btn btn-tiny">Login</button>
                     <button id="register-btn" class="btn btn-tiny">Register</button>
-                    <button id="guest-btn" class="btn btn-tiny" style="display: none;">Guest</button>
                     <button id="logout-btn" class="btn btn-tiny" style="display: none;">Logout</button>
                     <a href="/stats" id="stats-link" class="btn btn-tiny btn-stats" style="display: none;">Stats</a>
                 </div>
@@ -563,6 +562,8 @@
         let gameActive = false;
         // Track if a request is in progress to prevent double submissions
         let isLoading = false;
+        // Track hints remaining locally to prevent UI bugs when clicking fast
+        let currentHintsRemaining = 0;
 
         /* 
          * DOM Element References: These variables store references to HTML elements
@@ -587,7 +588,6 @@
         const userDisplay = document.getElementById('user-display');
         const loginBtn = document.getElementById('login-btn');
         const registerBtn = document.getElementById('register-btn');
-        const guestBtn = document.getElementById('guest-btn');
         const logoutBtn = document.getElementById('logout-btn');
         const statsLink = document.getElementById('stats-link');
         const loginModal = document.getElementById('login-modal');
@@ -643,7 +643,6 @@
             // Authentication event listeners
             if (loginBtn) loginBtn.addEventListener('click', showLoginModal);
             if (registerBtn) registerBtn.addEventListener('click', showRegisterModal);
-            if (guestBtn) guestBtn.addEventListener('click', playAsGuest);
             if (logoutBtn) logoutBtn.addEventListener('click', logout);
             if (loginForm) loginForm.addEventListener('submit', handleLogin);
             if (registerForm) registerForm.addEventListener('submit', handleRegister);
@@ -805,6 +804,9 @@
                     gameActive = true;                           // Set game state to active
                     showToast(data.message, 'success');         // Show success toast
                     
+                    // Initialize hints counter from server
+                    currentHintsRemaining = data.hints_remaining;
+                    
                     // Reset the user interface to clean state
                     hintsList.innerHTML = '';                    // Clear any old hints
                     hintsRemaining.textContent = '';             // Clear hint counter
@@ -828,10 +830,10 @@
                         hintsList.appendChild(li);
                         await typeWriter(li, data.first_hint, 25);
                         scrollHintsToBottom();                       // Scroll to show new hint
-                        hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
+                        hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
                         
                         // Disable hint button if no more hints
-                        if (data.hints_remaining === 0) {
+                        if (currentHintsRemaining === 0) {
                             getHintBtn.disabled = true;
                         }
                     }
@@ -853,8 +855,17 @@
          * This adds a new hint to the hints list and updates the remaining count
          */
         function getHint() {
-            // Don't do anything if no game is active or loading
-            if (!gameActive || isLoading) return;
+            // Don't do anything if no game is active, loading, or no hints remaining
+            if (!gameActive || isLoading || currentHintsRemaining <= 0) return;
+
+            // Immediately decrement hints counter and update UI to prevent double-click bugs
+            currentHintsRemaining--;
+            hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+            
+            // Disable button immediately if no hints left
+            if (currentHintsRemaining <= 0) {
+                getHintBtn.disabled = true;
+            }
 
             // Show loading indicator
             showLoading();
@@ -871,6 +882,10 @@
                 hideLoading();
                 
                 if (data.status === 'success') {
+                    // Sync local counter with server value
+                    currentHintsRemaining = data.hints_remaining;
+                    hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+                    
                     // Check if there are no more hints available
                     if (data.hints_remaining === 0 && !data.hint) {
                         getHintBtn.disabled = true;              // Disable the hint button
@@ -884,24 +899,33 @@
                         await typeWriter(li, data.hint, 25);         // Typewriter effect
                         scrollHintsToBottom();                       // Scroll to show new hint
                         
-                        // Update the remaining hints counter
-                        hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
-                        
                         // Check if this was the last hint
                         if (data.hints_remaining === 0) {
                             getHintBtn.disabled = true;              // Disable the hint button
                             showToast('No more hints available! Make your guess.', 'warning');
                         } else {
+                            getHintBtn.disabled = false;             // Re-enable if hints available
                             showToast('Hint added! You can ask for more hints or make a guess.', 'info');
                         }
                     }
                 } else {
-                    // Error getting hint
+                    // Error getting hint - restore the counter
+                    currentHintsRemaining++;
+                    hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+                    if (currentHintsRemaining > 0) {
+                        getHintBtn.disabled = false;
+                    }
                     showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 hideLoading();
+                // Error - restore the counter
+                currentHintsRemaining++;
+                hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+                if (currentHintsRemaining > 0) {
+                    getHintBtn.disabled = false;
+                }
                 console.error('Error:', error);
                 showToast('Error getting hint. Please try again.', 'error');
             });
@@ -969,11 +993,12 @@
                             await typeWriter(li, data.new_hint, 25);
                             scrollHintsToBottom();                   // Scroll to show new hint
                             
-                            // Update hints remaining counter
-                            hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
+                            // Sync local counter with server value
+                            currentHintsRemaining = data.hints_remaining;
+                            hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
                             
                             // Disable hint button if no more hints available
-                            if (data.hints_remaining === 0) {
+                            if (currentHintsRemaining === 0) {
                                 getHintBtn.disabled = true;
                             }
                         }
@@ -1045,17 +1070,15 @@
              * Update the user status display based on current authentication state
              */
             if (currentUser === 'guest') {
-                userDisplay.textContent = 'Guest';
+                userDisplay.textContent = 'GUEST';
                 loginBtn.style.display = 'inline-block';
                 registerBtn.style.display = 'inline-block';
-                guestBtn.style.display = 'none';
                 logoutBtn.style.display = 'none';
                 statsLink.style.display = 'none';  // Hide stats for guests
             } else {
-                userDisplay.textContent = currentUser;
+                userDisplay.textContent = currentUser.toUpperCase();
                 loginBtn.style.display = 'none';
                 registerBtn.style.display = 'none';
-                guestBtn.style.display = 'inline-block';
                 logoutBtn.style.display = 'inline-block';
                 statsLink.style.display = 'inline-block';  // Show stats for logged in users
             }
