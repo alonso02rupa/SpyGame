@@ -102,14 +102,8 @@
                     The id="game-area" allows us to reference this specific element in CSS and JavaScript.
                 -->
                 
-                <div id="message-box" class="message">
-                    <!-- 
-                        This div displays feedback messages to the user throughout the game.
-                        id="message-box": Unique identifier so JavaScript can update the message
-                        class="message": CSS class that styles the message box
-                    -->
-                    Welcome to SpyGame! Click "Start New Game" to begin.
-                </div>
+                <!-- Terminal-style Notification Area (above hints section) -->
+                <div id="toast-container" class="toast-container"></div>
 
                 <div id="hints-section" class="hints-section" style="display: none;">
                     <!-- 
@@ -240,9 +234,6 @@
             <div class="radar-pulse"></div>
         </div>
     </div>
-
-    <!-- Toast Notification Container -->
-    <div id="toast-container" class="toast-container"></div>
 
     <!-- Authentication Modals -->
     <div id="login-modal" class="modal" style="display: none;">
@@ -601,7 +592,6 @@
          * so we can easily interact with them throughout our JavaScript code.
          * document.getElementById() finds elements by their unique id attribute.
          */
-        const messageBox = document.getElementById('message-box');         // The message display area
         const startGameBtn = document.getElementById('start-game-btn');     // Start new game button
         const getHintBtn = document.getElementById('get-hint-btn');         // Get hint button
         const revealAnswerBtn = document.getElementById('reveal-answer-btn'); // Reveal answer button
@@ -711,17 +701,6 @@
             console.error('Error setting up event listeners:', error);
         }
 
-        /* 
-         * Helper function to update the message box with feedback for the user
-         * Parameters:
-         * - message: The text to display
-         * - type: The style of message ('info', 'success', 'warning', 'error')
-         */
-        function updateMessage(message, type = 'info') {
-            messageBox.textContent = message;                    // Set the text content
-            messageBox.className = `message ${type}`;            // Set CSS classes for styling
-        }
-
         /*
          * Show/hide loading overlay and disable/enable game controls
          * Prevents double submissions during async operations
@@ -763,23 +742,11 @@
          * Replaces static message box updates with animated pop-ups
          */
         function showToast(message, type = 'info') {
-            // Also update the message box for accessibility
-            updateMessage(message, type);
-            
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             
-            // Choose icon based on type
-            let icon = '💬';
-            if (type === 'success') icon = '✅';
-            else if (type === 'error') icon = '❌';
-            else if (type === 'warning') icon = '⚠️';
-            else if (type === 'info') icon = 'ℹ️';
-            
-            toast.innerHTML = `
-                <span class="toast-icon">${icon}</span>
-                <span class="toast-message">${message}</span>
-            `;
+            // Terminal-style message (no icon, just text)
+            toast.innerHTML = `<span class="toast-message">${message}</span>`;
             
             toastContainer.appendChild(toast);
             
