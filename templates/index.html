@@ -104,6 +104,34 @@
                     Welcome to SpyGame! Click "Start New Game" to begin.
                 </div>
 
+                <div class="game-controls">
+                    <!-- 
+                        This div contains all the main action buttons for the game.
+                        The class="game-controls" applies CSS styling to center and space the buttons.
+                        Placed above hints section so buttons stay in fixed position as hints are added.
+                    -->
+                    
+                    <button id="start-game-btn" class="btn btn-primary">Start New Game</button>
+                    <!-- 
+                        HTML button element that users click to start a new game.
+                        id="start-game-btn": Unique identifier for JavaScript to attach click events
+                        class="btn btn-primary": CSS classes for button styling (btn = general button, btn-primary = primary action styling)
+                    -->
+                    
+                    <button id="get-hint-btn" class="btn btn-secondary" disabled>Get Hint</button>
+                    <!-- 
+                        Button to request hints during gameplay.
+                        disabled: HTML attribute that makes the button unclickable until a game starts
+                        class="btn btn-secondary": Secondary button styling (less prominent than primary)
+                    -->
+                    
+                    <button id="reveal-answer-btn" class="btn btn-danger" disabled>Reveal Answer</button>
+                    <!-- 
+                        Button to give up and reveal the answer.
+                        class="btn btn-danger": Danger styling (red) to indicate this ends the game
+                    -->
+                </div>
+
                 <div id="hints-section" class="hints-section" style="display: none;">
                     <!-- 
                         This section displays the hints that the player has requested.
@@ -129,33 +157,6 @@
                     <!-- 
                         This paragraph will show how many hints are left.
                         id="hints-remaining": JavaScript updates this text as hints are used
-                    -->
-                </div>
-
-                <div class="game-controls">
-                    <!-- 
-                        This div contains all the main action buttons for the game.
-                        The class="game-controls" applies CSS styling to center and space the buttons.
-                    -->
-                    
-                    <button id="start-game-btn" class="btn btn-primary">Start New Game</button>
-                    <!-- 
-                        HTML button element that users click to start a new game.
-                        id="start-game-btn": Unique identifier for JavaScript to attach click events
-                        class="btn btn-primary": CSS classes for button styling (btn = general button, btn-primary = primary action styling)
-                    -->
-                    
-                    <button id="get-hint-btn" class="btn btn-secondary" disabled>Get Hint</button>
-                    <!-- 
-                        Button to request hints during gameplay.
-                        disabled: HTML attribute that makes the button unclickable until a game starts
-                        class="btn btn-secondary": Secondary button styling (less prominent than primary)
-                    -->
-                    
-                    <button id="reveal-answer-btn" class="btn btn-danger" disabled>Reveal Answer</button>
-                    <!-- 
-                        Button to give up and reveal the answer.
-                        class="btn btn-danger": Danger styling (red) to indicate this ends the game
                     -->
                 </div>
 
@@ -903,22 +904,28 @@
                 hideLoading();
                 
                 if (data.status === 'success') {
-                    // Hint received successfully - add it to the page with typewriter effect
-                    
-                    // Create a new list item (<li>) element for this hint
-                    const li = document.createElement('li');
-                    hintsList.appendChild(li);
-                    await typeWriter(li, data.hint, 25);         // Typewriter effect
-                    
-                    // Update the remaining hints counter
-                    hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
-                    
-                    // Check if this was the last hint
-                    if (data.hints_remaining === 0) {
+                    // Check if there are no more hints available
+                    if (data.hints_remaining === 0 && !data.hint) {
                         getHintBtn.disabled = true;              // Disable the hint button
                         showToast('No more hints available! Make your guess.', 'warning');
-                    } else {
-                        showToast('Hint added! You can ask for more hints or make a guess.', 'info');
+                    } else if (data.hint) {
+                        // Hint received successfully - add it to the page with typewriter effect
+                        
+                        // Create a new list item (<li>) element for this hint
+                        const li = document.createElement('li');
+                        hintsList.appendChild(li);
+                        await typeWriter(li, data.hint, 25);         // Typewriter effect
+                        
+                        // Update the remaining hints counter
+                        hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
+                        
+                        // Check if this was the last hint
+                        if (data.hints_remaining === 0) {
+                            getHintBtn.disabled = true;              // Disable the hint button
+                            showToast('No more hints available! Make your guess.', 'warning');
+                        } else {
+                            showToast('Hint added! You can ask for more hints or make a guess.', 'info');
+                        }
                     }
                 } else {
                     // Error getting hint
