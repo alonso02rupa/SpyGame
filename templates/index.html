@@ -220,6 +220,16 @@
         <button id="info-btn" class="btn btn-info" title="About this project">❓</button>
     </div>
 
+    <!-- Loading Indicator Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="radar-spinner">
+            <div class="radar-pulse"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
     <!-- Authentication Modals -->
     <div id="login-modal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -569,6 +579,8 @@
         
         // Game state variable to track if a game is currently active
         let gameActive = false;
+        // Track if a request is in progress to prevent double submissions
+        let isLoading = false;
 
         /* 
          * DOM Element References: These variables store references to HTML elements
@@ -587,6 +599,8 @@
         const submitGuessBtn = document.getElementById('submit-guess-btn'); // Submit guess button
         const resultSection = document.getElementById('result-section');     // Results display area
         const infoBtn = document.getElementById('info-btn');               // Info button
+        const loadingOverlay = document.getElementById('loading-overlay'); // Loading overlay
+        const toastContainer = document.getElementById('toast-container'); // Toast container
 
         // Authentication-related DOM elements
         const userDisplay = document.getElementById('user-display');
@@ -694,11 +708,109 @@
             messageBox.className = `message ${type}`;            // Set CSS classes for styling
         }
 
+        /*
+         * Show/hide loading overlay and disable/enable game controls
+         * Prevents double submissions during async operations
+         */
+        function showLoading() {
+            isLoading = true;
+            loadingOverlay.classList.add('active');
+            // Disable all game control buttons
+            startGameBtn.disabled = true;
+            if (!getHintBtn.disabled) getHintBtn.dataset.wasEnabled = 'true';
+            if (!revealAnswerBtn.disabled) revealAnswerBtn.dataset.wasEnabled = 'true';
+            if (!submitGuessBtn.disabled) submitGuessBtn.dataset.wasEnabled = 'true';
+            getHintBtn.disabled = true;
+            revealAnswerBtn.disabled = true;
+            submitGuessBtn.disabled = true;
+            guessInput.disabled = true;
+        }
+
+        function hideLoading() {
+            isLoading = false;
+            loadingOverlay.classList.remove('active');
+            // Re-enable start game button
+            startGameBtn.disabled = false;
+            // Only re-enable buttons that were enabled before loading
+            if (gameActive) {
+                if (getHintBtn.dataset.wasEnabled === 'true') getHintBtn.disabled = false;
+                if (revealAnswerBtn.dataset.wasEnabled === 'true') revealAnswerBtn.disabled = false;
+                if (submitGuessBtn.dataset.wasEnabled === 'true') submitGuessBtn.disabled = false;
+                guessInput.disabled = false;
+            }
+            // Clear the wasEnabled flags
+            delete getHintBtn.dataset.wasEnabled;
+            delete revealAnswerBtn.dataset.wasEnabled;
+            delete submitGuessBtn.dataset.wasEnabled;
+        }
+
+        /*
+         * Toast notification system for transient feedback messages
+         * Replaces static message box updates with animated pop-ups
+         */
+        function showToast(message, type = 'info') {
+            // Also update the message box for accessibility
+            updateMessage(message, type);
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            // Choose icon based on type
+            let icon = '💬';
+            if (type === 'success') icon = '✅';
+            else if (type === 'error') icon = '❌';
+            else if (type === 'warning') icon = '⚠️';
+            else if (type === 'info') icon = 'ℹ️';
+            
+            toast.innerHTML = `
+                <span class="toast-icon">${icon}</span>
+                <span class="toast-message">${message}</span>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto-remove after 4 seconds
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300); // Match animation duration
+            }, 4000);
+        }
+
+        /*
+         * Typewriter effect for hints
+         * Makes hint text appear character-by-character for a more engaging experience
+         */
+        function typeWriter(element, text, speed = 30) {
+            return new Promise((resolve) => {
+                let i = 0;
+                element.textContent = '';
+                
+                function type() {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        resolve();
+                    }
+                }
+                
+                type();
+            });
+        }
+
         /* 
          * Function to start a new game
          * This function sends a request to the Flask server to begin a new game session
          */
         function startNewGame() {
+            // Prevent double submissions
+            if (isLoading) return;
+            
             // Check if a game is already active
             if (gameActive) {
                 if (confirm('A game is already in progress. Do you want to start a new game? This will end the current game.')) {
@@ -709,6 +821,9 @@
                 }
             }
             
+            // Show loading indicator
+            showLoading();
+            
             // Use fetch() to make an HTTP request to our Flask server
             fetch('/start_game', {
                 method: 'POST',                                  // POST method for sending data
@@ -717,11 +832,13 @@
                 }
             })
             .then(response => response.json())                   // Convert response to JSON
-            .then(data => {                                      // Handle the server's response
+            .then(async data => {                                // Handle the server's response
+                hideLoading();
+                
                 if (data.status === 'success') {
                     // Game started successfully - update the user interface
                     gameActive = true;                           // Set game state to active
-                    updateMessage(data.message, 'success');     // Show success message
+                    showToast(data.message, 'success');         // Show success toast
                     
                     // Reset the user interface to clean state
                     hintsList.innerHTML = '';                    // Clear any old hints
@@ -740,11 +857,11 @@
                     guessInput.disabled = false;                 // Enable guess input
                     submitGuessBtn.disabled = false;             // Enable submit button
                     
-                    // Display the first hint automatically if provided
+                    // Display the first hint automatically if provided with typewriter effect
                     if (data.first_hint) {
                         const li = document.createElement('li');
-                        li.textContent = data.first_hint;
                         hintsList.appendChild(li);
+                        await typeWriter(li, data.first_hint, 25);
                         hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
                         
                         // Disable hint button if no more hints
@@ -753,14 +870,15 @@
                         }
                     }
                 } else {
-                    // Something went wrong - show error message
-                    updateMessage(data.message, 'error');
+                    // Something went wrong - show error toast
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
+                hideLoading();
                 // Handle network errors or other problems
                 console.error('Error:', error);                 // Log error to browser console
-                updateMessage('Error starting game. Please try again.', 'error');
+                showToast('Error starting game. Please try again.', 'error');
             });
         }
 
@@ -769,8 +887,11 @@
          * This adds a new hint to the hints list and updates the remaining count
          */
         function getHint() {
-            // Don't do anything if no game is active
-            if (!gameActive) return;
+            // Don't do anything if no game is active or loading
+            if (!gameActive || isLoading) return;
+
+            // Show loading indicator
+            showLoading();
 
             // Send request to Flask server for a hint
             fetch('/get_hint', {
@@ -780,14 +901,16 @@
                 }
             })
             .then(response => response.json())
-            .then(data => {
+            .then(async data => {
+                hideLoading();
+                
                 if (data.status === 'success') {
-                    // Hint received successfully - add it to the page
+                    // Hint received successfully - add it to the page with typewriter effect
                     
                     // Create a new list item (<li>) element for this hint
                     const li = document.createElement('li');
-                    li.textContent = data.hint;                  // Set the hint text
-                    hintsList.appendChild(li);                   // Add it to the hints list
+                    hintsList.appendChild(li);
+                    await typeWriter(li, data.hint, 25);         // Typewriter effect
                     
                     // Update the remaining hints counter
                     hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
@@ -795,18 +918,19 @@
                     // Check if this was the last hint
                     if (data.hints_remaining === 0) {
                         getHintBtn.disabled = true;              // Disable the hint button
-                        updateMessage('No more hints available! Make your guess.', 'warning');
+                        showToast('No more hints available! Make your guess.', 'warning');
                     } else {
-                        updateMessage('Hint added! You can ask for more hints or make a guess.', 'info');
+                        showToast('Hint added! You can ask for more hints or make a guess.', 'info');
                     }
                 } else {
                     // Error getting hint
-                    updateMessage(data.message, 'error');
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
+                hideLoading();
                 console.error('Error:', error);
-                updateMessage('Error getting hint. Please try again.', 'error');
+                showToast('Error getting hint. Please try again.', 'error');
             });
         }
 
@@ -815,17 +939,20 @@
          * This checks the user's guess against the correct answer
          */
         function makeGuess() {
-            // Don't do anything if no game is active
-            if (!gameActive) return;
+            // Don't do anything if no game is active or loading
+            if (!gameActive || isLoading) return;
 
             // Get the guess from the input field and remove extra whitespace
             const guess = guessInput.value.trim();
             
             // Check if the user actually entered something
             if (!guess) {
-                updateMessage('Please enter a guess!', 'error');
+                showToast('Please enter a guess!', 'error');
                 return;                                          // Exit the function early
             }
+
+            // Show loading indicator
+            showLoading();
 
             // Send the guess to the Flask server
             fetch('/make_guess', {
@@ -836,13 +963,15 @@
                 body: JSON.stringify({ guess: guess })           // Send guess as JSON data
             })
             .then(response => response.json())
-            .then(data => {
+            .then(async data => {
+                hideLoading();
+                
                 if (data.status === 'success') {
                     // Check if the guess was correct
                     if (data.correct) {
                         // Correct guess - end the game
                         gameActive = false;                      // Set game as inactive
-                        updateMessage(data.message, 'success'); // Show success message
+                        showToast(data.message, 'success');     // Show success toast
                         
                         // Disable all game buttons since game is over
                         getHintBtn.disabled = true;
@@ -850,16 +979,21 @@
                         guessInput.disabled = true;
                         submitGuessBtn.disabled = true;
                     } else {
-                        // Wrong guess - server may have provided a new hint automatically
-                        updateMessage(data.message, 'warning');
+                        // Wrong guess - apply shake animation
+                        guessInput.classList.add('shake');
+                        setTimeout(() => {
+                            guessInput.classList.remove('shake');
+                        }, 500); // Match animation duration
+                        
+                        showToast(data.message, 'warning');
                         guessInput.value = '';                   // Clear the input field
                         guessInput.focus();                      // Put cursor back in input
                         
-                        // If a new hint was provided, add it to the list
+                        // If a new hint was provided, add it to the list with typewriter effect
                         if (data.new_hint) {
                             const li = document.createElement('li');
-                            li.textContent = data.new_hint;
                             hintsList.appendChild(li);
+                            await typeWriter(li, data.new_hint, 25);
                             
                             // Update hints remaining counter
                             hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
@@ -872,12 +1006,13 @@
                     }
                 } else {
                     // Server error
-                    updateMessage(data.message, 'error');
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
+                hideLoading();
                 console.error('Error:', error);
-                updateMessage('Error making guess. Please try again.', 'error');
+                showToast('Error making guess. Please try again.', 'error');
             });
         }
 
@@ -886,11 +1021,14 @@
          * This ends the current game and shows the answer
          */
         function revealAnswer() {
-            // Don't do anything if no game is active
-            if (!gameActive) return;
+            // Don't do anything if no game is active or loading
+            if (!gameActive || isLoading) return;
 
             // Ask for confirmation since this will end the game
             if (confirm('Are you sure you want to reveal the answer? This will end the current game.')) {
+                // Show loading indicator
+                showLoading();
+                
                 // User confirmed - request the answer from the server
                 fetch('/get_answer', {
                     method: 'POST',
@@ -900,10 +1038,12 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    hideLoading();
+                    
                     if (data.status === 'success') {
                         // Answer revealed - end the game
                         gameActive = false;                      // Set game as inactive
-                        updateMessage(data.message, 'warning'); // Show the answer message
+                        showToast(data.message, 'warning');     // Show the answer toast
                         
                         // Disable all game controls since game is over
                         getHintBtn.disabled = true;
@@ -912,12 +1052,13 @@
                         submitGuessBtn.disabled = true;
                     } else {
                         // Server error
-                        updateMessage(data.message, 'error');
+                        showToast(data.message, 'error');
                     }
                 })
                 .catch(error => {
+                    hideLoading();
                     console.error('Error:', error);
-                    updateMessage('Error revealing answer. Please try again.', 'error');
+                    showToast('Error revealing answer. Please try again.', 'error');
                 });
             }
             // If user clicked "Cancel" in the confirmation dialog, nothing happens
@@ -982,15 +1123,15 @@
                     currentUser = username;
                     hideLoginModal();
                     updateUserDisplay();
-                    updateMessage(data.message, 'success');
+                    showToast(data.message, 'success');
                     // Don't show survey on login, only on registration
                 } else {
-                    updateMessage(data.message, 'error');
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Login error:', error);
-                updateMessage('Login failed. Please try again.', 'error');
+                showToast('Login failed. Please try again.', 'error');
             });
         }
 
@@ -1012,18 +1153,18 @@
                     currentUser = username;
                     hideRegisterModal();
                     updateUserDisplay();
-                    updateMessage(data.message, 'success');
+                    showToast(data.message, 'success');
                     // Show knowledge profile survey for new users
                     setTimeout(() => {
                         showKnowledgeProfileModal();
                     }, 500);  // Small delay for better UX
                 } else {
-                    updateMessage(data.message, 'error');
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Registration error:', error);
-                updateMessage('Registration failed. Please try again.', 'error');
+                showToast('Registration failed. Please try again.', 'error');
             });
         }
 
@@ -1038,14 +1179,14 @@
             .then(data => {
                 currentUser = 'guest';
                 updateUserDisplay();
-                updateMessage(data.message, 'info');
+                showToast(data.message, 'info');
                 // Clear any active game when switching to guest
                 gameActive = false;
                 resetGameUI();
             })
             .catch(error => {
                 console.error('Guest mode error:', error);
-                updateMessage('Failed to switch to guest mode.', 'error');
+                showToast('Failed to switch to guest mode.', 'error');
             });
         }
 
@@ -1060,14 +1201,14 @@
             .then(data => {
                 currentUser = 'guest';
                 updateUserDisplay();
-                updateMessage(data.message, 'info');
+                showToast(data.message, 'info');
                 // Clear any active game when logging out
                 gameActive = false;
                 resetGameUI();
             })
             .catch(error => {
                 console.error('Logout error:', error);
-                updateMessage('Logout failed.', 'error');
+                showToast('Logout failed.', 'error');
             });
         }
 
@@ -1169,14 +1310,14 @@ Thank you for your collaboration in this research project! Your participation he
             .then(data => {
                 if (data.status === 'success') {
                     hideKnowledgeProfileModal();
-                    updateMessage(data.message, 'success');
+                    showToast(data.message, 'success');
                 } else {
-                    updateMessage(data.message, 'error');
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error saving knowledge profile:', error);
-                updateMessage('Failed to save knowledge profile. Please try again.', 'error');
+                showToast('Failed to save knowledge profile. Please try again.', 'error');
             });
         }
     </script>

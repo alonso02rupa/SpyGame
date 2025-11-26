@@ -1226,3 +1226,215 @@ thead tr:hover {
         justify-content: center;                                /* Center buttons */
     }
 }
+
+/* 
+ * Loading Indicator Styles
+ * Radar scan animation that fits the spy/noir theme
+ */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 22, 37, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.radar-spinner {
+    width: 80px;
+    height: 80px;
+    position: relative;
+}
+
+.radar-spinner::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(168, 85, 247, 0.3);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+}
+
+.radar-spinner::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-top-color: #a855f7;
+    border-radius: 50%;
+    animation: radarSpin 1s linear infinite;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+}
+
+@keyframes radarSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Inner radar pulse effect */
+.radar-spinner .radar-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    background: #a855f7;
+    border-radius: 50%;
+    animation: radarPulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
+}
+
+@keyframes radarPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.5;
+    }
+}
+
+/* 
+ * Shake Animation for Wrong Guess
+ * Provides visual feedback when the user's guess is incorrect
+ */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+    border-color: rgba(239, 68, 68, 0.8) !important;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* 
+ * Toast Notification Styles
+ * Transient pop-up messages for game feedback
+ */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+    pointer-events: none;
+}
+
+.toast {
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(139, 92, 246, 0.2);
+    animation: toastSlideIn 0.3s ease-out;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid transparent;
+}
+
+.toast.hiding {
+    animation: toastSlideOut 0.3s ease-in forwards;
+}
+
+@keyframes toastSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastSlideOut {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.toast-icon {
+    font-size: 1.2em;
+    flex-shrink: 0;
+}
+
+.toast-message {
+    flex: 1;
+}
+
+/* Toast variants */
+.toast.success {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.5);
+    color: #86efac;
+}
+
+.toast.error {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+}
+
+.toast.warning {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.5);
+    color: #fcd34d;
+}
+
+.toast.info {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
+}
+
+/* Responsive toast adjustments */
+@media (max-width: 480px) {
+    .toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .toast {
+        padding: 12px 16px;
+        font-size: 0.95em;
+    }
+}
