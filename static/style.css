@@ -1237,6 +1237,26 @@ thead tr:hover {
     min-width: 80px;                                            /* Minimum button width */
 }
 
+/* Modal error message styles */
+.modal-error {
+    background: rgba(239, 68, 68, 0.15);                        /* Red background with transparency */
+    border: 1px solid rgba(239, 68, 68, 0.4);                   /* Red border */
+    border-left: 4px solid #ef4444;                             /* Prominent left border */
+    border-radius: 6px;                                          /* Rounded corners */
+    color: #fca5a5;                                              /* Light red text */
+    padding: 12px 15px;                                          /* Comfortable padding */
+    margin-bottom: 20px;                                         /* Space below error */
+    font-size: 0.95em;                                           /* Slightly smaller font */
+    text-align: left;                                            /* Left-align text */
+    animation: errorShake 0.5s ease-in-out;                     /* Shake animation */
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
 /* Responsive modal adjustments */
 @media (max-width: 480px) {
     .modal-content {

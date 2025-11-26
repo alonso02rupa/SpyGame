@@ -219,6 +219,7 @@
                 <span class="close" id="login-close">&times;</span>
             </div>
             <div class="modal-body">
+                <div id="login-error" class="modal-error" style="display: none;"></div>
                 <form id="login-form">
                     <div class="form-group">
                         <label for="login-username">Username:</label>
@@ -244,6 +245,7 @@
                 <span class="close" id="register-close">&times;</span>
             </div>
             <div class="modal-body">
+                <div id="register-error" class="modal-error" style="display: none;"></div>
                 <form id="register-form">
                     <div class="form-group">
                         <label for="register-username">Username:</label>
@@ -1092,6 +1094,12 @@
         function hideLoginModal() {
             loginModal.style.display = 'none';
             loginForm.reset();
+            // Clear any error messages
+            const loginError = document.getElementById('login-error');
+            if (loginError) {
+                loginError.style.display = 'none';
+                loginError.textContent = '';
+            }
         }
 
         function showRegisterModal() {
@@ -1102,12 +1110,25 @@
         function hideRegisterModal() {
             registerModal.style.display = 'none';
             registerForm.reset();
+            // Clear any error messages
+            const registerError = document.getElementById('register-error');
+            if (registerError) {
+                registerError.style.display = 'none';
+                registerError.textContent = '';
+            }
         }
 
         function handleLogin(e) {
             e.preventDefault();
             const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value.trim();
+            const loginError = document.getElementById('login-error');
+
+            // Clear previous error
+            if (loginError) {
+                loginError.style.display = 'none';
+                loginError.textContent = '';
+            }
 
             fetch('/login', {
                 method: 'POST',
@@ -1125,12 +1146,19 @@
                     showToast(data.message, 'success');
                     // Don't show survey on login, only on registration
                 } else {
-                    showToast(data.message, 'error');
+                    // Show error message in the modal
+                    if (loginError) {
+                        loginError.textContent = data.message;
+                        loginError.style.display = 'block';
+                    }
                 }
             })
             .catch(error => {
                 console.error('Login error:', error);
-                showToast('Login failed. Please try again.', 'error');
+                if (loginError) {
+                    loginError.textContent = 'Login failed. Please try again.';
+                    loginError.style.display = 'block';
+                }
             });
         }
 
@@ -1138,6 +1166,13 @@
             e.preventDefault();
             const username = document.getElementById('register-username').value.trim();
             const password = document.getElementById('register-password').value.trim();
+            const registerError = document.getElementById('register-error');
+
+            // Clear previous error
+            if (registerError) {
+                registerError.style.display = 'none';
+                registerError.textContent = '';
+            }
 
             fetch('/register', {
                 method: 'POST',
@@ -1158,12 +1193,19 @@
                         showKnowledgeProfileModal();
                     }, 500);  // Small delay for better UX
                 } else {
-                    showToast(data.message, 'error');
+                    // Show error message in the modal
+                    if (registerError) {
+                        registerError.textContent = data.message;
+                        registerError.style.display = 'block';
+                    }
                 }
             })
             .catch(error => {
                 console.error('Registration error:', error);
-                showToast('Registration failed. Please try again.', 'error');
+                if (registerError) {
+                    registerError.textContent = 'Registration failed. Please try again.';
+                    registerError.style.display = 'block';
+                }
             });
         }
 
