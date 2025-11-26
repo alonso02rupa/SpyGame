@@ -112,7 +112,7 @@ body::after {
  */
 header {
     flex: 1;                                                      /* Take remaining space */
-    text-align: left;                                             /* Left-align content */
+    text-align: center;                                           /* Center content */
     background: rgba(30, 20, 60, 0.85);                          /* Dark purple with transparency */
     border: 1px solid rgba(139, 92, 246, 0.3);                   /* Subtle purple border */
     border-radius: 20px;                                          /* Rounded corners for modern look */
@@ -125,6 +125,7 @@ header {
     display: flex;                                                /* Flex layout */
     flex-direction: column;                                       /* Stack title and subtitle */
     justify-content: center;                                      /* Center vertically */
+    align-items: center;                                          /* Center horizontally */
 }
 
 /* 
