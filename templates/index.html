@@ -101,9 +101,6 @@
                     This div contains all the game-related elements.
                     The id="game-area" allows us to reference this specific element in CSS and JavaScript.
                 -->
-                
-                <!-- Terminal-style Notification Area (above hints section) -->
-                <div id="toast-container" class="toast-container"></div>
 
                 <div id="hints-section" class="hints-section" style="display: none;">
                     <!-- 
@@ -113,7 +110,7 @@
                         style="display: none;": Initially hidden until a game starts
                     -->
                     
-                    <h3>Hints:</h3>
+                    <h3>Hints: <span id="status-message" class="status-message"></span></h3>
                     <!-- 
                         <h3> is a third-level heading (smaller than h1 and h2).
                         It labels this section so users know what the content below represents.
@@ -604,7 +601,7 @@
         const resultSection = document.getElementById('result-section');     // Results display area
         const infoBtn = document.getElementById('info-btn');               // Info button
         const loadingOverlay = document.getElementById('loading-overlay'); // Loading overlay
-        const toastContainer = document.getElementById('toast-container'); // Toast container
+        const statusMessage = document.getElementById('status-message');   // Status message in hints header
 
         // Authentication-related DOM elements
         const userDisplay = document.getElementById('user-display');
@@ -738,25 +735,22 @@
         }
 
         /*
-         * Toast notification system for transient feedback messages
-         * Replaces static message box updates with animated pop-ups
+         * Status message display - shows messages inline in the hints header
+         * Updates the status text next to "● ● ● HINTS:" 
          */
         function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+            if (!statusMessage) return;
             
-            // Terminal-style message (no icon, just text)
-            toast.innerHTML = `<span class="toast-message">${message}</span>`;
+            // Update the status message text and style
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
             
-            toastContainer.appendChild(toast);
-            
-            // Auto-remove after 4 seconds
-            setTimeout(() => {
-                toast.classList.add('hiding');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300); // Match CSS animation duration
-            }, 4000);
+            // Clear the message after 5 seconds
+            clearTimeout(statusMessage.clearTimer);
+            statusMessage.clearTimer = setTimeout(() => {
+                statusMessage.textContent = '';
+                statusMessage.className = 'status-message';
+            }, 5000);
         }
 
         /*
