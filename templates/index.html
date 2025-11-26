@@ -104,11 +104,45 @@
                     Welcome to SpyGame! Click "Start New Game" to begin.
                 </div>
 
+                <div id="hints-section" class="hints-section" style="display: none;">
+                    <!-- 
+                        This section displays the hints that the player has requested.
+                        id="hints-section": Unique identifier for JavaScript to show/hide this section
+                        class="hints-section": CSS class for styling the hints container
+                        style="display: none;": Initially hidden until a game starts
+                    -->
+                    
+                    <h3>Hints:</h3>
+                    <!-- 
+                        <h3> is a third-level heading (smaller than h1 and h2).
+                        It labels this section so users know what the content below represents.
+                    -->
+                    
+                    <div class="hints-scroll-container">
+                        <!-- 
+                            Scrollable container for hints list.
+                            Fixed height allows viewing 5-6 hints with scroll for more.
+                        -->
+                        <ul id="hints-list"></ul>
+                        <!-- 
+                            <ul> creates an unordered (bulleted) list.
+                            id="hints-list": JavaScript will add hint items to this list
+                            Initially empty - hints are added dynamically via JavaScript
+                        -->
+                    </div>
+                    
+                    <p id="hints-remaining"></p>
+                    <!-- 
+                        This paragraph will show how many hints are left.
+                        id="hints-remaining": JavaScript updates this text as hints are used
+                    -->
+                </div>
+
                 <div class="game-controls">
                     <!-- 
                         This div contains all the main action buttons for the game.
                         The class="game-controls" applies CSS styling to center and space the buttons.
-                        Placed above hints section so buttons stay in fixed position as hints are added.
+                        Placed below hints section but above guess section for fixed position.
                     -->
                     
                     <button id="start-game-btn" class="btn btn-primary">Start New Game</button>
@@ -129,34 +163,6 @@
                     <!-- 
                         Button to give up and reveal the answer.
                         class="btn btn-danger": Danger styling (red) to indicate this ends the game
-                    -->
-                </div>
-
-                <div id="hints-section" class="hints-section" style="display: none;">
-                    <!-- 
-                        This section displays the hints that the player has requested.
-                        id="hints-section": Unique identifier for JavaScript to show/hide this section
-                        class="hints-section": CSS class for styling the hints container
-                        style="display: none;": Initially hidden until a game starts
-                    -->
-                    
-                    <h3>Hints:</h3>
-                    <!-- 
-                        <h3> is a third-level heading (smaller than h1 and h2).
-                        It labels this section so users know what the content below represents.
-                    -->
-                    
-                    <ul id="hints-list"></ul>
-                    <!-- 
-                        <ul> creates an unordered (bulleted) list.
-                        id="hints-list": JavaScript will add hint items to this list
-                        Initially empty - hints are added dynamically via JavaScript
-                    -->
-                    
-                    <p id="hints-remaining"></p>
-                    <!-- 
-                        This paragraph will show how many hints are left.
-                        id="hints-remaining": JavaScript updates this text as hints are used
                     -->
                 </div>
 
@@ -802,6 +808,17 @@
             });
         }
 
+        /*
+         * Helper function to scroll the hints container to the bottom
+         * Called after adding a new hint so the user sees the latest hint
+         */
+        function scrollHintsToBottom() {
+            const hintsContainer = document.querySelector('.hints-scroll-container');
+            if (hintsContainer) {
+                hintsContainer.scrollTop = hintsContainer.scrollHeight;
+            }
+        }
+
         /* 
          * Function to start a new game
          * This function sends a request to the Flask server to begin a new game session
@@ -861,6 +878,7 @@
                         const li = document.createElement('li');
                         hintsList.appendChild(li);
                         await typeWriter(li, data.first_hint, 25);
+                        scrollHintsToBottom();                       // Scroll to show new hint
                         hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
                         
                         // Disable hint button if no more hints
@@ -915,6 +933,7 @@
                         const li = document.createElement('li');
                         hintsList.appendChild(li);
                         await typeWriter(li, data.hint, 25);         // Typewriter effect
+                        scrollHintsToBottom();                       // Scroll to show new hint
                         
                         // Update the remaining hints counter
                         hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;
@@ -999,6 +1018,7 @@
                             const li = document.createElement('li');
                             hintsList.appendChild(li);
                             await typeWriter(li, data.new_hint, 25);
+                            scrollHintsToBottom();                   // Scroll to show new hint
                             
                             // Update hints remaining counter
                             hintsRemaining.textContent = `Hints remaining: ${data.hints_remaining}`;

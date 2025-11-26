@@ -383,6 +383,36 @@ main {
 }
 
 /* 
+ * Hints scroll container: Makes hints scrollable with fixed height
+ * Allows viewing 5-6 hints at a time, with scroll for more
+ */
+.hints-scroll-container {
+    max-height: 350px;                                           /* Fixed height for ~5-6 hints */
+    overflow-y: auto;                                            /* Enable vertical scrolling */
+    padding-right: 10px;                                         /* Space for scrollbar */
+    margin-bottom: 10px;                                         /* Space below container */
+}
+
+/* Custom scrollbar styling for hints container */
+.hints-scroll-container::-webkit-scrollbar {
+    width: 8px;                                                  /* Scrollbar width */
+}
+
+.hints-scroll-container::-webkit-scrollbar-track {
+    background: rgba(88, 28, 135, 0.2);                         /* Track background */
+    border-radius: 4px;
+}
+
+.hints-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.5);                        /* Scrollbar thumb color */
+    border-radius: 4px;
+}
+
+.hints-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.7);                        /* Darker on hover */
+}
+
+/* 
  * Hints list: Container for individual hint items
  * Removes default list styling for custom appearance
  */
