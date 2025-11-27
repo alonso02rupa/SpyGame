@@ -142,5 +142,16 @@
     "acierto": true,
     "timestamp": "2025-10-23T15:13:11.006313",
     "last_updated": "2025-10-23T15:14:36.365062"
+  },
+  {
+    "session_id": "d0910c44-f61b-46e3-93be-05065ac8f701",
+    "person": "Lenin",
+    "pista": [
+      "Fue enterrado en la Necr\u00f3polis de las Murallas del Kremlin, en Mosc\u00fa, en un mausoleo dise\u00f1ado por Alex\u00e9i Shch\u00fasev."
+    ],
+    "guesses": [],
+    "acierto": false,
+    "timestamp": "2025-11-27T14:12:29.092489",
+    "last_updated": "2025-11-27T14:12:29.092498"
   }
 ]

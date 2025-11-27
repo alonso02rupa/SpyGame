@@ -739,7 +739,7 @@
          * Typewriter effect for hints
          * Makes hint text appear character-by-character for a more engaging experience
          */
-        function typeWriter(element, text, speed = 30) {
+        function typeWriter(element, text, speed = 17) {
             return new Promise((resolve) => {
                 let i = 0;
                 element.textContent = '';
@@ -844,7 +844,7 @@
                     if (data.first_hint) {
                         const li = document.createElement('li');
                         hintsList.appendChild(li);
-                        await typeWriter(li, data.first_hint, 25);
+                        await typeWriter(li, data.first_hint, 17);
                         scrollHintsToBottom();                       // Scroll to show new hint
                         hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
                         
@@ -912,7 +912,7 @@
                         // Create a new list item (<li>) element for this hint
                         const li = document.createElement('li');
                         hintsList.appendChild(li);
-                        await typeWriter(li, data.hint, 25);         // Typewriter effect
+                        await typeWriter(li, data.hint, 17);         // Typewriter effect
                         scrollHintsToBottom();                       // Scroll to show new hint
                         
                         // Check if this was the last hint
@@ -1006,7 +1006,7 @@
                         if (data.new_hint) {
                             const li = document.createElement('li');
                             hintsList.appendChild(li);
-                            await typeWriter(li, data.new_hint, 25);
+                            await typeWriter(li, data.new_hint, 17);
                             scrollHintsToBottom();                   // Scroll to show new hint
                             
                             // Sync local counter with server value
