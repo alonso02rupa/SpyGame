@@ -827,7 +827,10 @@
                     requestAnimationFrame(() => {
                         hintsSection.classList.add('terminal-boot');
                         guessSection.classList.add('terminal-boot');
-                        document.querySelector('.game-controls').classList.add('game-active');
+                        const gameControls = document.querySelector('.game-controls');
+                        if (gameControls) {
+                            gameControls.classList.add('game-active');
+                        }
                     });
                     
                     // Update button states
