@@ -142,16 +142,5 @@
     "acierto": true,
     "timestamp": "2025-10-23T15:13:11.006313",
     "last_updated": "2025-10-23T15:14:36.365062"
-  },
-  {
-    "session_id": "01700689-3918-4765-8d2d-52148f87f78b",
-    "person": "Tom\u00e1s de Aquino",
-    "pista": [
-      "En su obra, encontramos una glosa de los Padres de la Iglesia sobre los Evangelios, conocida como Catena aurea, que se cree que fue escrita por \u00e9l en su vejez."
-    ],
-    "guesses": [],
-    "acierto": false,
-    "timestamp": "2025-11-27T13:55:52.555016",
-    "last_updated": "2025-11-27T13:55:52.555026"
   }
 ]
