@@ -142,27 +142,5 @@
     "acierto": true,
     "timestamp": "2025-10-23T15:13:11.006313",
     "last_updated": "2025-10-23T15:14:36.365062"
-  },
-  {
-    "session_id": "a7eae991-2598-4b43-a99c-5f616eb0ed02",
-    "person": "Benjamin Franklin",
-    "pista": [
-      "En su juventud, este visionario estadounidense public\u00f3 art\u00edculos sat\u00edricos contra el gobierno de Massachusetts, lo que le vali\u00f3 la c\u00e1rcel a su hermano por desacato."
-    ],
-    "guesses": [],
-    "acierto": false,
-    "timestamp": "2025-11-27T13:52:37.110214",
-    "last_updated": "2025-11-27T13:52:37.110220"
-  },
-  {
-    "session_id": "096f3aca-0750-404f-84b2-2eebccd6be2b",
-    "person": "Vincent van Gogh",
-    "pista": [
-      "Esta persona pint\u00f3 la naturaleza de los alrededores de Arl\u00e9s, incluyendo los campos de trigo, los pantanos del delta del R\u00f3dano y el canal del sur de Arl\u00e9s."
-    ],
-    "guesses": [],
-    "acierto": false,
-    "timestamp": "2025-11-27T13:53:07.329748",
-    "last_updated": "2025-11-27T13:53:07.329757"
   }
 ]
