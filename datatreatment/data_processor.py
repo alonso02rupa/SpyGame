@@ -31,7 +31,7 @@ huggingface_api_key = os.getenv('HUGGINGFACE_API_KEY')
 if not huggingface_api_key:
     raise ValueError("HUGGINGFACE_API_KEY no está configurada en las variables de entorno.")
 
-# RECOMENDACIÓN: Usar Llama 3.1 si es posible
+# RECOMENDACIÓN: Usar Llama 3.1 8B o 70B Instruct
 model = os.getenv('HUGGINGFACE_MODEL_NAME', 'meta-llama/Llama-3.1-8B-Instruct')
 
 client = InferenceClient(model=model, token=huggingface_api_key)
@@ -115,16 +115,13 @@ def get_wikidata_items(limit=150, offset=None, min_sitelinks=200, sample_size=1)
 def limpiar_texto(texto):
     # Quitar referencias [1], [2]...
     texto = re.sub(r'\[\d+\]', '', texto)
-    # Quitar contenido entre paréntesis si es muy corto (aclaraciones)
-    # texto = re.sub(r'\([^)]*\)', '', texto) # A veces quita info útil, cuidado aquí
     # Normalizar espacios
     texto = re.sub(r'\s+', ' ', texto)
     return texto.strip()
 
 def generar_prompt_trivia(url, nombre_persona):
     """
-    Genera el prompt manteniendo la estructura formal original del usuario,
-    pero añadiendo reglas gramaticales estrictas para evitar repeticiones.
+    Genera el prompt optimizado para evitar repeticiones y errores de formato.
     """
     # 1. Obtener datos de Wikipedia
     titulo_codificado = url.split("/wiki/")[-1]
@@ -144,22 +141,25 @@ def generar_prompt_trivia(url, nombre_persona):
     
     texto_limpio = limpiar_texto(texto_base)
 
-    # 2. Procesamiento con SpaCy
+    # 2. Procesamiento con SpaCy (Filtrado de calidad)
     doc = nlp(texto_limpio)
     frases_candidatas = []
     nombre_tokens = nombre_persona.lower().split()
 
     for i, sent in enumerate(doc.sents):
         s_text = sent.text.strip()
+        # Filtros de longitud
         if len(s_text.split()) < 6 or len(s_text.split()) > 80: continue
             
         score = 0
         entidades = [ent.label_ for ent in sent.ents]
         
+        # Puntos por entidades ricas en datos
         if "DATE" in entidades: score += 2
         if "LOC" in entidades: score += 1
         if "ORG" in entidades: score += 1
         
+        # Penalización si no hay referencia clara
         found_ref = False
         for token in sent:
             if token.dep_ == "nsubj":
@@ -173,52 +173,56 @@ def generar_prompt_trivia(url, nombre_persona):
 
     # 3. Selección y orden cronológico
     frases_candidatas.sort(key=lambda x: x["score"], reverse=True)
-    seleccion = frases_candidatas[:25]
+    seleccion = frases_candidatas[:30] # Aumentado ligeramente el contexto
     seleccion.sort(key=lambda x: x["index"])
     texto_contexto = " ".join([item["texto"] for item in seleccion])
 
-    # 4. PROMPT FORMAL (Tu estilo original, reglas mejoradas)
+    # 4. PROMPT CORREGIDO Y OPTIMIZADO
     prompt = f"""
-Eres un experto redactor de contenido para juegos de trivia cultural.
-Recibirás un texto biográfico y deberás generar 8 pistas de adivinanza.
+Eres un experto redactor de contenido para juegos de trivia. 
+Tu objetivo es generar 8 pistas sobre la persona descrita en el texto, ordenadas por dificultad decreciente.
 
-REGLAS CRÍTICAS DE REDACCIÓN:
+REGLAS CRÍTICAS DE REDACCIÓN (SÍGUELAS AL PIE DE LA LETRA):
 
-1. **ANONIMATO ABSOLUTO:** NO menciones el nombre "{nombre_persona}", ni apodos, ni variantes. Refiérete al sujeto de forma implícita.
+1. **ANONIMATO ABSOLUTO:** - NO menciones el nombre "{nombre_persona}" bajo ninguna circunstancia.
+   - NO uses títulos sustitutos obvios como "El famoso físico" o "Este autor".
 
-2. **USO DEL SUJETO TÁCITO:** En español es incorrecto y antinatural repetir constantemente el sujeto.
-   - **PROHIBIDO:** Empezar las frases con "Esta persona", "Este científico", "La figura", "El político".
-   - **OBLIGATORIO:** Empieza las oraciones directamente con el verbo conjugado o con complementos circunstanciales.
-     *Ejemplo correcto:* "Escribió su obra maestra en..." (En lugar de "Esta persona escribió...")
-     *Ejemplo correcto:* "Durante su exilio, aprendió a..." (En lugar de "La figura aprendió a...")
+2. **DIVERSIDAD TEMÁTICA (IMPORTANTE):** - **PROHIBIDO** generar más de una pista sobre el mismo evento biográfico.
+     (Ejemplo: Si una pista habla del lugar de nacimiento, la otra NO puede hablar de la fecha de nacimiento. Únelas o descarta una).
+   - **PROHIBIDO** usar sinónimos para generar dos pistas iguales (Ej: No hagas una pista que diga "Fue pintor" y otra "Fue artista").
 
-3. **VARIEDAD LÉXICA:** No utilices la misma estructura gramatical en dos pistas seguidas. Varía el inicio de las oraciones.
+3. **ESTRUCTURA Y LONGITUD:**
+   - Usa sujeto tácito. Empieza directamente con el verbo o un conector temporal.
+   - Longitud exacta: entre 15 y 25 palabras por pista.
+   - **VARIEDAD DE INICIO:** No empieces dos pistas consecutivas con la misma palabra (ej: No uses dos veces "Nació...", "Fue...").
 
-4. **CONTENIDO REAL:** Básate ÚNICAMENTE en el texto proporcionado abajo. No inventes información externa.
+4. **CONTENIDO:**
+   - Usa SOLAMENTE la información del texto proporcionado. No alucines datos.
 
 5. **JERARQUÍA DE DIFICULTAD:**
-   - **Dificultad 5 (MUY DIFÍCIL):** Detalles curiosos del final de su vida, lugar de entierro o hechos muy específicos. No menciones la nacionalidad aquí.
-   - **Dificultad 4 (DIFÍCIL):** Logros secundarios o específicos.
-   - **Dificultad 3 (MEDIA):** Obras principales o hitos de carrera.
-   - **Dificultad 2 (FÁCIL):** Datos biográficos de origen, estudios o familia.
-   - **Dificultad 1 (MUY FÁCIL):** Resumen general de su profesión y legado (aquí puedes mencionar la nacionalidad).
+   - 5 (Experto): Dato muy oscuro, específico o trivial del texto.
+   - 4 (Muy Difícil): Detalle previo a la fama o poco conocido.
+   - 3 (Difícil): Obras/Logros secundarios.
+   - 2 (Media): Datos biográficos generales (nacimiento, muerte, familia).
+   - 1 (Fácil): Profesión principal o logro por el que es mundialmente famoso.
 
-Formato de salida (JSON válido estrictamente):
+6. **FORMATO DE SALIDA:**
+   - Responde ÚNICAMENTE con un JSON válido. Sin texto antes ni después.
 
 {{
   "pistas": [
-    {{"dificultad": 5, "pista": "..."}},
-    {{"dificultad": 4, "pista": "..."}},
-    {{"dificultad": 3, "pista": "..."}},
-    {{"dificultad": 3, "pista": "..."}},
-    {{"dificultad": 2, "pista": "..."}},
-    {{"dificultad": 2, "pista": "..."}},
-    {{"dificultad": 1, "pista": "..."}},
-    {{"dificultad": 1, "pista": "..."}}
+    {{"dificultad": 5, "pista": "..." }},
+    {{"dificultad": 4, "pista": "..." }},
+    {{"dificultad": 3, "pista": "..." }},
+    {{"dificultad": 3, "pista": "..." }},
+    {{"dificultad": 2, "pista": "..." }},
+    {{"dificultad": 2, "pista": "..." }},
+    {{"dificultad": 1, "pista": "..." }},
+    {{"dificultad": 1, "pista": "..." }}
   ]
 }}
 
-Texto de la biografía:
+Texto biográfico:
 "{texto_contexto}"
 """
     return prompt
@@ -231,16 +235,16 @@ def generar_pistas(url, nombre_persona):
         prompt_content = generar_prompt_trivia(url, nombre_persona)
         
         messages = [
-            {"role": "system", "content": "Eres un asistente estricto que genera JSON basado solo en el texto provisto."},
+            {"role": "system", "content": "Eres un motor de generación de JSON estricto."},
             {"role": "user", "content": prompt_content}
         ]
         
         response = client.chat_completion(
             messages=messages,
             model=model,
-            max_tokens=1000,
-            temperature=0.2, # Baja temperatura para evitar invenciones
-            response_format={"type": "json_object"} # Fuerza salida JSON (Soportado en Llama 3)
+            max_tokens=1200,
+            temperature=0.2, # Ligeramente subido para creatividad sintáctica, pero bajo control
+            response_format={"type": "json_object"}
         )
 
         output = response.choices[0].message.content.strip()
@@ -248,19 +252,29 @@ def generar_pistas(url, nombre_persona):
         # Parseo robusto del JSON
         try:
             data = json.loads(output)
-            # Manejar si el modelo devuelve una lista directa o un objeto con clave "pistas"
+            
+            pistas_finales = []
+            
+            # Normalización de la estructura de respuesta
             if isinstance(data, list):
-                return data
+                pistas_finales = data
             elif "pistas" in data:
-                return data["pistas"]
+                pistas_finales = data["pistas"]
             else:
-                # Intento de rescate si devuelve un dict raro
-                return list(data.values())[0] if data else []
+                # Intento de encontrar la lista dentro de cualquier key
+                first_key = list(data.keys())[0]
+                if isinstance(data[first_key], list):
+                    pistas_finales = data[first_key]
+
+            # Validación final básica
+            if not pistas_finales or len(pistas_finales) < 4:
+                print(f"Alerta: Pocas pistas generadas para {nombre_persona}")
+                return None
+                
+            return pistas_finales
                 
         except json.JSONDecodeError:
-            print("Error: El modelo no devolvió un JSON válido.")
-            # Fallback simple con regex si falla el json puro
-            import re
+            print("Error: El modelo no devolvió un JSON válido. Intentando recuperación regex...")
             match = re.search(r'\[.*\]', output, re.DOTALL)
             if match:
                 return json.loads(match.group(0))
@@ -286,9 +300,12 @@ def guardar_pistas_json(pistas, nombre_persona, wikidata_id=None, url_wikipedia=
     if os.path.exists(filepath):
         try:
             with open(filepath, "r", encoding="utf-8") as f:
-                lista_actual = json.load(f)
-                if not isinstance(lista_actual, list): lista_actual = [lista_actual]
-        except:
+                content = f.read()
+                if content:
+                    lista_actual = json.loads(content)
+                    if not isinstance(lista_actual, list): lista_actual = [lista_actual]
+        except Exception as e:
+            print(f"Error leyendo JSON local: {e}. Creando nuevo.")
             lista_actual = []
     
     lista_actual.append(datos)
@@ -305,9 +322,8 @@ def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=No
     
     try:
         pistas_collection = db.pistas
-        filtro = {"nombre": nombre_persona} # Idealmente usar wikidata_id si es único
-        if wikidata_id:
-            filtro = {"wikidata_id": wikidata_id}
+        # Prioridad al ID de Wikidata para unicidad
+        filtro = {"wikidata_id": wikidata_id} if wikidata_id else {"nombre": nombre_persona}
 
         datos_actualizar = {
             "$set": {
@@ -323,10 +339,11 @@ def subir_pistas_a_db(pistas, nombre_persona, wikidata_id=None, url_wikipedia=No
         }
         
         result = pistas_collection.update_one(filtro, datos_actualizar, upsert=True)
+        
         if result.upserted_id:
-            print(f" [DB] Nueva entrada: {nombre_persona}")
+            print(f" [DB] Nueva entrada creada: {nombre_persona}")
         else:
-            print(f" [DB] Actualizado: {nombre_persona}")
+            print(f" [DB] Entrada actualizada: {nombre_persona}")
             
         return True
     except Exception as e:
@@ -352,7 +369,7 @@ def procesar_batch(num_personas=5, limit=200, offset=0, min_sitelinks=150):
         nombre_raw = url.split("/wiki/")[-1]
         nombre_persona = urllib.parse.unquote(nombre_raw).replace("_", " ")
         
-        print(f"[{idx+1}/{len(df)}] {nombre_persona}...")
+        print(f"[{idx+1}/{len(df)}] Procesando: {nombre_persona}...")
         
         pistas = generar_pistas(url, nombre_persona)
         
@@ -363,17 +380,17 @@ def procesar_batch(num_personas=5, limit=200, offset=0, min_sitelinks=150):
         else:
             print(f" -> Fallo generando pistas para {nombre_persona}")
             
-        time.sleep(1) # Respetar límites de API
+        time.sleep(1.5) # Pausa ligeramente aumentada para seguridad
 
     print(f"\nResumen: {exitosas} procesadas correctamente de {len(df)}.")
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num', type=int, default=5)
-    parser.add_argument('--limit', type=int, default=200)
-    parser.add_argument('--offset', type=int, default=0)
-    parser.add_argument('--min-sitelinks', type=int, default=150)
+    parser.add_argument('--num', type=int, default=5, help='Número de personas a procesar')
+    parser.add_argument('--limit', type=int, default=200, help='Límite de consulta SPARQL')
+    parser.add_argument('--offset', type=int, default=0, help='Offset manual para SPARQL')
+    parser.add_argument('--min-sitelinks', type=int, default=150, help='Mínimo de sitelinks en Wikidata')
     
     args = parser.parse_args()
     
