@@ -1553,6 +1553,101 @@ thead tr:hover {
 }
 
 /* 
+ * Terminal Opening Animation
+ * Smooth transition effect when game starts - mimics a terminal/console booting up
+ */
+
+/* Animation keyframes for terminal opening effect */
+@keyframes terminalOpen {
+    0% {
+        opacity: 0;
+        transform: scaleY(0.01) scaleX(0.5);
+        transform-origin: center center;
+    }
+    30% {
+        opacity: 0.5;
+        transform: scaleY(0.02) scaleX(1);
+    }
+    60% {
+        opacity: 0.8;
+        transform: scaleY(0.5) scaleX(1);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleY(1) scaleX(1);
+    }
+}
+
+/* Scanline boot effect for terminal header */
+@keyframes scanlineEffect {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 0 100%;
+    }
+}
+
+/* Cursor blink effect during boot */
+@keyframes cursorBlink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+/* Text reveal animation for terminal text */
+@keyframes textReveal {
+    0% {
+        opacity: 0;
+        clip-path: inset(0 100% 0 0);
+    }
+    100% {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* Glow pulse effect during boot */
+@keyframes glowPulse {
+    0% {
+        box-shadow: 0 0 5px rgba(168, 85, 247, 0.2),
+                    0 0 10px rgba(168, 85, 247, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(168, 85, 247, 0.6),
+                    0 0 40px rgba(168, 85, 247, 0.3),
+                    0 0 60px rgba(168, 85, 247, 0.1);
+    }
+    100% {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6),
+                    0 0 20px rgba(139, 92, 246, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+}
+
+/* Apply terminal opening animation to hints section */
+.hints-section.terminal-boot {
+    animation: terminalOpen 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               glowPulse 0.8s ease-out forwards;
+}
+
+/* Apply terminal opening animation to guess section with delay */
+.guess-section.terminal-boot {
+    animation: terminalOpen 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               glowPulse 0.7s ease-out forwards;
+    animation-delay: 0.2s;
+    opacity: 0; /* Start invisible, animation will reveal */
+}
+
+/* Game controls transition when game becomes active */
+.game-controls.game-active {
+    animation: glowPulse 0.6s ease-out forwards;
+}
+
+/* 
  * Mission Status Badges: Utility classes for status indicators
  * Provides visual feedback with glowing effects for success and danger states
  */

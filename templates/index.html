@@ -815,9 +815,20 @@
                     guessInput.value = '';                       // Clear guess input field
                     resultSection.innerHTML = '';                // Clear any old results
                     
+                    // Remove any previous animation classes
+                    hintsSection.classList.remove('terminal-boot');
+                    guessSection.classList.remove('terminal-boot');
+                    
                     // Show/hide page sections appropriately
                     hintsSection.style.display = 'block';       // Show hints section
                     guessSection.style.display = 'block';       // Show guess section
+                    
+                    // Trigger terminal opening animation with a small delay for reflow
+                    requestAnimationFrame(() => {
+                        hintsSection.classList.add('terminal-boot');
+                        guessSection.classList.add('terminal-boot');
+                        document.querySelector('.game-controls').classList.add('game-active');
+                    });
                     
                     // Update button states
                     startGameBtn.textContent = 'Start New Game'; // Reset button text
@@ -1267,6 +1278,13 @@
             hintsSection.style.display = 'none';
             guessSection.style.display = 'none';
             resultSection.innerHTML = '';
+            // Remove animation classes
+            hintsSection.classList.remove('terminal-boot');
+            guessSection.classList.remove('terminal-boot');
+            const gameControls = document.querySelector('.game-controls');
+            if (gameControls) {
+                gameControls.classList.remove('game-active');
+            }
         }
 
         /*

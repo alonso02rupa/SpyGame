@@ -121,13 +121,16 @@ def get_person_from_db():
     if os.path.exists(pistas_file):
         try:
             with open(pistas_file, 'r', encoding='utf-8') as f:
-                pistas = json.load(f)
+                personas = json.load(f)
             
-            return {
-                'nombre': 'Donald Trump',
-                'pistas': pistas,
-                'from_db': False
-            }
+            # Pick a random person from the list
+            if isinstance(personas, list) and len(personas) > 0:
+                persona = random.choice(personas)
+                return {
+                    'nombre': persona.get('nombre', 'Unknown Person'),
+                    'pistas': persona.get('pistas', []),
+                    'from_db': False
+                }
         except Exception as e:
             print(f"Error al leer pistas.json: {e}")
     
