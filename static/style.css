@@ -1738,3 +1738,17 @@ thead tr:hover {
     font-weight: bold;
     font-family: 'JetBrains Mono', monospace;
 }
+
+/* 
+ * Confirm Modal Styles
+ * Styling for confirmation modal text and button layout
+ */
+.confirm-modal-text {
+    text-align: center;
+    color: #e2e8f0;
+    margin-bottom: 20px;
+}
+
+.confirm-modal-actions {
+    justify-content: center;
+}

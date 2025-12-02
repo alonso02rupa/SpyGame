@@ -153,5 +153,27 @@
     "acierto": false,
     "timestamp": "2025-11-27T14:12:29.092489",
     "last_updated": "2025-11-27T14:12:29.092498"
+  },
+  {
+    "session_id": "fde66c7e-0168-41ac-a416-4b4ceae608da",
+    "person": "Galileo Galilei",
+    "pista": [
+      "Descubri\u00f3 la ley de la isocronismo de los p\u00e9ndulos como estudiante."
+    ],
+    "guesses": [],
+    "acierto": false,
+    "timestamp": "2025-12-02T17:45:59.232291",
+    "last_updated": "2025-12-02T17:46:47.018571"
+  },
+  {
+    "session_id": "162392e9-dfcd-4cb4-b176-988d2af269ca",
+    "person": "Mahatma Gandhi",
+    "pista": [
+      "Fue influenciado por la correspondencia con Le\u00f3n Tolst\u00f3i en su concepto de resistencia."
+    ],
+    "guesses": [],
+    "acierto": false,
+    "timestamp": "2025-12-02T17:48:13.375234",
+    "last_updated": "2025-12-02T17:48:13.375247"
   }
 ]
