@@ -60,8 +60,8 @@ def cargar_desde_json(filepath):
             personas = data.values()
             total = len(data)
         elif isinstance(data, list):
-            print("Formato antiguo detectado (lista). Se esperaba un diccionario.")
-            return False
+            personas = data
+            total = len(data)
         else:
             print("Formato de JSON no reconocido")
             return False
@@ -161,3 +161,20 @@ def listar_personas():
         
     except Exception as e:
         print(f"Error al listar personas: {e}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Inicializar y gestionar la base de datos de SpyGame")
+    parser.add_argument('--from-json', type=str, help='Cargar personas desde un archivo JSON')
+    parser.add_argument('--list', action='store_true', help='Listar personas en la base de datos')
+    parser.add_argument('--clear', action='store_true', help='Limpiar la base de datos')
+    
+    args = parser.parse_args()
+    
+    if args.from_json:
+        cargar_desde_json(args.from_json)
+    elif args.list:
+        listar_personas()
+    elif args.clear:
+        limpiar_db()
+    else:
+        parser.print_help()

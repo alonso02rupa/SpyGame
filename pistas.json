@@ -1,1342 +1,178 @@
 [
     {
-        "nombre": "Nelson Mandela",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Esta persona fue sentenciada a prisión perpetua durante el Proceso de Rivonia y estuvo encarcelada durante veintisiete años."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Esta persona fue secretario general del Movimiento de Países No Alineados entre 1998 y 2002."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Esta persona presidió el Congreso Nacional Africano (CNA) entre 1991 y 1997 y lideró al CNA al triunfo en las urnas en las elecciones generales de 1994."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Esta persona fundó la organización guerrillera Umkhonto we Sizwe (MK) o 'La Lanza de la Nación' en 1961."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Esta persona nació en la Provincia Cabo Oriental y estudió Derecho en la Universidad de Fort Hare y la Universidad de Witwatersrand."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Esta persona fue abogado, activista contra el apartheid, político y filántropo."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Esta persona es conocida como el Padre de la Nación sudafricana."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Esta persona fue el primer presidente de raza negra en la historia de Sudáfrica."
-            }
-        ],
-        "wikidata_id": "Q8023",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Nelson_Mandela",
-        "ultima_actualizacion": "2025-11-25T14:05:43.755964"
-    },
-    {
-        "nombre": "Vincent van Gogh",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Esta persona pintó la naturaleza de los alrededores de Arlés, incluyendo los campos de trigo, los pantanos del delta del Ródano y el canal del sur de Arlés."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Esta persona realizó más de 1600 dibujos y pintó unos 800 cuadros, incluyendo 43 autorretratos y 148 acuarelas."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Esta persona influyó grandemente en el arte del siglo XX, especialmente entre los expresionistas alemanes y los fauvistas."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Esta persona pintó la naturaleza con pinceladas ondulantes y colores intensos, como amarillos, verdes y azules."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Esta persona nació en los Países Bajos y estudió francés y alemán."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Esta persona se convirtió en pastor protestante y luego se marchó como misionero a una región minera de Bélgica."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Esta persona es un pintor neerlandés conocido por sus obras de arte expresionistas y fauvistas."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Esta persona es conocido por pintar con colores vivos y preferir la luz en sus obras de arte."
-            }
-        ],
-        "wikidata_id": "Q5582",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Vincent_van_Gogh",
-        "ultima_actualizacion": "2025-11-25T14:05:50.947992"
-    },
-    {
-        "nombre": "Tomás de Aquino",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "En su obra, encontramos una glosa de los Padres de la Iglesia sobre los Evangelios, conocida como Catena aurea, que se cree que fue escrita por él en su vejez."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Fue nombrado Doctor de la Iglesia en 1567, un honor que reconocía su contribución a la teología y la filosofía."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Su principal obra, la Summa theologiae, es un compendio de la doctrina católica que trata 495 cuestiones divididas en artículos."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Se le debe el rescate y reinterpretación de la metafísica y una teoría del Derecho que sería muy consultada posteriormente."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en el siglo XIII y estudió exhaustivamente a los intelectuales referenciales de su época, incluyendo a Aristóteles y Platón."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue canonizado en 1323 y se le considera uno de los principales introductores de la filosofía de Aristóteles en la corriente escolástica del siglo XIII."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es recordado como uno de los grandes pensadores de la historia, cuya obra ha influido en la teología, la filosofía y la ciencia durante siglos."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Su legado universal es inmenso, y su influencia se puede ver en la Iglesia católica, la filosofía y la ciencia modernas."
-            }
-        ],
-        "wikidata_id": "Q9438",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Tom%C3%A1s_de_Aquino",
-        "ultima_actualizacion": "2025-11-25T14:09:06.183692"
-    },
-    {
-        "nombre": "Rabindranath Tagore",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "En su último viaje a China, la figura fue obligada a cancelar su gira debido a una campaña desplegada contra él por el Partido Comunista Chino, que lo acusaba de ser un 'virus imperialista europeo'."
-            },
-            {
-                "dificultad": 4,
-                "pista": "La figura fue un defensor del cosmopolitismo asiático y creía que la autorrealización de la India debía comenzar en sus aldeas, ideas que expresó en su obra 'La civilización oriental y occidental'."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Se le recuerda por ser el primer asiático en ganar un Premio Nobel de Literatura en 1913, y por ser conocido como 'el bardo de Bengala'."
-            },
-            {
-                "dificultad": 3,
-                "pista": "La figura revolucionó la literatura bengalí con obras como 'El hogar y el mundo' y 'Gitanjali', y extendió el arte bengalí con multitud de poemas, historias cortas, cartas y ensayos."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en una familia de artistas y escritores, y desde muy joven estuvo en contacto con la sociedad y la cultura europeas."
-            },
-            {
-                "dificultad": 2,
-                "pista": "La figura fue un sabio y reformador cultural que modernizó el arte bengalí desafiando las críticas que hasta entonces lo vinculaban a formas clasicistas."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un poeta y escritor que dejó una huella imborrable en la literatura y la cultura de Asia, y su legado sigue inspirando a generaciones de artistas y pensadores."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Su poesía y escritos se caracterizan por su profundo sentido de la espiritualidad y su compromiso con la justicia social y la paz."
-            }
-        ],
-        "wikidata_id": "Q7241",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Rabindranath_Tagore",
-        "ultima_actualizacion": "2025-11-25T14:09:15.036814"
-    },
-    {
-        "nombre": "Gengis Kan",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue enterrado en un lugar secreto, rodeado de un lago y una montaña, en la región de Ordos, en Mongolia Interior, China."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Fue el primer líder de un imperio que unificó a las tribus nómadas de Asia y extendió su dominio hasta Europa Oriental y el océano Pacífico."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Realizó reformas en su ejército que le dieron muchas claves de la victoria militar, reforzó la disciplina y dividió sus ejércitos en unidades decimales."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Promulgó la 'Yassa', una ley general que regía la vida ciudadana y estableció un sistema de justicia y administración."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en la región de Khentii, en Mongolia, en el año 1162, en un clan nómada de la tribu de los Yeke Juu."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Se convirtió en el líder de su tribu a la edad de 20 años y comenzó a unificar a las tribus nómadas de Asia."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un líder militar y político que unificó a las tribus nómadas de Asia y creó el Imperio Mongol, uno de los imperios más grandes de la historia."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es considerado uno de los líderes más importantes de la historia, conocido por su habilidad militar y su capacidad para unificar a las tribus nómadas de Asia."
-            }
-        ],
-        "wikidata_id": "Q720",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Gengis_Kan",
-        "ultima_actualizacion": "2025-11-25T14:11:57.434253"
-    },
-    {
-        "nombre": "Benjamin Franklin",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "En su juventud, este visionario estadounidense publicó artículos satíricos contra el gobierno de Massachusetts, lo que le valió la cárcel a su hermano por desacato."
-            },
-            {
-                "dificultad": 4,
-                "pista": "A los 24 años, este hombre de acción reconoció la paternidad de un hijo ilegítimo y lo acogió en su hogar, demostrando su humanidad y comprensión."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Este polímata estadounidense fue un líder clave en la lucha por la independencia de las colonias, y su influencia en la creación de la Constitución de los Estados Unidos es incalculable."
-            },
-            {
-                "dificultad": 3,
-                "pista": "En 1753, este inventor y científico estadounidense creó un invento que cambiaría la forma en que las personas protegen sus hogares de los rayos, y que aún hoy en día se utiliza en todo el mundo."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Este estadounidense nació en la calle Milk de Boston, Massachusetts, en 1706, y creció en una familia numerosa con 22 hermanos."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Este hombre de ciencia y política se convirtió en un héroe nacional en América después de liderar un esfuerzo en Londres para que el Parlamento de Gran Bretaña derogara la ley del timbre."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Este estadounidense fue un líder clave en la lucha por la independencia de las colonias y se convirtió en uno de los padres fundadores de los Estados Unidos."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Este hombre de acción y ciencia fue un polímata que contribuyó significativamente a la historia de los Estados Unidos en múltiples campos."
-            }
-        ],
-        "wikidata_id": "Q34969",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Benjamin_Franklin",
-        "ultima_actualizacion": "2025-11-25T14:12:07.303422"
-    },
-    {
-        "nombre": "Oscar Wilde",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue enterrado en una tumba anónima en el cementerio de Bagneux, en París, a pesar de sus deseos de ser enterrado en Irlanda."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Escribió cuatro comedias divertidas para gente seria, que se convirtieron en un éxito en el Londres victoriano tardío."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Su obra maestra, La importancia de llamarse Ernesto, sigue siendo una de las comedias más famosas de la literatura inglesa."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Incorporó temas de decadencia, duplicidad y belleza en su novela El retrato de Dorian Gray."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Dublín, en el Reino Unido, en 1854, y era de origen irlandés."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Se convirtió al catolicismo en su lecho de muerte, después de haber explorado mucho la religión durante su vida."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un escritor, poeta y dramaturgo británico de origen irlandés, conocido por su ingenio mordaz y su vestir extravagante."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Se convirtió en una de las mayores personalidades de su tiempo, gracias a su brillante conversación y su obra literaria."
-            }
-        ],
-        "wikidata_id": "Q30875",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Oscar_Wilde",
-        "ultima_actualizacion": "2025-11-25T14:17:29.090519"
-    },
-    {
-        "nombre": "Lenin",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue enterrado en la Necrópolis de las Murallas del Kremlin, en Moscú, en un mausoleo diseñado por Alexéi Shchúsev."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Fue un firme defensor de la Nueva Política Económica, que combinaba elementos socialistas y capitalistas."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Lideró la Revolución de Octubre de 1917 y se convirtió en el principal dirigente de la Unión de Repúblicas Socialistas Soviéticas."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Escribió su obra maestra en el exilio, donde aprendió a valorar la importancia de la organización y la disciplina."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Simbirsk, Rusia, el 22 de abril de 1870, en una familia de origen noble."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Estudió en la Universidad de Kazán, donde se interesó por la filosofía y la política."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un político y revolucionario ruso que luchó por la creación de un estado socialista en Rusia."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Su legado es controvertido y ha sido objeto de debate en la historia del comunismo y la política mundial."
-            }
-        ],
-        "wikidata_id": "Q1394",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Lenin",
-        "ultima_actualizacion": "2025-11-25T14:17:38.010089"
-    },
-    {
-        "nombre": "Miguel Ángel",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "En un momento de su vida, se deshizo de algunos de sus dibujos para evitar que se conocieran sus procesos creativos."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Fue un destacado autor de sonetos y madrigales, géneros poéticos que exploró en sus obras."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Sus formas métricas favoritas eran los sonetos y los madrigales, aunque también escribió algunos tercetos."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Entre sus obras más destacadas se encuentran los frescos de la Capilla Sixtina y la Capilla Paulina."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Es famoso por sus esculturas, pinturas y frescos, que se conservan en museos y monumentos importantes."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Sus obras más famosas incluyen la Capilla Sixtina y la Capilla Paulina, que son consideradas algunas de las mejores obras de arte de la historia."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es el famoso artista italiano que creó la Capilla Sixtina y es conocido por sus obras maestras en escultura, pintura y arquitectura."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es el pintor y escultor italiano que creó algunas de las obras más famosas de la historia, incluyendo la Capilla Sixtina y la estatua de la Noche."
-            }
-        ],
-        "wikidata_id": "Q5592",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Miguel_%C3%81ngel",
-        "ultima_actualizacion": "2025-11-25T15:06:40.241275"
-    },
-    {
-        "nombre": "Mahatma Gandhi",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue asesinado en 1948 por un fanático hinduista que compartía su visión de un país sin castas, pero con una visión más extremista."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Fue el líder de la izquierda del partido del Congreso, pero tuvo conflictos con su discípulo Nehru, que representaba a la izquierda."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Instauró métodos de lucha social novedosos como la huelga de hambre y predicó la áhimsa (no violencia) como medio para resistir al dominio británico."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue un estudiante mediocre en Porbandar y posteriormente en Rajkot, pero logró pasar el examen de admisión de la Universidad de Mumbai y estudiar en Inglaterra."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue un defensor de la no violencia y la paz, y escribió frases célebres como 'Ojo por ojo y todo el mundo acabará ciego'."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue un líder importante en la lucha por la independencia de la India y fue asesinado en 1948."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un líder hinduista indio que luchó por la independencia de la India y fue asesinado en 1948. Se le conoce como 'Bapu' y fue un defensor de la no violencia y la paz."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un líder hinduista indio que luchó por la independencia de la India y fue asesinado en 1948. Se le conoce como 'Mahatma' y fue un defensor de la no violencia y la paz."
-            }
-        ],
-        "wikidata_id": "Q1001",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Mahatma_Gandhi",
-        "ultima_actualizacion": "2025-11-25T15:06:50.113335"
-    },
-    {
-        "nombre": "Adolf Hitler",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue enterrado en el patio de la cancillería después de su suicidio en el búnker de Berlín en 1945."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Su libro 'Mi lucha' fue escrito en parte durante su estancia en la cárcel en 1923."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Se convirtió en canciller imperial en enero de 1933 y asumió el mando supremo del Estado germano."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Promovió el rearme de Alemania y lanzó la invasión de Polonia en septiembre de 1939, iniciando la Segunda Guerra Mundial."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Se afilió al Partido Obrero Alemán en 1919 y asumió su liderazgo definitivo en 1921."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Se casó con Eva Braun en su búnker en Berlín en 1945, antes de su suicidio."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un líder político alemán que gobernó con un partido único basado en el totalitarismo y la autocracia."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Su política exterior expansionista buscaba ampliar el Lebensraum ('espacio vital') alemán en Europa."
-            }
-        ],
-        "wikidata_id": "Q352",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Adolf_Hitler",
-        "ultima_actualizacion": "2025-11-27T15:38:15.085857"
-    },
-    {
-        "nombre": "Albert Einstein",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue enterrado en un cementerio de Nueva Jersey, Estados Unidos, en 1955."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Publicó su teoría de la relatividad especial en 1905, mientras trabajaba en la Oficina de Patentes de Berna."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Escribió su obra maestra, la teoría de la relatividad general, en 1915."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue galardonado con el Premio Nobel de Física en 1921 por sus contribuciones a la teoría de la relatividad."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Ulm, Alemania, en 1879, en una familia judía."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Estudió física en la Universidad de Zúrich y se doctoró en 1905."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un físico teórico alemán que desarrolló la teoría de la relatividad y la mecánica cuántica."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es considerado uno de los científicos más importantes del siglo XX."
-            }
-        ],
-        "wikidata_id": "Q937",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Albert_Einstein",
-        "ultima_actualizacion": "2025-11-27T15:38:27.746368"
-    },
-    {
-        "nombre": "Albert Einstein",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Escribió un manuscrito sobre capilaridad en Zúrich, Suiza, en 1901."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Publicó un artículo sobre la teoría de la relatividad especial en 1905, mientras trabajaba en la Oficina de Patentes de Berna."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue galardonado con el Premio Nobel de Física en 1921 por sus contribuciones a la teoría de la relatividad."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Escribió un artículo sobre la mecánica cuántica en 1905, que sentó algunas de las bases de la física estadística."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Ulm, Imperio alemán, en 1879."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Se nacionalizó suizo, austriaco y estadounidense a lo largo de su vida."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un físico alemán de origen judío que se considera el científico más importante del siglo XX."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Desarrolló la teoría de la relatividad y la mecánica cuántica, y es conocido por su ecuación E=mc²."
-            }
-        ],
-        "wikidata_id": "Q937",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Albert_Einstein",
-        "ultima_actualizacion": "2025-11-27T15:57:30.058025"
-    },
-    {
-        "nombre": "Jesús de Nazaret",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue arrestado en Jerusalén y juzgado por las autoridades judías, entregado al gobierno romano y crucificado por orden de Poncio Pilato, el prefecto romano de Judea."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Su comunidad se convirtió en la Iglesia cristiana primitiva, que se expandió como un movimiento mundial."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue considerado el Hijo de Dios y, para la mayoría de las denominaciones cristianas, es la encarnación de Dios Hijo."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Se hipotetiza que los relatos de sus enseñanzas y vida fueron conservados inicialmente por transmisión oral, lo que fue la fuente de los Evangelios escritos."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue un predicador y líder religioso judío que enseñaba mediante parábolas y reunía seguidores."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Su figura está presente en varias religiones, incluyendo el cristianismo y el islam."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un maestro itinerante que se le llamaba a menudo 'rabino'."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Su legado principal es la fundación de la Iglesia cristiana primitiva."
-            }
-        ],
-        "wikidata_id": "Q302",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Jes%C3%BAs_de_Nazaret",
-        "ultima_actualizacion": "2025-11-27T15:57:44.197478"
-    },
-    {
-        "nombre": "Aristóteles",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue un filósofo que escribió sobre la teoría de la generación espontánea."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Fundó la Escuela peripatética en el Liceo de Atenas, donde enseñó a Teofrasto."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Contribuyó a la teoría de la sustancia y la forma, y formuló el principio de no contradicción."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Distinguió entre tres tipos de filosofías: práctico, productivo y teórico."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en la ciudad de Estagira, al norte de la Antigua Grecia."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue considerado el padre de la filosofía occidental, junto a Platón."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un filósofo y científico griego que influyó en la historia intelectual de Occidente."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Su legado principal es la teoría de la virtud y el bienestar (eudaemonia)."
-            }
-        ],
-        "wikidata_id": "Q868",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Arist%C3%B3teles",
-        "ultima_actualizacion": "2025-11-27T16:10:58.558879"
-    },
-    {
-        "nombre": "Ronald Reagan",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Nació en un edificio de banco en un pequeño pueblo del norte de Illinois."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Escribió su tesis doctoral en economía y sociología en el Eureka College."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue un miembro de la fraternidad Tau Kappa Epsilon en el Eureka College."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Negoció el Tratado INF para el desarme nuclear con el secretario general soviético Mijaíl Gorbachov."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue el 40.º presidente de los Estados Unidos y el 33.er gobernador de California."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació el 6 de febrero de 1911 y murió el 5 de junio de 2004."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un político, militar y actor estadounidense."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue conocido por su oposición a la construcción de la represa federal del Dos Ríos."
-            }
-        ],
-        "wikidata_id": "Q9960",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Ronald_Reagan",
-        "ultima_actualizacion": "2025-11-27T16:11:10.513569"
-    },
-    {
-        "nombre": "Vladímir Putin",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue uno de los pocos en su clase que no era miembro de la organización de Jóvenes Pioneros."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Trabajó como oficial de inteligencia exterior de la KGB en Alemania Oriental durante la década de 1980."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Dirigió a Rusia durante la segunda guerra chechena, restaurando el control federal en Chechenia."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Supervisó la reforma militar y la reforma policial, así como la victoria de Rusia en su guerra contra Georgia."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Leningrado el 7 de octubre de 1952."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue presidente de la Federación de Rusia desde 2012 y anteriormente desde 2000 hasta 2008."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es un político y exagente de inteligencia ruso."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Ha sido presidente de Rusia durante más de una década."
-            }
-        ],
-        "wikidata_id": "Q7747",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Vlad%C3%ADmir_Putin",
-        "ultima_actualizacion": "2025-11-27T16:25:56.604235"
-    },
-    {
-        "nombre": "Adolf Hitler",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Escribió su obra maestra en la cárcel, donde también desarrolló su ideología política."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Se afilió al Partido Obrero Alemán en 1919, predecesor del NSDAP."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue nombrado canciller imperial en enero de 1933 y un año después se autoproclamó líder y canciller imperial."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Transformó la República de Weimar en el Tercer Reich y gobernó con un partido único basado en el totalitarismo y la autocracia de la ideología nazi."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en una ciudad de Alemania y ascendió al poder durante un período de crisis económica, social y política."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue responsable del inicio de la Segunda Guerra Mundial en Europa con la invasión de Polonia en septiembre de 1939."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un líder político alemán que gobernó con un partido único basado en el totalitarismo y la autocracia de la ideología nazi."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Su política tenía como objetivo establecer un Nuevo Orden en el que Alemania y la raza aria tendrían un papel hegemónico mundial."
-            }
-        ],
-        "wikidata_id": "Q352",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Adolf_Hitler",
-        "ultima_actualizacion": "2025-11-27T16:26:10.661440"
-    },
-    {
-        "nombre": "Karl Marx",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Desarrolló una fuerte gripe que lo mantuvo con un mal estado de salud durante los últimos quince meses de su vida."
-            },
-            {
-                "dificultad": 4,
-                "pista": "En su Crítica del Programa de Gotha (1875), escribió sobre la revolución, el Estado y la transición al comunismo."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Sus principales temas de trabajo fueron la crítica filosófica, la crítica política y la crítica de la economía política."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Murió como apátrida y fue enterrado en el cementerio de Highgate en 1883."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Tras la finalización de sus estudios, escribió para un diario liberal, la Gaceta Renana (Rheinische Zeitung), donde comenzó a utilizar conceptos hegelianos de la dialéctica."
-            },
-            {
-                "dificultad": 2,
-                "pista": "En vida, se describía como “un ciudadano del mundo”."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Sus teorías sobre la sociedad, la economía y la política se conocen colectivamente como el marxismo."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Desarrolló una teoría económica capaz de aportar explicaciones a la crisis del capitalismo y de interpelar al proletariado a participar en ella activamente para producir un cambio revolucionario."
-            }
-        ],
-        "wikidata_id": "Q9061",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Karl_Marx",
-        "ultima_actualizacion": "2025-11-27T16:26:24.161614"
-    },
-    {
-        "nombre": "William Shakespeare",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue bautizado en la iglesia de la Santísima Trinidad en Stratford-upon-Avon, Warwickshire, el 26 de abril de 1564."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Traducciones de sus obras se realizaron en España en 1772 y 1798."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Su obra 'Hamlet' fue representada por primera vez en Alemania en 1777."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue objeto de estudio en profundidad por la crítica española a partir de 1872."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Stratford-upon-Avon, Warwickshire, en 1564."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Falleció en Stratford-upon-Avon, Warwickshire, el 23 de abril de 1616."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Se le considera el escritor más importante en lengua inglesa."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Sus obras han sido traducidas y representadas en todo el mundo."
-            }
-        ],
-        "wikidata_id": "Q692",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/William_Shakespeare",
-        "ultima_actualizacion": "2025-11-27T16:26:36.915490"
-    },
-    {
-        "nombre": "Barack Obama",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Tiene siete medio hermanos de origen keniano por parte de su padre, de los cuales seis están con vida."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Se graduó en la prestigiosa escuela de Derecho Harvard Law School, donde fue presidente de la revista Harvard Law Review."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue el primer candidato afroestadounidense nominado a la presidencia por el Partido Demócrata y el primero en ejercer el cargo presidencial."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Promovió la legislación relacionada con los grupos de presión y con el fraude electoral, el calentamiento global, el terrorismo nuclear y la atención del personal militar que regresa a Estados Unidos desde las misiones militares en Irak y Afganistán."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Honolulu, Hawái, el 4 de agosto de 1961."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Se casó con Michelle Obama y tienen dos hijas, Malia y Sasha."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue el 44.º presidente de los Estados Unidos."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es un político y abogado estadounidense."
-            }
-        ],
-        "wikidata_id": "Q76",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Barack_Obama",
-        "ultima_actualizacion": "2025-11-27T16:26:49.716198"
-    },
-    {
-        "nombre": "Karl Marx",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Trasladó a su familia a Londres en 1849, donde vivieron en la pobreza."
-            },
-            {
-                "dificultad": 4,
-                "pista": "En su Crítica del Programa de Gotha (1875), Marx escribió sobre la revolución y la transición al comunismo."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue expulsado de la Gaceta Renana en 1842 por sus ideas socialistas."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Marx se describió a sí mismo como 'un ciudadano del mundo'."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Murió en Londres en 1883, a la edad de 64 años."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Se casó con Jenny von Westphalen en 1843."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un teórico y activista socialista."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Escribió El capital en 1867."
-            }
-        ],
-        "wikidata_id": "Q9061",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Karl_Marx",
-        "ultima_actualizacion": "2025-11-27T18:27:26.740010"
-    },
-    {
-        "nombre": "Michael Jackson",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue reconocido dos veces en el Salón de la Fama del Rock and Roll."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Comenzó su carrera artística en la agrupación musical The Jackson 5 en la década de 1960."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Con Off the Wall, Jackson se convirtió en el primer artista en solitario en tener cuatro sencillos del mismo álbum dentro de los diez primeros puestos del Billboard Hot 100."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Fue incluido en el Salón de la Fama de los Compositores y el Salón de la Fama de la Danza como el único bailarín de música pop y rock."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Gary, Indiana, el 29 de agosto de 1958."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Murió en Los Ángeles el 25 de junio de 2009."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un cantante, compositor, productor y bailarín estadounidense."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es reconocido como el «artista musical más exitoso de todos los tiempos» por los Guinness World Records."
-            }
-        ],
-        "wikidata_id": "Q2831",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Michael_Jackson",
-        "ultima_actualizacion": "2025-11-27T18:27:39.054009"
-    },
-    {
-        "nombre": "Albert Einstein",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "En 1905, un joven físico desconocido publicó teorías que sentarían bases de la física estadística y mecánica cuántica."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Einstein abandonó Alemania en diciembre de 1932 con destino a Estados Unidos, donde se dedicó a la docencia."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Einstein publicó 'Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt' en 1905."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Einstein desarrolló la idea de una religión cósmica, compatible con las creencias tradicionales, en la década de 1930."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Einstein nació en Ulm, Imperio alemán, el 14 de marzo de 1879."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Einstein falleció en Princeton, Estados Unidos, el 18 de abril de 1955."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Einstein fue un físico alemán de origen judío."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Einstein es considerado el científico más importante del siglo XX."
-            }
-        ],
-        "wikidata_id": "Q937",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Albert_Einstein",
-        "ultima_actualizacion": "2025-11-27T18:27:51.220418"
-    },
-    {
-        "nombre": "Leonardo da Vinci",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue acompañado por Francesco Melzi al momento de su fallecimiento en Amboise."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Tras su infancia en Vinci, estudió con el pintor florentino Andrea de Verrocchio."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Sus proyectos incluyeron una máquina para medir el límite elástico de un cable."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Hizo descubrimientos sustanciales en la anatomía, la ingeniería civil y la hidrodinámica."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Vinci el 15 de abril de 1452."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue un polímata florentino del Renacimiento italiano."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un pintor y científico del Renacimiento."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un artista y inventor italiano."
-            }
-        ],
-        "wikidata_id": "Q762",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Leonardo_da_Vinci",
-        "ultima_actualizacion": "2025-11-27T18:28:02.154305"
-    },
-    {
         "nombre": "Isaac Newton",
         "pistas": [
             {
                 "dificultad": 5,
-                "pista": "Nació en Woolsthorpe-by-Colsterworth, Lincolnshire, el 4 de enero de 1643, en un parto prematuro."
+                "pista": "Escribió una lista de sus pecados, incluyendo amenazar a sus padres con quemar su casa."
             },
             {
                 "dificultad": 4,
-                "pista": "Fue enviado a estudiar al colegio The King's School, en Grantham, a la edad de doce años."
+                "pista": "Su abuelo lo desheredó, a pesar de vivir en la misma casa."
             },
             {
                 "dificultad": 3,
-                "pista": "Desarrolló el cálculo integral y diferencial, compartiendo el crédito con Gottfried Leibniz."
+                "pista": "Desarrolló un carro de cuatro ruedas impulsado por una manivela que él accionaba desde su interior."
             },
             {
                 "dificultad": 3,
-                "pista": "Formuló sus leyes de la física y astronomía utilizando el cálculo."
+                "pista": "Escribió su obra más importante sobre óptica, Opticks, en 1704."
             },
             {
                 "dificultad": 2,
-                "pista": "Nació el 4 de enero de 1643, aunque en ese entonces el calendario usado era el juliano."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Sus padres fueron Isaac Newton y Hannah Ayscough, dos campesinos puritanos."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un físico, teólogo, inventor, alquimista y matemático inglés."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Demostró que la luz blanca estaba formada por una banda de colores separables por un prisma."
-            }
-        ],
-        "wikidata_id": "Q935",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Isaac_Newton",
-        "ultima_actualizacion": "2025-11-27T18:28:14.438950"
-    },
-    {
-        "nombre": "Albert Einstein",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Escribió la carta a Guy H. Raner Jr. el 2 de julio de 1945, declarándose ateo."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Fue entrevistado varias veces por William Hermanns, quien planteó la idea de una religión cósmica."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Publicó su teoría de la relatividad especial en 1905, mientras trabajaba en la Oficina de Patentes de Berna."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Escribió la tesis doctoral 'Über die von der molekularkinetischen Theorie der Wärme geforderte Bewegung von in ruhenden Flüssigkeiten suspendierten Teilchen' en 1905."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Nació en Ulm, Imperio alemán, el 14 de marzo de 1879."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Se nacionalizó suizo, austriaco y estadounidense después de su nacimiento."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Fue un físico alemán de origen judío, considerado el científico más importante del siglo XX."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Desarrolló la teoría de la relatividad y la mecánica cuántica."
-            }
-        ],
-        "wikidata_id": "Q937",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Albert_Einstein",
-        "ultima_actualizacion": "2025-11-27T19:18:01.276433"
-    },
-    {
-        "nombre": "William Shakespeare",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue bautizado en la iglesia de la Santísima Trinidad en Stratford-upon-Avon, Warwickshire, el 26 de abril de 1564."
-            },
-            {
-                "dificultad": 4,
-                "pista": "La versión de 1681 de Nahum Tate sustituyó a la de Shakespeare en el Rey Lear hasta mediados del siglo XIX."
-            },
-            {
-                "dificultad": 3,
-                "pista": "David Garrick apareció por vez primera encarnando al personaje del jorobado Ricardo III en la escena de un teatro de los arrabales de Londres en 1731."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Friedrich Ludwig Schröder contribuyó con su primera representación del Hamlet en Alemania en 1777 a hacer vivir a Shakespeare en la escena de aquel país."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Shakespeare fue poeta y dramaturgo venerado ya en su tiempo, pero su reputación no alcanzó las altísimas cotas actuales hasta el siglo XIX."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Existe muy pocos hechos documentados en la vida de Shakespeare, aunque es probable que naciera el 23 de abril de 1564."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Se le considera el escritor más importante en lengua inglesa y como uno de los más célebres de la literatura universal."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Muchas de las citas y aforismos que salpican sus obras han pasado a formar parte del uso cotidiano, tanto en inglés como en otros idiomas."
-            }
-        ],
-        "wikidata_id": "Q692",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/William_Shakespeare",
-        "ultima_actualizacion": "2025-11-27T19:18:14.594730"
-    },
-    {
-        "nombre": "Isaac Newton",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue el primero en demostrar que las leyes naturales que gobiernan el movimiento en la Tierra y las que gobiernan el movimiento de los cuerpos celestes son las mismas."
-            },
-            {
-                "dificultad": 4,
                 "pista": "Nació en Woolsthorpe-by-Colsterworth, Lincolnshire, en 1643."
             },
             {
-                "dificultad": 3,
-                "pista": "Escribió una lista de sus pecados e incluyó uno en particular: «Amenazar a mi padre y a mi madre Smith con quemarlos a ellos y a su casa»."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Construyó un carro de cuatro ruedas impulsado por una manivela que él accionaba desde su interior."
-            },
-            {
                 "dificultad": 2,
-                "pista": "Sus padres fueron Isaac Newton y Hannah Ayscough, dos campesinos puritanos."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue enviado a estudiar al colegio The King's School, en Grantham, a la edad de doce años."
+                "pista": "Su padre murió antes de que él naciera, en octubre de 1642."
             },
             {
                 "dificultad": 1,
-                "pista": "Fue un físico, teólogo, inventor, alquimista y matemático inglés."
+                "pista": "Fue un físico y matemático que desarrolló las leyes de la física y la astronomía."
             },
             {
                 "dificultad": 1,
-                "pista": "Demostró que la luz blanca estaba formada por una banda de colores que podían separarse por medio de un prisma."
+                "pista": "Es conocido por su trabajo en la gravedad y la creación de sus Principia."
             }
         ],
         "wikidata_id": "Q935",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Isaac_Newton",
-        "ultima_actualizacion": "2025-11-27T19:18:28.494136"
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Isaac_Newton"
     },
     {
-        "nombre": "Jesús de Nazaret",
+        "nombre": "Ludwig van Beethoven",
         "pistas": [
             {
                 "dificultad": 5,
-                "pista": "Fue crucificado por orden de Poncio Pilato, el prefecto romano de Judea."
+                "pista": "Padeció saturnismo debido a la ingesta de agua contaminada con plomo."
             },
             {
                 "dificultad": 4,
-                "pista": "Se hipotetiza que los relatos de sus enseñanzas y vida fueron conservados inicialmente por transmisión oral."
+                "pista": "Su muerte se atribuye a una insuficiencia hepática que desencadenó un coma hepático."
             },
             {
                 "dificultad": 3,
-                "pista": "Fue arrestado en Jerusalén y juzgado por las autoridades judías."
+                "pista": "Compuso treinta y dos sonatas para piano y nueve sinfonías."
             },
             {
                 "dificultad": 3,
-                "pista": "Enseñaba mediante parábolas y reunía seguidores, entre los cuales destacan sus doce apóstoles."
+                "pista": "Su ópera Fidelio es una de sus obras más destacadas."
             },
             {
                 "dificultad": 2,
-                "pista": "Fue un predicador y líder religioso judío."
+                "pista": "Fue el último gran representante del clasicismo vienés."
             },
             {
                 "dificultad": 2,
-                "pista": "Nació en el Reino de Judá, alrededor del año 4 a. C."
+                "pista": "Su vida personal fue problemática debido a su creciente sordera."
             },
             {
                 "dificultad": 1,
-                "pista": "Fue un maestro itinerante y se le llamaba a menudo «rabino»."
+                "pista": "Fue un compositor y pianista alemán que influyó en la música del siglo XIX."
             },
             {
                 "dificultad": 1,
-                "pista": "Es considerado el Hijo de Dios y la encarnación de Dios Hijo en el cristianismo."
+                "pista": "Es considerado uno de los más grandes compositores de la historia."
             }
         ],
-        "wikidata_id": "Q302",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Jes%C3%BAs_de_Nazaret",
-        "ultima_actualizacion": "2025-11-27T19:18:40.172365"
+        "wikidata_id": "Q255",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Ludwig_van_Beethoven"
     },
     {
-        "nombre": "Donald Trump",
+        "nombre": "Galileo Galilei",
         "pistas": [
             {
                 "dificultad": 5,
-                "pista": "Fue declarado culpable en casos civiles por abuso sexual, difamación y fraude empresarial en 2023."
+                "pista": "Descubrió la ley de la isocronismo de los péndulos como estudiante."
             },
             {
                 "dificultad": 4,
-                "pista": "Consideró postularse para el cargo como candidato republicano para las elecciones de 2012."
+                "pista": "Fue hijo de un músico y matemático llamado Vincenzo."
             },
             {
                 "dificultad": 3,
-                "pista": "Fue accionista principal de los concursos de belleza Miss USA y Miss Universo desde 1996 hasta 2015."
+                "pista": "Observó manchas en el Sol y demostró que están en su superficie."
             },
             {
                 "dificultad": 3,
-                "pista": "Publicó el libro El arte de la negociación, aunque lo escribió un encargado."
+                "pista": "Descubrió las fases de Venus y su variación de tamaño."
             },
             {
                 "dificultad": 2,
-                "pista": "Nació y creció en un barrio del distrito neoyorquino de Queens llamado «Jamaica»."
+                "pista": "Nació en Pisa cuando esta pertenecía al Gran Ducado de Toscana."
             },
             {
                 "dificultad": 2,
-                "pista": "Se casó con la modelo Melania, quien es su actual esposa."
+                "pista": "Fue el mayor de siete hermanos y su madre se llamaba Giulia Ammannati."
             },
             {
                 "dificultad": 1,
-                "pista": "Es un empresario, personalidad televisiva y político conservador estadounidense."
+                "pista": "Fue un astrónomo y físico italiano que desafió la teoría geocéntrica."
             },
             {
                 "dificultad": 1,
-                "pista": "Fue el 47.º presidente de los Estados Unidos desde el 20 de enero de 2025."
+                "pista": "Es conocido por su defensa de la teoría heliocéntrica y su uso del método científico."
             }
         ],
-        "wikidata_id": "Q22686",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Donald_Trump",
-        "ultima_actualizacion": "2025-11-27T19:18:52.783647"
+        "wikidata_id": "Q307",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Galileo_Galilei"
     },
     {
-        "nombre": "Donald Trump",
+        "nombre": "Albert Einstein",
         "pistas": [
             {
                 "dificultad": 5,
-                "pista": "Fue propietario de un equipo de fútbol en Nueva Jersey y patrocinó combates de boxeo."
+                "pista": "Publicó su teoría de la relatividad especial en 1905 mientras trabajaba en la Oficina de Patentes de Berna."
             },
             {
                 "dificultad": 4,
-                "pista": "Participó en la revitalización del complejo de apartamentos de Swifton Village en Cincinnati."
+                "pista": "Se nacionalizó suizo, austriaco y estadounidense después de su origen alemán."
             },
             {
                 "dificultad": 3,
-                "pista": "Desarrolló varios proyectos inmobiliarios, como la Trump International Hotel and Tower de Honolulu."
+                "pista": "Desarrolló la idea de una religión cósmica y la publicó en el New York Times en 1930."
             },
             {
                 "dificultad": 3,
-                "pista": "Fue accionista principal de los concursos de belleza Miss USA y Miss Universo desde 1996 hasta 2015."
+                "pista": "Publicó su trabajo sobre la teoría cuántica de gases ideales en 1924."
             },
             {
                 "dificultad": 2,
-                "pista": "Nació en el barrio de Jamaica en el distrito neoyorquino de Queens."
+                "pista": "Abandonó Alemania en 1932 debido al ascenso del nazismo."
             },
             {
                 "dificultad": 2,
-                "pista": "Se graduó en la Wharton School de la Universidad de Pensilvania en 1968."
+                "pista": "Se convirtió en profesor en el Institute for Advanced Study en Estados Unidos."
             },
             {
                 "dificultad": 1,
-                "pista": "Fue el 47.º presidente de los Estados Unidos."
+                "pista": "Es considerado el científico más importante del siglo XX."
             },
             {
                 "dificultad": 1,
-                "pista": "Es un empresario y personalidad televisiva estadounidense."
+                "pista": "Es famoso por su teoría de la relatividad y la fórmula E=mc²."
             }
         ],
-        "wikidata_id": "Q22686",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Donald_Trump",
-        "ultima_actualizacion": "2025-11-27T20:02:27.479499"
-    },
-    {
-        "nombre": "Jesús de Nazaret",
-        "pistas": [
-            {
-                "dificultad": 5,
-                "pista": "Fue considerado uno de los profetas más importantes en el islam, donde se lo conoce como Isa."
-            },
-            {
-                "dificultad": 4,
-                "pista": "Su figura está presente en varias religiones, incluyendo el cristianismo y el islam."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Su comunidad se convirtió en la Iglesia cristiana primitiva después de su muerte."
-            },
-            {
-                "dificultad": 3,
-                "pista": "Su vida y enseñanzas fueron conservadas inicialmente por transmisión oral."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue un predicador y líder religioso judío que enseñaba mediante parábolas."
-            },
-            {
-                "dificultad": 2,
-                "pista": "Fue arrestado en Jerusalén y juzgado por las autoridades judías y romanas."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es considerado el Hijo de Dios en el cristianismo y la encarnación de Dios Hijo."
-            },
-            {
-                "dificultad": 1,
-                "pista": "Es el centro de todas las religiones denominadas cristianas y su figura ha ejercido una enorme influencia en la cultura de Europa y América."
-            }
-        ],
-        "wikidata_id": "Q302",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Jes%C3%BAs_de_Nazaret",
-        "ultima_actualizacion": "2025-11-27T20:02:37.540854"
+        "wikidata_id": "Q937",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Albert_Einstein"
     },
     {
         "nombre": "Karl Marx",
         "pistas": [
             {
                 "dificultad": 5,
-                "pista": "Fue expulsado de la Gaceta Renana en 1849 y se trasladó a Londres con su familia."
+                "pista": "Murió con una fuerte gripe, bronquitis y pleuresía en Londres en 1883."
             },
             {
                 "dificultad": 4,
-                "pista": "Desarrolló una fuerte gripe que lo mantuvo con un mal estado de salud durante los últimos quince meses de su vida."
+                "pista": "Se trasladó a Argel por motivos de salud en 1882."
             },
             {
                 "dificultad": 3,
-                "pista": "Escribió El 18 de brumario de Luis Bonaparte en 1852 y Crítica del Programa de Gotha en 1875."
+                "pista": "Escribió El 18 de brumario de Luis Bonaparte en 1852."
             },
             {
                 "dificultad": 3,
-                "pista": "Fue una figura destacada de la Primera Internacional y luchó contra la influencia de los anarquistas liderados por Mijaíl Bakunin."
+                "pista": "Publicó Crítica del Programa de Gotha en 1875."
             },
             {
                 "dificultad": 2,
@@ -1344,99 +180,603 @@
             },
             {
                 "dificultad": 2,
-                "pista": "Se casó con Jenny y tuvo hijos con ella, pero tras su muerte en 1881, su salud comenzó a declinar."
+                "pista": "Se casó con Jenny von Westphalen y tuvo hijos con ella."
             },
             {
                 "dificultad": 1,
-                "pista": "Es conocido por sus teorías sobre la sociedad, la economía y la política, colectivamente conocidas como el marxismo."
+                "pista": "Fue un teórico y activista del socialismo y el comunismo."
             },
             {
                 "dificultad": 1,
-                "pista": "Escribió El capital en 1867, una de sus obras más influyentes y destacadas."
+                "pista": "Es conocido por su obra El capital, publicada en 1867."
             }
         ],
         "wikidata_id": "Q9061",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Karl_Marx",
-        "ultima_actualizacion": "2025-11-27T20:02:47.602808"
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Karl_Marx"
     },
     {
-        "nombre": "Aristóteles",
+        "nombre": "Miguel Angel",
         "pistas": [
             {
                 "dificultad": 5,
-                "pista": "Su teoría hilemórfica describe la sustancia y la forma como componentes de las entidades sensibles."
+                "pista": "Quemó diseños y apuntes propios para ocultar su proceso creativo."
             },
             {
                 "dificultad": 4,
-                "pista": "Fundó la Escuela peripatética de filosofía en el Liceo de Atenas."
+                "pista": "Escribió poemas sobre temas relacionados con sus trabajos artísticos."
             },
             {
                 "dificultad": 3,
-                "pista": "Formuló la teoría de la generación espontánea y el principio de no contradicción."
+                "pista": "Creó frescos en la Capilla Paulina y la Capilla Sixtina."
             },
             {
                 "dificultad": 3,
-                "pista": "Distingue tres tipos de filosofías: saber práctico, saber productivo y saber teórico."
+                "pista": "Sus formas métricas favoritas al escribir eran los sonetos y los madrigales."
             },
             {
                 "dificultad": 2,
-                "pista": "Nació en la ciudad de Estagira, al norte de la Antigua Grecia."
+                "pista": "También fue un prolífico dibujante y autor de varias decenas de dibujos."
             },
             {
                 "dificultad": 2,
-                "pista": "Murió en Calcis a la edad de 62 años."
+                "pista": "Su obra incluye entre cuarenta y cincuenta esculturas conservadas."
             },
             {
                 "dificultad": 1,
-                "pista": "Es considerado uno de los padres de la filosofía occidental."
+                "pista": "Fue un artista renacentista que creó obras maestras en pintura y escultura."
             },
             {
                 "dificultad": 1,
-                "pista": "Fue un filósofo y científico griego que influyó en la historia intelectual de Occidente."
+                "pista": "Es famoso por esculpir el David y pintar la bóveda de la Capilla Sixtina."
             }
         ],
-        "wikidata_id": "Q868",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/Arist%C3%B3teles",
-        "ultima_actualizacion": "2025-11-27T20:02:57.134325"
+        "wikidata_id": "Q5592",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Miguel_%C3%81ngel"
     },
     {
-        "nombre": "William Shakespeare",
+        "nombre": "Pablo Picasso",
         "pistas": [
             {
                 "dificultad": 5,
-                "pista": "Su influencia en la literatura hispana se hizo notar en el siglo XIX con autores como Rubén Darío y José Enrique Rodó."
+                "pista": "Compró cabezas del Cerro de los Santos en 1907 a un aventurero belga."
             },
             {
                 "dificultad": 4,
-                "pista": "Fue traducido al español por Ramón de la Cruz en 1772 y Leandro Fernández de Moratín en 1798."
+                "pista": "Su bisabuelo materno era originario de la localidad de Sori en Génova, Italia."
             },
             {
                 "dificultad": 3,
-                "pista": "Su obra fue adaptada y reinterpretada en el siglo XIX por autores como David Garrick y Friedrich Ludwig Schröder."
+                "pista": "Pintó Dos mujeres desnudas en invierno, llevando al extremo la estilización escultórica."
             },
             {
                 "dificultad": 3,
-                "pista": "Su influencia en la literatura alemana se hizo notar con la representación de Hamlet en 1777 por Friedrich Ludwig Schröder."
+                "pista": "Retomó el Retrato de Gertrude Stein en 1906, reduciendo su rostro a una máscara ibérica."
             },
             {
                 "dificultad": 2,
-                "pista": "Fue bautizado en la iglesia de la Santísima Trinidad en Stratford-upon-Avon, Warwickshire, el 26 de abril de 1564."
+                "pista": "Nació en Málaga, España, en el seno de una familia burguesa en 1881."
             },
             {
                 "dificultad": 2,
-                "pista": "Murió en Stratford-upon-Avon, Warwickshire, el 23 de abril de 1616, según el calendario juliano."
+                "pista": "Fue miembro del Partido Comunista de España y del Partido Comunista Francés hasta su muerte."
             },
             {
                 "dificultad": 1,
-                "pista": "Es considerado el escritor más importante en lengua inglesa y uno de los más célebres de la literatura universal."
+                "pista": "Fue un pintor y escultor español, creador del cubismo junto con Georges Braque."
             },
             {
                 "dificultad": 1,
-                "pista": "Fue poeta y dramaturgo venerado ya en su tiempo, y su reputación alcanzó altísimas cotas en el siglo XIX."
+                "pista": "Es considerado uno de los mayores pintores del siglo XX, autor del Guernica."
             }
         ],
-        "wikidata_id": "Q692",
-        "url_wikipedia": "https://es.wikipedia.org/wiki/William_Shakespeare",
-        "ultima_actualizacion": "2025-11-27T20:03:07.666011"
+        "wikidata_id": "Q5593",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Pablo_Picasso"
+    },
+    {
+        "nombre": "Charles Chaplin",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue cofundador de la compañía de distribución cinematográfica United Artists en 1919."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Comenzó a actuar a los 14 años debido a la internación de su madre en un hospicio psiquiátrico."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Dirigió y protagonizó películas habladas como Monsieur Verdoux y A King in New York."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Escribió y compuso la música de la mayoría de sus películas."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Londres en 1889 y murió en Suiza en 1977."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se trasladó a los Estados Unidos a los 19 años con la compañía de Fred Karno."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un actor cómico y cineasta inglés de la era del cine mudo."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es mundialmente famoso por su personaje del vagabundo con bombín y bastón."
+            }
+        ],
+        "wikidata_id": "Q882",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Charles_Chaplin"
+    },
+    {
+        "nombre": "Winston Churchill",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue un prolífico pintor y ganador del Premio Nobel de Literatura en 1953."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Se unió al ejército británico en 1895 y vio acción en la India británica."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue presidente de la Junta de Comercio y secretario del Interior en el gobierno liberal."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Concibió y dirigió la desastrosa campaña de Galípoli durante la Primera Guerra Mundial."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Oxfordshire en una familia rica y aristocrática en 1874."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se desempeñó como primer ministro del Reino Unido en dos ocasiones distintas."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un destacado líder político y militar durante la Segunda Guerra Mundial."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es famoso por su liderazgo en el Reino Unido enfrentando a la Alemania nazi."
+            }
+        ],
+        "wikidata_id": "Q8016",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Winston_Churchill"
+    },
+    {
+        "nombre": "Vladimir Putin",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Trabajó en la villa de la KGB en Alemania Oriental durante su carrera en la inteligencia exterior."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue uno de los pocos en su clase que no eran miembros de la organización de Jóvenes Pioneros."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Supervisó la reforma militar y la reforma policial como primer ministro bajo Medvédev."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Dirigió a Rusia durante la segunda guerra chechena, restaurando el control federal."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Su madre era trabajadora de una fábrica y su padre era un recluta en la Marina soviética."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Leningrado, actual San Petersburgo, en octubre de 1952."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es el actual presidente de la Federación de Rusia."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un oficial de inteligencia exterior de la KGB antes de comenzar su carrera política."
+            }
+        ],
+        "wikidata_id": "Q7747",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Vlad%C3%ADmir_Putin"
+    },
+    {
+        "nombre": "Iosif Stalin",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Utilizó el seudónimo 'Koba' en sus escritos y comunicaciones personales."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue destituido de su cargo como secretario general varias veces, pero logró mantenerse en el poder."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Apoyó a Mao Zedong en la guerra civil china y estableció buenas relaciones con Corea del Norte."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Participó en la Conferencia de Yalta y Potsdam para negociar la influencia soviética en Europa."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se convirtió en el jefe del Estado soviético después de la muerte de Vladímir Lenin."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue el líder de la Unión Soviética durante la Segunda Guerra Mundial."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue el dictador de la Unión Soviética durante la mayor parte del siglo XX."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Implementó políticas de industrialización y colectivización forzosa en la URSS."
+            }
+        ],
+        "wikidata_id": "Q855",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/I%C3%B3sif_Stalin"
+    },
+    {
+        "nombre": "Napoleon Bonaparte",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue recibido como un héroe conquistador en París en diciembre de 1797."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Estudió en la escuela militar francesa de Brienne-le-Château a la edad de 10 años."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Derrotó a cuatro generales austríacos en 1797 y forzó a Austria a firmar un acuerdo de paz."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Ocupó Venecia y acabó con más de 1000 años de independencia de la república."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en la isla de Córcega, poco después de su anexión por Francia."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió exiliado en la isla de Santa Elena en 1821."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un militar y político francés que se autoproclamó emperador."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Se le considera uno de los más grandes comandantes militares de la historia."
+            }
+        ],
+        "wikidata_id": "Q517",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Napole%C3%B3n_Bonaparte"
+    },
+    {
+        "nombre": "Mahatma Gandhi",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue influenciado por la correspondencia con León Tolstói en su concepto de resistencia."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Estudió Derecho en Londres y regresó a la India para ejercer la abogacía."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Instauró métodos de lucha social novedosos como la huelga de hambre y la predicación de la áhimsa."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Participó en la Conferencia de Londres en 1931 reclamando la independencia."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Porbandar, una ciudad costera del estado de Guyarat."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue asesinado por Nathuram Godse, un fanático integracionista, en 1948."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un líder destacado del movimiento de independencia de la India."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Practicó la desobediencia civil no violenta contra el dominio británico."
+            }
+        ],
+        "wikidata_id": "Q1001",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Mahatma_Gandhi"
+    },
+    {
+        "nombre": "Julio César",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue elegido cuestor por los Comicios en el 69 a. C."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Estudió filosofía y retórica con el gramático Apolonio Molón en Rodas."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue elegido edil curul en el año 65 a. C. y organizó los juegos en el Circo Máximo."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue elegido Pontifex Maximus después de la muerte de Quinto Cecilio Metelo Pío."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se casó con Pompeya, nieta de Sila, después de la muerte de Cornelia."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue elegido pretor urbano para ocuparse de asuntos entre ciudadanos romanos."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un político y militar romano que dominó la política de la República."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Venció a varias tribus galas y expandió el territorio romano."
+            }
+        ],
+        "wikidata_id": "Q1048",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Julio_C%C3%A9sar"
+    },
+    {
+        "nombre": "Jesús de Nazaret",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue considerado uno de los profetas más importantes en el islam, conocido como Isa."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Su figura está presente en varias religiones, no solo en el cristianismo."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su comunidad se convirtió en la Iglesia cristiana primitiva después de su muerte."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Los relatos de sus enseñanzas y vida fueron conservados inicialmente por transmisión oral."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue un predicador judío que enseñaba mediante parábolas."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue arrestado en Jerusalén y juzgado por las autoridades judías."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue crucificado por orden de Poncio Pilato, el prefecto romano de Judea."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es la figura central del cristianismo y considerado el Hijo de Dios."
+            }
+        ],
+        "wikidata_id": "Q302",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Jes%C3%BAs_de_Nazaret"
+    },
+    {
+        "nombre": "Sócrates",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue ridiculizado como personaje cómico en la obra 'Las nubes' de Aristófanes."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Su amigo Querefonte le preguntó al oráculo de Delfos si había alguien más sabio que él."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Influyó en la filosofía cirenaica de la experiencia y el placer a través de Aristipo."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su discípulo Platón atribuyó sus propias ideas a él en sus diálogos."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Alopece, Atenas, alrededor del año 470 a. C."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en el año 399 a. C. tras ser condenado a beber cicuta."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un filósofo clásico griego considerado uno de los padres de la filosofía occidental."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es conocido por su método de indagar mediante preguntas, llamado método socrático."
+            }
+        ],
+        "wikidata_id": "Q913",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/S%C3%B3crates"
+    },
+    {
+        "nombre": "Leonardo da Vinci",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Legó todos sus proyectos y escritos a Francesco Melzi al final de su vida."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Estudió con el pintor florentino Andrea de Verrocchio en su juventud."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Realizó descubrimientos pioneros en anatomía, ingeniería civil y óptica."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Trabajó en Milán al servicio del duque Ludovico Sforza."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en la localidad italiana de Vinci en el año 1452."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Falleció en Amboise, Francia, en el año 1519."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un polímata y arquetipo del hombre del Renacimiento."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Pintó el retrato más famoso del mundo, actualmente exhibido en el museo del Louvre."
+            }
+        ],
+        "wikidata_id": "Q762",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Leonardo_da_Vinci"
+    },
+    {
+        "nombre": "Dante Alighieri",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue desterrado de su ciudad natal debido a su participación en luchas políticas entre güelfos y gibelinos."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Escribió tratados en latín sobre literatura, política y filosofía, como De vulgari eloquentia."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su obra Vita nuova contiene alusiones autobiográficas sobre su amor platónico."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue un activo defensor de la unidad italiana siglos antes de que ocurriera."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en la ciudad de Rávena en el año 1321."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Florencia alrededor del año 1265."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es conocido por escribir la Divina Comedia."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un poeta italiano que describió el Infierno, el Purgatorio y el Paraíso."
+            }
+        ],
+        "wikidata_id": "Q1067",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Dante_Alighieri"
+    },
+    {
+        "nombre": "Buda Gautama",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Se le conoce como Lokavidu, sabio y prudente en el conocimiento de los muchos mundos."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Criticó las prácticas de los sacerdotes brahmanes, como el sacrificio de animales."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Enseñó un camino medio entre la complacencia sensual y el ascetismo estricto."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su camino espiritual incluía entrenamiento ético y prácticas meditativas como la atención plena."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Lumbini en el seno de una familia aristocrática en la república Sakia."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en Kushinagar, alcanzando el paranirvana a los 80 años."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un maestro espiritual que enseñó las Cuatro Nobles Verdades."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es el fundador del budismo y venerado como un ser iluminado."
+            }
+        ],
+        "wikidata_id": "Q9441",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Buda_Gautama"
+    },
+    {
+        "nombre": "Alejandro Magno",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fundó unas setenta ciudades con su nombre, siendo la de Egipto la más famosa."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Se casó con mujeres persas de noble cuna para legitimar su poder en oriente."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue educado por Aristóteles durante su adolescencia."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Promovió la integración de pueblos sometidos con una política de fusión cultural."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Sucedió a su padre Filipo II en el trono en 336 a. C."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Era hijo de la princesa Olimpia de Epiro y rey de Macedonia."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Lideró una extensa campaña militar conquistando el Imperio Persa."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Creó uno de los más grandes imperios de la historia antigua antes de cumplir 33 años."
+            }
+        ],
+        "wikidata_id": "Q8409",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Alejandro_Magno"
     }
 ]

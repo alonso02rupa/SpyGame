@@ -91,7 +91,7 @@ def load_hints_from_json(filepath='pistas.json'):
         print(f"Error loading hints from {filepath}: {e}")
 
 def get_person_from_db():
-    """Get a random person from the database"""
+    """Get a random person from the database, prioritizing unplayed ones"""
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
     if mongodb_available and pistas_collection is not None:
@@ -100,7 +100,33 @@ def get_person_from_db():
             count = pistas_collection.count_documents({})
             
             if count > 0:
-                # Seleccionar una persona aleatoria usando aggregation
+                # Obtener personajes ya jugados por este usuario
+                username = get_current_user()
+                query = {'username': username} if username != 'guest' else {'username': {'$exists': False}}
+                
+                played_persons = sessions_collection.distinct('person', query)
+                played_persons_set = set(played_persons)
+                
+                # 90% de probabilidad de elegir un personaje no jugado
+                use_unplayed = random.random() < 0.90
+                
+                if use_unplayed and len(played_persons_set) < count:
+                    # Intentar seleccionar un personaje NO jugado
+                    pipeline = [
+                        {"$match": {"nombre": {"$nin": list(played_persons_set)}}},
+                        {"$sample": {"size": 1}}
+                    ]
+                    result = list(pistas_collection.aggregate(pipeline))
+                    
+                    if result:
+                        persona = result[0]
+                        return {
+                            'nombre': persona['nombre'],
+                            'pistas': persona['pistas'],
+                            'from_db': True
+                        }
+                
+                # Fallback: seleccionar cualquier persona (incluyendo ya jugadas)
                 pipeline = [{"$sample": {"size": 1}}]
                 result = list(pistas_collection.aggregate(pipeline))
                 
