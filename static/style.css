@@ -1663,3 +1663,78 @@ thead tr:hover {
 
 .badge-success { color: #86efac; background: rgba(134, 239, 172, 0.1); }
 .badge-danger { color: #fca5a5; background: rgba(252, 165, 165, 0.1); }
+
+/* 
+ * Info Modal Styles
+ * Special styling for the about/info modal
+ */
+.info-modal-content {
+    max-width: 500px;
+}
+
+.info-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(139, 92, 246, 0.08);
+    border-radius: 8px;
+    border-left: 3px solid #a855f7;
+}
+
+.info-section:last-of-type {
+    margin-bottom: 10px;
+}
+
+.info-section h4 {
+    color: #c4b5fd;
+    margin-bottom: 12px;
+    font-size: 1.1em;
+}
+
+.info-section p {
+    color: #e2e8f0;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.info-section p:last-child {
+    margin-bottom: 0;
+}
+
+.info-thanks {
+    font-size: 1.1em;
+    text-align: center;
+    color: #86efac !important;
+}
+
+.info-gratitude {
+    text-align: center;
+    font-style: italic;
+    color: #c4b5fd !important;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.info-list li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 10px;
+    color: #e2e8f0;
+    line-height: 1.5;
+}
+
+.info-list li:last-child {
+    margin-bottom: 0;
+}
+
+.info-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: #a855f7;
+    font-weight: bold;
+    font-family: 'JetBrains Mono', monospace;
+}
