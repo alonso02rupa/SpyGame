@@ -201,7 +201,37 @@
 
     <!-- Info button moved to bottom of page -->
     <div class="info-button-bottom">
-        <button id="info-btn" class="btn btn-info" title="About this project">❓</button>
+        <button id="info-btn" class="btn btn-info" title="About this project">🕵️</button>
+    </div>
+
+    <!-- Info/About Modal -->
+    <div id="info-modal" class="modal" style="display: none;">
+        <div class="modal-content info-modal-content">
+            <div class="modal-header">
+                <h3>🕵️ About SpyGame</h3>
+                <span class="close" id="info-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <p class="info-thanks">Thank you for playing and helping with my <strong>final degree project</strong>!</p>
+                    <p>This game is part of my academic research studying human guessing patterns and behavior.</p>
+                </div>
+                <div class="info-section">
+                    <h4>📊 Data Collection</h4>
+                    <ul class="info-list">
+                        <li>Game sessions (hints requested, guesses made, success/failure) are saved</li>
+                        <li>No personal information or user profiling is collected</li>
+                        <li>All data will be used for scientific research purposes</li>
+                    </ul>
+                </div>
+                <div class="info-section">
+                    <p class="info-gratitude">Your participation helps advance our understanding of how people solve puzzles and make guesses. Thank you for your collaboration!</p>
+                </div>
+                <div class="form-actions" style="justify-content: center;">
+                    <button type="button" class="btn btn-primary" id="close-info-btn">Got it!</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Loading Indicator Overlay -->
@@ -603,6 +633,11 @@
         const skipSurveyBtn = document.getElementById('skip-survey');
         const knowledgeProfileClose = document.getElementById('knowledge-profile-close');
 
+        // Info modal elements
+        const infoModal = document.getElementById('info-modal');
+        const infoClose = document.getElementById('info-close');
+        const closeInfoBtn = document.getElementById('close-info-btn');
+
         // User authentication state - initialize from server session
         let currentUser = '{{ current_user }}' || 'guest';
         // Ensure we treat empty strings as guest
@@ -639,8 +674,12 @@
                 });
             }
 
-            // When the info button is clicked, show project information
-            if (infoBtn) infoBtn.addEventListener('click', showProjectInfo);
+            // When the info button is clicked, show info modal
+            if (infoBtn) infoBtn.addEventListener('click', showInfoModal);
+            
+            // Info modal close events
+            if (infoClose) infoClose.addEventListener('click', hideInfoModal);
+            if (closeInfoBtn) closeInfoBtn.addEventListener('click', hideInfoModal);
 
             // Authentication event listeners
             if (loginBtn) loginBtn.addEventListener('click', showLoginModal);
@@ -670,6 +709,7 @@
                 if (e.target === loginModal) hideLoginModal();
                 if (e.target === registerModal) hideRegisterModal();
                 if (e.target === knowledgeProfileModal) hideKnowledgeProfileModal();
+                if (e.target === infoModal) hideInfoModal();
             });
 
             // Initialize user display on page load
@@ -1291,22 +1331,19 @@
         }
 
         /*
-         * Function to show project information
+         * Function to show info modal
          * This displays information about the thesis project and data usage
          */
-        function showProjectInfo() {
-            const message = `About SpyGame
+        function showInfoModal() {
+            if (infoModal) {
+                infoModal.style.display = 'block';
+            }
+        }
 
-This is a final degree project (proyecto de fin de grado) that studies human guessing patterns and behavior.
-
-Data Collection:
-• Game sessions (hints requested, guesses made, success/failure) are saved
-• No personal information or user profiling is collected
-• All data will be used later for scientific research
-
-Thank you for your collaboration in this research project! Your participation helps advance our understanding of how people solve puzzles and make guesses.`;
-
-            alert(message);
+        function hideInfoModal() {
+            if (infoModal) {
+                infoModal.style.display = 'none';
+            }
         }
 
         /* Knowledge Profile Survey Functions */
