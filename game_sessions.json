@@ -153,5 +153,27 @@
     "acierto": false,
     "timestamp": "2025-11-27T14:12:29.092489",
     "last_updated": "2025-11-27T14:12:29.092498"
+  },
+  {
+    "session_id": "34c19f6b-5178-4101-8405-88a95958fbd3",
+    "person": "S\u00f3crates",
+    "pista": [
+      "Fue ridiculizado como personaje c\u00f3mico en la obra 'Las nubes' de Arist\u00f3fanes."
+    ],
+    "guesses": [],
+    "acierto": false,
+    "timestamp": "2025-12-03T08:31:14.841994",
+    "last_updated": "2025-12-03T08:31:14.842006"
+  },
+  {
+    "session_id": "0d0757ff-ff9e-4dbf-b59d-c4afe995afd2",
+    "person": "Iosif Stalin",
+    "pista": [
+      "Utiliz\u00f3 el seud\u00f3nimo 'Koba' en sus escritos y comunicaciones personales."
+    ],
+    "guesses": [],
+    "acierto": false,
+    "timestamp": "2025-12-03T08:33:53.304212",
+    "last_updated": "2025-12-03T08:33:53.304224"
   }
 ]

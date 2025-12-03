@@ -3,12 +3,12 @@
     Statistics page for SpyGame - shows game history and performance metrics
     This page follows the same structure as index.html but displays different content
 -->
-<html lang="en">
+<html lang="es">
 <head>
     <!-- Same metadata setup as the main page -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpyGame - Statistics</title>
+    <title>SpyGame - Estadísticas</title>
     <!-- Different title to show this is the statistics page -->
     
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -20,14 +20,14 @@
         
         <header>
             <!-- Header section with statistics-specific content -->
-            <h1>🕵️ SpyGame Statistics</h1>
+            <h1>🕵️ SpyGame - Estadísticas</h1>
             <!-- Main heading indicating this is the statistics page -->
             
             {% if current_user != 'guest' %}
-                <p>Game history for {{ current_user }}</p>
+                <p>Historial de partidas de {{ current_user }}</p>
                 <!-- Personalized subtitle for logged-in users -->
             {% else %}
-                <p>Guest game history (this session only)</p>
+                <p>Historial de partidas de invitado (solo esta sesión)</p>
                 <!-- Different subtitle for guest users -->
             {% endif %}
         </header>
@@ -37,7 +37,7 @@
             
             <div class="stats-nav">
                 <!-- Navigation section to return to the main game -->
-                <a href="/" class="btn btn-primary">← Back to Game</a>
+                <a href="/" class="btn btn-primary">← Volver al Juego</a>
                 <!-- Link back to the main page (/) with arrow indicating direction -->
             </div>
 
@@ -53,7 +53,7 @@
                 
                     <div class="stats-summary">
                         <!-- Summary section showing key metrics -->
-                        <h3>Game Summary</h3>
+                        <h3>Resumen de Partidas</h3>
                         <!-- Section heading -->
                         
                         <div class="summary-cards">
@@ -64,7 +64,7 @@
                             
                             <div class="summary-card">
                                 <!-- Card showing total number of games played -->
-                                <h4>Total Games</h4>
+                                <h4>Total Partidas</h4>
                                 <p class="stat-number">{{ sessions|length }}</p>
                                 <!-- 
                                     {{ sessions|length }} uses Flask's Jinja2 template syntax
@@ -74,7 +74,7 @@
                             
                             <div class="summary-card">
                                 <!-- Card showing successful guesses -->
-                                <h4>Correct Guesses</h4>
+                                <h4>Aciertos</h4>
                                 <p class="stat-number">{{ sessions|selectattr('acierto', 'equalto', true)|list|length }}</p>
                                 <!-- 
                                     This template expression:
@@ -85,7 +85,7 @@
                             
                             <div class="summary-card">
                                 <!-- Card showing success percentage -->
-                                <h4>Success Rate</h4>
+                                <h4>Tasa de Aciertos</h4>
                                 <p class="stat-number">
                                     {% set correct_guesses = sessions|selectattr('acierto', 'equalto', true)|list|length %}
                                     {% set total_games = sessions|length %}
@@ -108,7 +108,7 @@
 
                     <div class="sessions-table">
                         <!-- Table section showing detailed game history -->
-                        <h3>Game History</h3>
+                        <h3>Historial de Partidas</h3>
                         <!-- Section heading for the detailed history table -->
                         
                         <table>
@@ -124,12 +124,12 @@
                                 -->
                                 <tr>
                                     <!-- Table row containing header cells -->
-                                    <th>Date & Time</th>        <!-- Column for when game started -->
-                                    <th>Person</th>             <!-- Column for which historical figure -->
-                                    <th>Hints Used</th>         <!-- Column for number of hints requested -->
-                                    <th>Hints</th>              <!-- Column for list of hints -->
-                                    <th>Guesses</th>            <!-- Column for list of guesses -->
-                                    <th>Result</th>             <!-- Column for outcome (correct/wrong) -->
+                                    <th>Fecha y Hora</th>        <!-- Column for when game started -->
+                                    <th>Personaje</th>             <!-- Column for which historical figure -->
+                                    <th>Pistas</th>         <!-- Column for number of hints requested -->
+                                    <th>Lista de Pistas</th>              <!-- Column for list of hints -->
+                                    <th>Respuestas</th>            <!-- Column for list of guesses -->
+                                    <th>Resultado</th>             <!-- Column for outcome (correct/wrong) -->
                                 </tr>
                             </thead>
                             
@@ -180,17 +180,17 @@
                                                 {% endfor %}
                                             </ul>
                                         {% else %}
-                                            <span style="color: #888;">No guesses</span>
+                                            <span style="color: #888;">Sin respuestas</span>
                                         {% endif %}
                                     </td>
                                     
                                     <td>
                                         <!-- Show the result/outcome with appropriate styling -->
                                         {% if session.acierto == true %}
-                                            <span class="result-correct">✓ Correct</span>
+                                            <span class="result-correct">✓ Acertado</span>
                                             <!-- Green styling for correct guesses -->
                                         {% else %}
-                                            <span class="result-incorrect">✗ Wrong</span>
+                                            <span class="result-incorrect">✗ Fallado</span>
                                             <!-- Red styling for incorrect guesses or gave up -->
                                         {% endif %}
                                     </td>
@@ -208,10 +208,10 @@
                 
                     <div class="no-data">
                         <!-- Container for the "no data" message -->
-                        <h3>No Game History</h3>
+                        <h3>Sin Historial</h3>
                         <!-- Heading indicating no games have been played -->
                         
-                        <p>You haven't played any games yet. <a href="/">Start your first game!</a></p>
+                        <p>Aún no has jugado ninguna partida. <a href="/">¡Empieza tu primera partida!</a></p>
                         <!-- 
                             Encouraging message with a link back to the main game page
                             <a href="/"> creates a link to the root page (main game)
