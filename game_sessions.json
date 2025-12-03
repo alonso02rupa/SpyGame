@@ -175,5 +175,16 @@
     "acierto": false,
     "timestamp": "2025-12-03T08:33:53.304212",
     "last_updated": "2025-12-03T08:33:53.304224"
+  },
+  {
+    "session_id": "3c733fb7-97b8-434c-b8f2-9234481762d2",
+    "person": "Alejandro Magno",
+    "pista": [
+      "Fund\u00f3 unas setenta ciudades con su nombre, siendo la de Egipto la m\u00e1s famosa."
+    ],
+    "guesses": [],
+    "acierto": false,
+    "timestamp": "2025-12-03T08:55:43.110856",
+    "last_updated": "2025-12-03T08:55:43.110866"
   }
 ]
