@@ -186,5 +186,16 @@
     "acierto": false,
     "timestamp": "2025-12-03T08:55:43.110856",
     "last_updated": "2025-12-03T08:55:43.110866"
+  },
+  {
+    "session_id": "7e4d34f9-4c64-44d5-ae46-48cdebcd8f9d",
+    "person": "Winston Churchill",
+    "pista": [
+      "Fue un prol\u00edfico pintor y ganador del Premio Nobel de Literatura en 1953."
+    ],
+    "guesses": [],
+    "acierto": false,
+    "timestamp": "2025-12-03T09:25:54.478936",
+    "last_updated": "2025-12-03T09:26:45.898795"
   }
 ]
