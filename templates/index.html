@@ -204,6 +204,23 @@
         <button id="info-btn" class="btn btn-info" title="About this project">🕵️</button>
     </div>
 
+    <!-- Reveal Answer Confirmation Modal -->
+    <div id="reveal-confirm-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🕵️ Reveal Answer?</h3>
+                <span class="close" id="reveal-confirm-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="confirm-modal-text">Are you sure you want to reveal the answer? This will end the current game.</p>
+                <div class="form-actions confirm-modal-actions">
+                    <button type="button" class="btn btn-danger" id="confirm-reveal-yes">Yes</button>
+                    <button type="button" class="btn btn-secondary" id="confirm-reveal-no">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Info/About Modal -->
     <div id="info-modal" class="modal" style="display: none;">
         <div class="modal-content info-modal-content">
@@ -638,6 +655,12 @@
         const infoClose = document.getElementById('info-close');
         const closeInfoBtn = document.getElementById('close-info-btn');
 
+        // Reveal confirm modal elements
+        const revealConfirmModal = document.getElementById('reveal-confirm-modal');
+        const revealConfirmClose = document.getElementById('reveal-confirm-close');
+        const confirmRevealYes = document.getElementById('confirm-reveal-yes');
+        const confirmRevealNo = document.getElementById('confirm-reveal-no');
+
         // User authentication state - initialize from server session
         let currentUser = '{{ current_user }}' || 'guest';
         // Ensure we treat empty strings as guest
@@ -704,12 +727,18 @@
             if (skipSurveyBtn) skipSurveyBtn.addEventListener('click', hideKnowledgeProfileModal);
             if (knowledgeProfileClose) knowledgeProfileClose.addEventListener('click', hideKnowledgeProfileModal);
             
+            // Reveal confirm modal event listeners
+            if (revealConfirmClose) revealConfirmClose.addEventListener('click', hideRevealConfirmModal);
+            if (confirmRevealYes) confirmRevealYes.addEventListener('click', confirmRevealAnswer);
+            if (confirmRevealNo) confirmRevealNo.addEventListener('click', hideRevealConfirmModal);
+            
             // Close modals when clicking outside them
             window.addEventListener('click', function(e) {
                 if (e.target === loginModal) hideLoginModal();
                 if (e.target === registerModal) hideRegisterModal();
                 if (e.target === knowledgeProfileModal) hideKnowledgeProfileModal();
                 if (e.target === infoModal) hideInfoModal();
+                if (e.target === revealConfirmModal) hideRevealConfirmModal();
             });
 
             // Initialize user display on page load
@@ -1073,50 +1102,69 @@
 
         /* 
          * Function to give up and reveal the correct answer
-         * This ends the current game and shows the answer
+         * Shows confirmation modal before revealing
          */
         function revealAnswer() {
             // Don't do anything if no game is active or loading
             if (!gameActive || isLoading) return;
 
-            // Ask for confirmation since this will end the game
-            if (confirm('Are you sure you want to reveal the answer? This will end the current game.')) {
-                // Show loading indicator
-                showLoading();
-                
-                // User confirmed - request the answer from the server
-                fetch('/get_answer', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    hideLoading();
-                    
-                    if (data.status === 'success') {
-                        // Answer revealed - end the game
-                        gameActive = false;                      // Set game as inactive
-                        showToast(data.message, 'warning');     // Show the answer toast
-                        
-                        // Disable all game controls since game is over
-                        getHintBtn.disabled = true;
-                        revealAnswerBtn.disabled = true;
-                        guessInput.disabled = true;
-                        submitGuessBtn.disabled = true;
-                    } else {
-                        // Server error
-                        showToast(data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    hideLoading();
-                    console.error('Error:', error);
-                    showToast('Error revealing answer. Please try again.', 'error');
-                });
+            // Show confirmation modal instead of browser confirm
+            showRevealConfirmModal();
+        }
+
+        /* 
+         * Reveal Confirm Modal Functions
+         */
+        function showRevealConfirmModal() {
+            if (revealConfirmModal) {
+                revealConfirmModal.style.display = 'block';
             }
-            // If user clicked "Cancel" in the confirmation dialog, nothing happens
+        }
+
+        function hideRevealConfirmModal() {
+            if (revealConfirmModal) {
+                revealConfirmModal.style.display = 'none';
+            }
+        }
+
+        function confirmRevealAnswer() {
+            // Hide the modal first
+            hideRevealConfirmModal();
+
+            // Show loading indicator
+            showLoading();
+            
+            // User confirmed - request the answer from the server
+            fetch('/get_answer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                
+                if (data.status === 'success') {
+                    // Answer revealed - end the game
+                    gameActive = false;                      // Set game as inactive
+                    showToast(data.message, 'warning');     // Show the answer toast
+                    
+                    // Disable all game controls since game is over
+                    getHintBtn.disabled = true;
+                    revealAnswerBtn.disabled = true;
+                    guessInput.disabled = true;
+                    submitGuessBtn.disabled = true;
+                } else {
+                    // Server error
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error:', error);
+                showToast('Error revealing answer. Please try again.', 'error');
+            });
         }
 
         /* Authentication Functions */
