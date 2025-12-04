@@ -27,7 +27,7 @@
         initial-scale=1.0: Sets the initial zoom level to 100%
     -->
     
-    <title>SpyGame - Juego de Adivinanzas</title>
+    <title>SpyGame</title>
     <!-- 
         The text that appears in the browser tab/window title.
         Also used by search engines as the clickable headline in search results.
@@ -995,6 +995,9 @@
                             showToast('¡Pista añadida! Puedes pedir más pistas o hacer tu intento.', 'info');
                         }
                     }
+                    
+                    // Restore focus to input field for quick continuation
+                    guessInput.focus();
                 } else {
                     // Error getting hint - restore the counter
                     currentHintsRemaining++;
@@ -1003,6 +1006,7 @@
                         getHintBtn.disabled = false;
                     }
                     showToast(data.message, 'error');
+                    guessInput.focus();
                 }
             })
             .catch(error => {
@@ -1015,6 +1019,7 @@
                 }
                 console.error('Error:', error);
                 showToast('Error al obtener pista. Por favor, inténtalo de nuevo.', 'error');
+                guessInput.focus();
             });
         }
 
@@ -1029,9 +1034,9 @@
             // Get the guess from the input field and remove extra whitespace
             const guess = guessInput.value.trim();
             
-            // Check if the user actually entered something
+            // If guess is empty, request a hint instead
             if (!guess) {
-                showToast('¡Por favor, escribe una respuesta!', 'error');
+                getHint();                                       // Request next hint
                 return;                                          // Exit the function early
             }
 
