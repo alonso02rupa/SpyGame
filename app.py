@@ -396,6 +396,8 @@ def is_guess_correct(guess, person_name):
 
 # Input validation patterns for NoSQL injection prevention
 USERNAME_PATTERN = re.compile(r'^[a-zA-Z0-9_]{3,20}$')
+# Special characters allowed in passwords (simplified and commonly accepted set)
+PASSWORD_SPECIAL_CHARS = r'[!@#$%^&*()_+=\-]'
 
 def validate_username(username):
     """
@@ -429,8 +431,8 @@ def validate_password(password):
         return False, 'Password must contain at least one lowercase letter'
     if not re.search(r'[0-9]', password):
         return False, 'Password must contain at least one number'
-    if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\;\'`~]', password):
-        return False, 'Password must contain at least one special character'
+    if not re.search(PASSWORD_SPECIAL_CHARS, password):
+        return False, 'Password must contain at least one special character (!@#$%^&*()_+=-)'
     return True, None
 
 @app.context_processor

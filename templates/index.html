@@ -301,8 +301,10 @@
                     </div>
                     <div class="form-group">
                         <label for="register-password">Password:</label>
-                        <input type="password" id="register-password" name="password" required minlength="12">
-                        <small>At least 12 characters with uppercase, lowercase, number and special character</small>
+                        <input type="password" id="register-password" name="password" required minlength="12" 
+                               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\-]).{12,}"
+                               title="Password must be at least 12 characters with uppercase, lowercase, number and special character (!@#$%^&*()_+=-)">
+                        <small>At least 12 characters with uppercase, lowercase, number and special character (!@#$%^&*()_+=-)</small>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Register</button>
