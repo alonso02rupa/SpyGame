@@ -25,8 +25,10 @@ services:
   mongodb:
     image: mongo:7.0
     restart: always
-    # MongoDB ports are NOT exposed externally for security
-    # MongoDB is only accessible internally by the web service through the Docker network
+    # MongoDB port exposed for MongoDB Compass access
+    # For production deployment, remove this port mapping for security
+    ports:
+      - "${DOCKER_MONGO_PORT:-27017}:27017"
     environment:
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE:-spygame}
       # MongoDB authentication credentials

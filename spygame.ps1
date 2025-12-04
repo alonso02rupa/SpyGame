@@ -79,6 +79,53 @@ switch ($Command) {
         docker-compose exec mongodb mongosh spygame
     }
     
+    "backup" {
+        $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+        $backupFile = "spygame_backup_$timestamp.archive"
+        Write-Host "Creando backup de la base de datos..." -ForegroundColor Yellow
+        
+        # Leer variables de entorno del .env
+        $envContent = Get-Content .env
+        $mongoPassword = ($envContent | Select-String "MONGO_INITDB_ROOT_PASSWORD=").ToString().Split("=")[1]
+        
+        docker-compose exec -T mongodb mongodump --username=admin --password="$mongoPassword" --authenticationDatabase=admin --db=spygame --archive | Set-Content -Path $backupFile -Encoding Byte
+        Write-Host "Backup creado: $backupFile" -ForegroundColor Green
+    }
+    
+    "restore" {
+        if (-not $args[0]) {
+            Write-Host "Error: Especifica el archivo de backup" -ForegroundColor Red
+            Write-Host "Uso: .\spygame.ps1 restore <archivo.archive>" -ForegroundColor Yellow
+            exit 1
+        }
+        Write-Host "Restaurando desde $($args[0])..." -ForegroundColor Yellow
+        
+        $envContent = Get-Content .env
+        $mongoPassword = ($envContent | Select-String "MONGO_INITDB_ROOT_PASSWORD=").ToString().Split("=")[1]
+        
+        Get-Content $args[0] -Encoding Byte | docker-compose exec -T mongodb mongorestore --username=admin --password="$mongoPassword" --authenticationDatabase=admin --archive
+        Write-Host "Restauracion completada" -ForegroundColor Green
+    }
+    
+    "export-json" {
+        if (-not (Test-Path "backups")) {
+            New-Item -ItemType Directory -Path "backups" | Out-Null
+        }
+        Write-Host "Exportando colecciones a JSON..." -ForegroundColor Yellow
+        
+        $envContent = Get-Content .env
+        $mongoPassword = ($envContent | Select-String "MONGO_INITDB_ROOT_PASSWORD=").ToString().Split("=")[1]
+        
+        docker-compose exec mongodb mongoexport --username=admin --password="$mongoPassword" --authenticationDatabase=admin --db=spygame --collection=users --out=/tmp/users.json
+        docker-compose exec mongodb mongoexport --username=admin --password="$mongoPassword" --authenticationDatabase=admin --db=spygame --collection=sessions --out=/tmp/sessions.json
+        
+        $mongoContainer = docker-compose ps -q mongodb
+        docker cp "${mongoContainer}:/tmp/users.json" "./backups/"
+        docker cp "${mongoContainer}:/tmp/sessions.json" "./backups/"
+        
+        Write-Host "JSON exportados a ./backups/" -ForegroundColor Green
+    }
+    
     "clean" {
         Write-Host "Estas seguro de que quieres eliminar TODOS los datos? (S/N)" -ForegroundColor Red
         $response = Read-Host
@@ -107,6 +154,9 @@ switch ($Command) {
         Write-Host "  logs-db        - Ver logs de MongoDB"
         Write-Host "  shell          - Abrir shell en el contenedor web"
         Write-Host "  mongo          - Conectar a MongoDB CLI"
+        Write-Host "  backup         - Crear backup de la base de datos"
+        Write-Host "  restore <file> - Restaurar desde un archivo de backup"
+        Write-Host "  export-json    - Exportar colecciones a JSON legible"
         Write-Host "  clean          - Eliminar contenedores y datos (DESTRUCTIVO)"
         Write-Host ""
         Write-Host "Ejemplos:" -ForegroundColor Cyan
@@ -116,5 +166,7 @@ switch ($Command) {
         Write-Host "  .\spygame.ps1 check"
         Write-Host "  .\spygame.ps1 process 10"
         Write-Host "  .\spygame.ps1 list"
+        Write-Host "  .\spygame.ps1 backup"
+        Write-Host "  .\spygame.ps1 restore spygame_backup_20231204.archive"
     }
 }

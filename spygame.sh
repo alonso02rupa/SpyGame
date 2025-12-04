@@ -75,6 +75,34 @@ case "$1" in
     docker-compose exec mongodb mongosh spygame
     ;;
     
+  backup)
+    BACKUP_FILE="spygame_backup_$(date +%Y%m%d_%H%M%S).archive"
+    echo "Creando backup de la base de datos..."
+    docker-compose exec -T mongodb mongodump --username=admin --password="${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase=admin --db=spygame --archive > "$BACKUP_FILE"
+    echo "Backup creado: $BACKUP_FILE"
+    ;;
+    
+  restore)
+    if [ -z "$2" ]; then
+      echo "Error: Especifica el archivo de backup"
+      echo "Uso: $0 restore <archivo.archive>"
+      exit 1
+    fi
+    echo "Restaurando desde $2..."
+    docker-compose exec -T mongodb mongorestore --username=admin --password="${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase=admin --archive < "$2"
+    echo "Restauracion completada"
+    ;;
+    
+  export-json)
+    mkdir -p backups
+    echo "Exportando colecciones a JSON..."
+    docker-compose exec mongodb mongoexport --username=admin --password="${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase=admin --db=spygame --collection=persons --out=/tmp/persons.json
+    docker-compose exec mongodb mongoexport --username=admin --password="${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase=admin --db=spygame --collection=game_sessions --out=/tmp/game_sessions.json
+    docker cp $(docker-compose ps -q mongodb):/tmp/persons.json ./backups/
+    docker cp $(docker-compose ps -q mongodb):/tmp/game_sessions.json ./backups/
+    echo "JSON exportados a ./backups/"
+    ;;
+  
   clean)
     echo "Estas seguro de que quieres eliminar TODOS los datos? (y/n)"
     read -r response
@@ -103,6 +131,9 @@ case "$1" in
     echo "  logs-db        - Ver logs de MongoDB"
     echo "  shell          - Abrir shell en el contenedor web"
     echo "  mongo          - Conectar a MongoDB CLI"
+    echo "  backup         - Crear backup de la base de datos"
+    echo "  restore <file> - Restaurar desde un archivo de backup"
+    echo "  export-json    - Exportar colecciones a JSON legible"
     echo "  clean          - Eliminar contenedores y datos (DESTRUCTIVO)"
     echo ""
     echo "Ejemplos:"
@@ -112,5 +143,7 @@ case "$1" in
     echo "  $0 check"
     echo "  $0 process 10"
     echo "  $0 list"
+    echo "  $0 backup"
+    echo "  $0 restore spygame_backup_20231204.archive"
     ;;
 esac
