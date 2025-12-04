@@ -3,7 +3,7 @@
     This declares the document type as HTML5. 
     HTML5 is the latest version of HTML and provides modern features.
 -->
-<html lang="en">
+<html lang="es">
 <!-- 
     The <html> element is the root element of the page.
     lang="en" tells browsers and screen readers this page is in English.
@@ -27,7 +27,7 @@
         initial-scale=1.0: Sets the initial zoom level to 100%
     -->
     
-    <title>SpyGame</title>
+    <title>SpyGame - Juego de Adivinanzas</title>
     <!-- 
         The text that appears in the browser tab/window title.
         Also used by search engines as the clickable headline in search results.
@@ -67,17 +67,17 @@
                     It typically contains headings, logos, and introductory content.
                 -->
                 <h1>🕵️ SpyGame</h1>
-                <p>Guess the Wikipedia person based on hints!</p>
+                <p>¡Adivina el personaje de Wikipedia con las pistas!</p>
             </header>
 
             <div id="user-status" class="user-status-section">
                 <!-- User authentication status area -->
                 <span id="user-display">GUEST</span>
                 <div class="auth-buttons">
-                    <button id="login-btn" class="btn btn-tiny">Login</button>
-                    <button id="register-btn" class="btn btn-tiny">Register</button>
-                    <button id="logout-btn" class="btn btn-tiny" style="display: none;">Logout</button>
-                    <a href="/stats" id="stats-link" class="btn btn-tiny btn-stats" style="display: none;">Stats</a>
+                    <button id="login-btn" class="btn btn-tiny">Iniciar Sesión</button>
+                    <button id="register-btn" class="btn btn-tiny">Registrarse</button>
+                    <button id="logout-btn" class="btn btn-tiny" style="display: none;">Cerrar Sesión</button>
+                    <a href="/stats" id="stats-link" class="btn btn-tiny btn-stats" style="display: none;">Estadísticas</a>
                 </div>
             </div>
         </div>
@@ -102,7 +102,7 @@
                         style="display: none;": Initially hidden until a game starts
                     -->
                     
-                    <h3>Hints: <span id="status-message" class="status-message"></span></h3>
+                    <h3>Pistas: <span id="status-message" class="status-message"></span></h3>
                     <!-- 
                         <h3> is a third-level heading (smaller than h1 and h2).
                         It labels this section so users know what the content below represents.
@@ -135,21 +135,21 @@
                         Placed below hints section but above guess section for fixed position.
                     -->
                     
-                    <button id="start-game-btn" class="btn btn-primary">Start New Game</button>
+                    <button id="start-game-btn" class="btn btn-primary">Nueva Partida</button>
                     <!-- 
                         HTML button element that users click to start a new game.
                         id="start-game-btn": Unique identifier for JavaScript to attach click events
                         class="btn btn-primary": CSS classes for button styling (btn = general button, btn-primary = primary action styling)
                     -->
                     
-                    <button id="get-hint-btn" class="btn btn-secondary" disabled>Get Hint</button>
+                    <button id="get-hint-btn" class="btn btn-secondary" disabled>Obtener Pista</button>
                     <!-- 
                         Button to request hints during gameplay.
                         disabled: HTML attribute that makes the button unclickable until a game starts
                         class="btn btn-secondary": Secondary button styling (less prominent than primary)
                     -->
                     
-                    <button id="reveal-answer-btn" class="btn btn-danger" disabled>Reveal Answer</button>
+                    <button id="reveal-answer-btn" class="btn btn-danger" disabled>Revelar Respuesta</button>
                     <!-- 
                         Button to give up and reveal the answer.
                         class="btn btn-danger": Danger styling (red) to indicate this ends the game
@@ -162,7 +162,7 @@
                         Initially hidden until a game starts (style="display: none;")
                     -->
                     
-                    <h3>Make Your Guess:</h3>
+                    <h3>¿Quién es?</h3>
                     <!-- Heading that tells the user what this section is for -->
                     
                     <div class="guess-input">
@@ -171,16 +171,16 @@
                             class="guess-input": CSS class that applies flexbox layout
                         -->
                         
-                        <input type="text" id="guess-input" placeholder="Enter your guess..." maxlength="100">
+                        <input type="text" id="guess-input" placeholder="Escribe tu respuesta..." maxlength="100">
                         <!-- 
                             Text input field where users type their guesses.
                             type="text": Specifies this is a text input field
                             id="guess-input": JavaScript uses this to get the typed value
-                            placeholder="Enter your guess...": Gray text shown when field is empty
+                            placeholder="Escribe tu respuesta...": Gray text shown when field is empty
                             maxlength="100": Limits input to 100 characters
                         -->
                         
-                        <button id="submit-guess-btn" class="btn btn-primary">Submit Guess</button>
+                        <button id="submit-guess-btn" class="btn btn-primary">Enviar</button>
                         <!-- 
                             Button to submit the guess.
                             When clicked, JavaScript gets the value from the input field above
@@ -201,20 +201,20 @@
 
     <!-- Info button moved to bottom of page -->
     <div class="info-button-bottom">
-        <button id="info-btn" class="btn btn-info" title="About this project">🕵️</button>
+        <button id="info-btn" class="btn btn-info" title="Acerca de este proyecto">🕵️</button>
     </div>
 
     <!-- Reveal Answer Confirmation Modal -->
     <div id="reveal-confirm-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>🕵️ Reveal Answer?</h3>
+                <h3>🕵️ ¿Revelar Respuesta?</h3>
                 <span class="close" id="reveal-confirm-close">&times;</span>
             </div>
             <div class="modal-body">
-                <p class="confirm-modal-text">Are you sure you want to reveal the answer? This will end the current game.</p>
+                <p class="confirm-modal-text">¿Estás seguro de que quieres revelar la respuesta? Esto finalizará la partida actual.</p>
                 <div class="form-actions confirm-modal-actions">
-                    <button type="button" class="btn btn-danger" id="confirm-reveal-yes">Yes</button>
+                    <button type="button" class="btn btn-danger" id="confirm-reveal-yes">Sí</button>
                     <button type="button" class="btn btn-secondary" id="confirm-reveal-no">No</button>
                 </div>
             </div>
@@ -225,27 +225,27 @@
     <div id="info-modal" class="modal" style="display: none;">
         <div class="modal-content info-modal-content">
             <div class="modal-header">
-                <h3>🕵️ About SpyGame</h3>
+                <h3>🕵️ Acerca de SpyGame</h3>
                 <span class="close" id="info-close">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="info-section">
-                    <p class="info-thanks">Thank you for playing and helping with my <strong>final degree project</strong>!</p>
-                    <p>This game is part of my academic research studying human guessing patterns and behavior.</p>
+                    <p class="info-thanks">Gracias por jugar a SpyGame</p>
+                    <p>Este es un juego web desarrollado para mi TFG (Trabajo de Fin de Grado). No se almacena ninguna información personal, solo las sesiones de juego, que serán utilizadas para estudiar qué pistas ayudan a las personas a adivinar correctamente.</p>
                 </div>
                 <div class="info-section">
-                    <h4>📊 Data Collection</h4>
+                    <h4>📊 Recolección de Datos</h4>
                     <ul class="info-list">
-                        <li>Game sessions (hints requested, guesses made, success/failure) are saved</li>
-                        <li>No personal information or user profiling is collected</li>
-                        <li>All data will be used for scientific research purposes</li>
+                        <li>Se guardan las sesiones de juego (pistas solicitadas, intentos realizados, acierto/fallo)</li>
+                        <li>No se recopila información personal ni perfiles de usuario</li>
+                        <li>Todos los datos serán utilizados con fines de investigación científica</li>
                     </ul>
                 </div>
                 <div class="info-section">
-                    <p class="info-gratitude">Your participation helps advance our understanding of how people solve puzzles and make guesses. Thank you for your collaboration!</p>
+                    <p class="info-gratitude">Tu participación ayuda a avanzar en nuestra comprensión sobre cómo las personas resuelven acertijos y hacen deducciones. ¡Gracias por tu colaboración!</p>
                 </div>
                 <div class="form-actions" style="justify-content: center;">
-                    <button type="button" class="btn btn-primary" id="close-info-btn">Got it!</button>
+                    <button type="button" class="btn btn-primary" id="close-info-btn">¡Entendido!</button>
                 </div>
             </div>
         </div>
@@ -262,23 +262,23 @@
     <div id="login-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Login</h3>
+                <h3>Iniciar Sesión</h3>
                 <span class="close" id="login-close">&times;</span>
             </div>
             <div class="modal-body">
                 <div id="login-error" class="modal-error" style="display: none;"></div>
                 <form id="login-form">
                     <div class="form-group">
-                        <label for="login-username">Username:</label>
+                        <label for="login-username">Usuario:</label>
                         <input type="text" id="login-username" name="username" required>
                     </div>
                     <div class="form-group">
-                        <label for="login-password">Password:</label>
+                        <label for="login-password">Contraseña:</label>
                         <input type="password" id="login-password" name="password" required>
                     </div>
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Login</button>
-                        <button type="button" class="btn btn-secondary" id="cancel-login">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-login">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -288,27 +288,27 @@
     <div id="register-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Register</h3>
+                <h3>Registrarse</h3>
                 <span class="close" id="register-close">&times;</span>
             </div>
             <div class="modal-body">
                 <div id="register-error" class="modal-error" style="display: none;"></div>
                 <form id="register-form">
                     <div class="form-group">
-                        <label for="register-username">Username:</label>
+                        <label for="register-username">Usuario:</label>
                         <input type="text" id="register-username" name="username" required minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+">
-                        <small>3-20 characters, letters, numbers and underscore only</small>
+                        <small>3-20 caracteres, solo letras, números y guión bajo</small>
                     </div>
                     <div class="form-group">
-                        <label for="register-password">Password:</label>
+                        <label for="register-password">Contraseña:</label>
                         <input type="password" id="register-password" name="password" required minlength="12" 
                                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\-]).{12,}"
-                               title="Password must be at least 12 characters with uppercase, lowercase, number and special character (!@#$%^&*()_+=-)">
-                        <small>At least 12 characters with uppercase, lowercase, number and special character (!@#$%^&*()_+=-)</small>
+                               title="La contraseña debe tener al menos 12 caracteres con mayúscula, minúscula, número y carácter especial (!@#$%^&*()_+=-)">
+                        <small>Mínimo 12 caracteres con mayúscula, minúscula, número y carácter especial (!@#$%^&*()_+=-)</small>
                     </div>
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Register</button>
-                        <button type="button" class="btn btn-secondary" id="cancel-register">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Registrarse</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-register">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -850,7 +850,7 @@
             
             // Check if a game is already active
             if (gameActive) {
-                if (confirm('A game is already in progress. Do you want to start a new game? This will end the current game.')) {
+                if (confirm('Ya hay una partida en curso. ¿Quieres empezar una nueva? Esto terminará la partida actual.')) {
                     // User confirmed - proceed with new game
                 } else {
                     // User cancelled - don't start new game
@@ -905,7 +905,7 @@
                     });
                     
                     // Update button states
-                    startGameBtn.textContent = 'Start New Game'; // Reset button text
+                    startGameBtn.textContent = 'Nueva Partida'; // Reset button text
                     getHintBtn.disabled = false;                 // Enable hint button
                     revealAnswerBtn.disabled = false;            // Enable reveal button
                     guessInput.disabled = false;                 // Enable guess input
@@ -917,7 +917,7 @@
                         hintsList.appendChild(li);
                         await typeWriter(li, data.first_hint, 17);
                         scrollHintsToBottom();                       // Scroll to show new hint
-                        hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+                        hintsRemaining.textContent = `Pistas restantes: ${currentHintsRemaining}`;
                         
                         // Disable hint button if no more hints
                         if (currentHintsRemaining === 0) {
@@ -933,7 +933,7 @@
                 hideLoading();
                 // Handle network errors or other problems
                 console.error('Error:', error);                 // Log error to browser console
-                showToast('Error starting game. Please try again.', 'error');
+                showToast('Error al iniciar la partida. Por favor, inténtalo de nuevo.', 'error');
             });
         }
 
@@ -947,7 +947,7 @@
 
             // Immediately decrement hints counter and update UI to prevent double-click bugs
             currentHintsRemaining--;
-            hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+            hintsRemaining.textContent = `Pistas restantes: ${currentHintsRemaining}`;
             
             // Disable button immediately if no hints left
             if (currentHintsRemaining <= 0) {
@@ -971,12 +971,12 @@
                 if (data.status === 'success') {
                     // Sync local counter with server value
                     currentHintsRemaining = data.hints_remaining;
-                    hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+                    hintsRemaining.textContent = `Pistas restantes: ${currentHintsRemaining}`;
                     
                     // Check if there are no more hints available
                     if (data.hints_remaining === 0 && !data.hint) {
                         getHintBtn.disabled = true;              // Disable the hint button
-                        showToast('No more hints available! Make your guess.', 'warning');
+                        showToast('¡No quedan más pistas! Haz tu intento.', 'warning');
                     } else if (data.hint) {
                         // Hint received successfully - add it to the page with typewriter effect
                         
@@ -989,16 +989,16 @@
                         // Check if this was the last hint
                         if (data.hints_remaining === 0) {
                             getHintBtn.disabled = true;              // Disable the hint button
-                            showToast('No more hints available! Make your guess.', 'warning');
+                            showToast('¡No quedan más pistas! Haz tu intento.', 'warning');
                         } else {
                             getHintBtn.disabled = false;             // Re-enable if hints available
-                            showToast('Hint added! You can ask for more hints or make a guess.', 'info');
+                            showToast('¡Pista añadida! Puedes pedir más pistas o hacer tu intento.', 'info');
                         }
                     }
                 } else {
                     // Error getting hint - restore the counter
                     currentHintsRemaining++;
-                    hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+                    hintsRemaining.textContent = `Pistas restantes: ${currentHintsRemaining}`;
                     if (currentHintsRemaining > 0) {
                         getHintBtn.disabled = false;
                     }
@@ -1009,12 +1009,12 @@
                 hideLoading();
                 // Error - restore the counter
                 currentHintsRemaining++;
-                hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+                hintsRemaining.textContent = `Pistas restantes: ${currentHintsRemaining}`;
                 if (currentHintsRemaining > 0) {
                     getHintBtn.disabled = false;
                 }
                 console.error('Error:', error);
-                showToast('Error getting hint. Please try again.', 'error');
+                showToast('Error al obtener pista. Por favor, inténtalo de nuevo.', 'error');
             });
         }
 
@@ -1031,7 +1031,7 @@
             
             // Check if the user actually entered something
             if (!guess) {
-                showToast('Please enter a guess!', 'error');
+                showToast('¡Por favor, escribe una respuesta!', 'error');
                 return;                                          // Exit the function early
             }
 
@@ -1082,7 +1082,7 @@
                             
                             // Sync local counter with server value
                             currentHintsRemaining = data.hints_remaining;
-                            hintsRemaining.textContent = `Hints remaining: ${currentHintsRemaining}`;
+                            hintsRemaining.textContent = `Pistas restantes: ${currentHintsRemaining}`;
                             
                             // Disable hint button if no more hints available
                             if (currentHintsRemaining === 0) {
@@ -1098,7 +1098,7 @@
             .catch(error => {
                 hideLoading();
                 console.error('Error:', error);
-                showToast('Error making guess. Please try again.', 'error');
+                showToast('Error al enviar respuesta. Por favor, inténtalo de nuevo.', 'error');
             });
         }
 
@@ -1165,7 +1165,7 @@
             .catch(error => {
                 hideLoading();
                 console.error('Error:', error);
-                showToast('Error revealing answer. Please try again.', 'error');
+                showToast('Error al revelar la respuesta. Por favor, inténtalo de nuevo.', 'error');
             });
         }
 
@@ -1176,7 +1176,7 @@
              * Update the user status display based on current authentication state
              */
             if (currentUser === 'guest') {
-                userDisplay.textContent = 'GUEST';
+                userDisplay.textContent = 'INVITADO';
                 loginBtn.style.display = 'inline-block';
                 registerBtn.style.display = 'inline-block';
                 logoutBtn.style.display = 'none';
@@ -1260,7 +1260,7 @@
             .catch(error => {
                 console.error('Login error:', error);
                 if (loginError) {
-                    loginError.textContent = 'Login failed. Please try again.';
+                    loginError.textContent = 'Error al iniciar sesión. Por favor, inténtalo de nuevo.';
                     loginError.style.display = 'block';
                 }
             });
@@ -1307,7 +1307,7 @@
             .catch(error => {
                 console.error('Registration error:', error);
                 if (registerError) {
-                    registerError.textContent = 'Registration failed. Please try again.';
+                    registerError.textContent = 'Error en el registro. Por favor, inténtalo de nuevo.';
                     registerError.style.display = 'block';
                 }
             });
@@ -1331,7 +1331,7 @@
             })
             .catch(error => {
                 console.error('Guest mode error:', error);
-                showToast('Failed to switch to guest mode.', 'error');
+                showToast('Error al cambiar a modo invitado.', 'error');
             });
         }
 
@@ -1353,7 +1353,7 @@
             })
             .catch(error => {
                 console.error('Logout error:', error);
-                showToast('Logout failed.', 'error');
+                showToast('Error al cerrar sesión.', 'error');
             });
         }
 
@@ -1466,7 +1466,7 @@
             })
             .catch(error => {
                 console.error('Error saving knowledge profile:', error);
-                showToast('Failed to save knowledge profile. Please try again.', 'error');
+                showToast('Error al guardar el perfil de conocimientos. Por favor, inténtalo de nuevo.', 'error');
             });
         }
     </script>
