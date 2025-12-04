@@ -406,13 +406,13 @@ def validate_username(username):
     Returns (is_valid, error_message)
     """
     if not username:
-        return False, 'Username is required'
+        return False, 'El nombre de usuario es requerido'
     if len(username) < 3:
-        return False, 'Username must be at least 3 characters long'
+        return False, 'El nombre de usuario debe tener al menos 3 caracteres'
     if len(username) > 20:
-        return False, 'Username must be at most 20 characters long'
+        return False, 'El nombre de usuario debe tener como máximo 20 caracteres'
     if not USERNAME_PATTERN.match(username):
-        return False, 'Username can only contain letters, numbers, and underscores'
+        return False, 'El nombre de usuario solo puede contener letras, números y guiones bajos'
     return True, None
 
 def validate_password(password):
@@ -422,17 +422,17 @@ def validate_password(password):
     Returns (is_valid, error_message)
     """
     if not password:
-        return False, 'Password is required'
+        return False, 'La contraseña es requerida'
     if len(password) < 12:
-        return False, 'Password must be at least 12 characters long'
+        return False, 'La contraseña debe tener al menos 12 caracteres'
     if not re.search(r'[A-Z]', password):
-        return False, 'Password must contain at least one uppercase letter'
+        return False, 'La contraseña debe contener al menos una letra mayúscula'
     if not re.search(r'[a-z]', password):
-        return False, 'Password must contain at least one lowercase letter'
+        return False, 'La contraseña debe contener al menos una letra minúscula'
     if not re.search(r'[0-9]', password):
-        return False, 'Password must contain at least one number'
+        return False, 'La contraseña debe contener al menos un número'
     if not re.search(PASSWORD_SPECIAL_CHARS, password):
-        return False, 'Password must contain at least one special character (!@#$%^&*()_+=-)'
+        return False, 'La contraseña debe contener al menos un carácter especial (!@#$%^&*()_+=-)'
     return True, None
 
 @app.context_processor
@@ -453,13 +453,13 @@ def register():
     """Register a new user"""
     data = request.get_json()
     if not data:
-        return jsonify({'status': 'error', 'message': 'Invalid request data'})
+        return jsonify({'status': 'error', 'message': 'Datos de solicitud inválidos'})
     
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
     
     if not username or not password:
-        return jsonify({'status': 'error', 'message': 'Username and password are required'})
+        return jsonify({'status': 'error', 'message': 'Usuario y contraseña son requeridos'})
     
     # Validate username (NoSQL injection prevention)
     is_valid, error_msg = validate_username(username)
@@ -474,12 +474,12 @@ def register():
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
     if not mongodb_available:
-        return jsonify({'status': 'error', 'message': 'User registration requires database connection. Please try again later or play as guest.'})
+        return jsonify({'status': 'error', 'message': 'El registro requiere conexión a la base de datos. Por favor, inténtalo más tarde o juega como invitado.'})
     
     try:
         # Check if user already exists (use validated username)
         if users_collection.find_one({'username': username}):
-            return jsonify({'status': 'error', 'message': 'Username already exists'})
+            return jsonify({'status': 'error', 'message': 'El nombre de usuario ya existe'})
         
         # Create new user
         hashed_password = generate_password_hash(password)
@@ -494,12 +494,12 @@ def register():
         
         return jsonify({
             'status': 'success',
-            'message': f'Welcome {username}! You have been registered and logged in.'
+            'message': f'¡Bienvenido/a {username}! Te has registrado e iniciado sesión.'
         })
         
     except Exception as e:
         logger.error(f"Registration error: {e}")
-        return jsonify({'status': 'error', 'message': 'Registration failed. Please try again.'})
+        return jsonify({'status': 'error', 'message': 'Error en el registro. Por favor, inténtalo de nuevo.'})
 
 @app.route('/login', methods=['POST'])
 @limiter.limit("5 per minute")
@@ -508,23 +508,23 @@ def login():
     """Login an existing user"""
     data = request.get_json()
     if not data:
-        return jsonify({'status': 'error', 'message': 'Invalid request data'})
+        return jsonify({'status': 'error', 'message': 'Datos de solicitud inválidos'})
     
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
     
     if not username or not password:
-        return jsonify({'status': 'error', 'message': 'Username and password are required'})
+        return jsonify({'status': 'error', 'message': 'Usuario y contraseña son requeridos'})
     
     # Validate username format (NoSQL injection prevention)
     is_valid, error_msg = validate_username(username)
     if not is_valid:
-        return jsonify({'status': 'error', 'message': 'Invalid username or password'})
+        return jsonify({'status': 'error', 'message': 'Usuario o contraseña incorrectos'})
     
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
     if not mongodb_available:
-        return jsonify({'status': 'error', 'message': 'User login requires database connection. Please try again later or play as guest.'})
+        return jsonify({'status': 'error', 'message': 'El inicio de sesión requiere conexión a la base de datos. Por favor, inténtalo más tarde o juega como invitado.'})
     
     try:
         user = users_collection.find_one({'username': username})
@@ -532,14 +532,14 @@ def login():
             session['username'] = username
             return jsonify({
                 'status': 'success',
-                'message': f'Welcome back, {username}!'
+                'message': f'¡Bienvenido/a de nuevo, {username}!'
             })
         else:
-            return jsonify({'status': 'error', 'message': 'Invalid username or password'})
+            return jsonify({'status': 'error', 'message': 'Usuario o contraseña incorrectos'})
             
     except Exception as e:
         logger.error(f"Login error: {e}")
-        return jsonify({'status': 'error', 'message': 'Login failed. Please try again.'})
+        return jsonify({'status': 'error', 'message': 'Error al iniciar sesión. Por favor, inténtalo de nuevo.'})
 
 @app.route('/logout', methods=['POST'])
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
@@ -553,7 +553,7 @@ def logout():
     session.pop('game_start_time', None)
     session.pop('game_session_id', None)
     
-    message = f'Goodbye, {username}!' if username else 'Logged out successfully!'
+    message = f'¡Hasta pronto, {username}!' if username else '¡Sesión cerrada correctamente!'
     return jsonify({
         'status': 'success',
         'message': message
@@ -567,7 +567,7 @@ def save_knowledge_profile():
     username = session.get('username')
     
     if not username or username == 'guest':
-        return jsonify({'status': 'error', 'message': 'Knowledge profile is only available for registered users'})
+        return jsonify({'status': 'error', 'message': 'El perfil de conocimientos solo está disponible para usuarios registrados'})
     
     # Validate the survey data
     required_fields = [
@@ -585,21 +585,21 @@ def save_knowledge_profile():
     for field in required_fields:
         value = data.get(field)
         if value is None:
-            return jsonify({'status': 'error', 'message': f'Missing field: {field}'})
+            return jsonify({'status': 'error', 'message': f'Campo faltante: {field}'})
         
         # Validate that value is between 1 and 5
         try:
             value_int = int(value)
             if value_int < 1 or value_int > 5:
-                return jsonify({'status': 'error', 'message': f'Invalid value for {field}. Must be between 1 and 5.'})
+                return jsonify({'status': 'error', 'message': f'Valor inválido para {field}. Debe estar entre 1 y 5.'})
             profile_data[field] = value_int
         except (ValueError, TypeError):
-            return jsonify({'status': 'error', 'message': f'Invalid value for {field}. Must be a number between 1 and 5.'})
+            return jsonify({'status': 'error', 'message': f'Valor inválido para {field}. Debe ser un número entre 1 y 5.'})
     
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
     if not mongodb_available:
-        return jsonify({'status': 'error', 'message': 'Database connection required to save profile.'})
+        return jsonify({'status': 'error', 'message': 'Se requiere conexión a la base de datos para guardar el perfil.'})
     
     try:
         # Update user with knowledge profile and timestamp
@@ -616,12 +616,12 @@ def save_knowledge_profile():
         
         return jsonify({
             'status': 'success',
-            'message': 'Knowledge profile saved successfully. Thank you for your participation!'
+            'message': '¡Perfil de conocimientos guardado correctamente! Gracias por tu participación.'
         })
         
     except Exception as e:
         logger.error(f"Error saving knowledge profile: {e}")
-        return jsonify({'status': 'error', 'message': 'Failed to save knowledge profile. Please try again.'})
+        return jsonify({'status': 'error', 'message': 'Error al guardar el perfil de conocimientos. Por favor, inténtalo de nuevo.'})
 
 @app.route('/check_knowledge_profile', methods=['GET'])
 def check_knowledge_profile():
@@ -648,7 +648,7 @@ def check_knowledge_profile():
         
     except Exception as e:
         logger.error(f"Error checking knowledge profile: {e}")
-        return jsonify({'status': 'error', 'message': 'Failed to check profile status.'})
+        return jsonify({'status': 'error', 'message': 'Error al verificar el estado del perfil.'})
 
 @app.route('/play_as_guest', methods=['POST'])
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
@@ -657,7 +657,7 @@ def play_as_guest():
     session.pop('username', None)  # Remove any existing login
     return jsonify({
         'status': 'success',
-        'message': 'Playing as guest. Your games will not be saved to your profile.'
+        'message': 'Jugando como invitado. Tus partidas no se guardarán en tu perfil.'
     })
 
 @app.route('/start_game', methods=['POST'])
@@ -696,7 +696,7 @@ def start_game():
         
         return jsonify({
             'status': 'success',
-            'message': f'New game started! Here is your first hint:',
+            'message': f'¡Nueva partida iniciada! Aquí tienes tu primera pista:',
             'source': 'database' if persona_data['from_db'] else 'fallback',
             'first_hint': first_hint,
             'difficulty': first_hint_obj.get('dificultad', 0),
@@ -707,7 +707,7 @@ def start_game():
         session['hints_used'] = []
         return jsonify({
             'status': 'error',
-            'message': 'Error: No hints available for this person.',
+            'message': 'Error: No hay pistas disponibles para este personaje.',
             'source': 'database' if persona_data['from_db'] else 'fallback'
         })
 
@@ -716,7 +716,7 @@ def start_game():
 def get_hint():
     """Get a hint for the current person"""
     if 'current_person' not in session:
-        return jsonify({'status': 'error', 'message': 'No game in progress. Start a new game first!'})
+        return jsonify({'status': 'error', 'message': 'No hay partida en curso. ¡Inicia una nueva partida primero!'})
     
     person = session['current_person']
     pistas = session.get('current_pistas', [])
@@ -733,7 +733,7 @@ def get_hint():
         return jsonify({
             'status': 'success', 
             'hint': '',
-            'message': 'No more hints available! Try to make a guess.',
+            'message': '¡No quedan más pistas! Intenta adivinar.',
             'hints_remaining': 0
         })
     
@@ -762,15 +762,15 @@ def get_hint():
 def make_guess():
     """Make a guess for the current person"""
     if 'current_person' not in session:
-        return jsonify({'status': 'error', 'message': 'No game in progress. Start a new game first!'})
+        return jsonify({'status': 'error', 'message': 'No hay partida en curso. ¡Inicia una nueva partida primero!'})
     
     data = request.get_json()
     if not data:
-        return jsonify({'status': 'error', 'message': 'Invalid request data'})
+        return jsonify({'status': 'error', 'message': 'Datos de solicitud inválidos'})
     
     guess = data.get('guess', '').strip()
     if not guess:
-        return jsonify({'status': 'error', 'message': 'Please enter a guess!'})
+        return jsonify({'status': 'error', 'message': '¡Por favor, escribe una respuesta!'})
     
     person = session['current_person']
     game_session_id = session.get('game_session_id')
@@ -796,7 +796,7 @@ def make_guess():
         return jsonify({
             'status': 'success',
             'correct': True,
-            'message': f'Congratulations! You guessed correctly. It was {person}!'
+            'message': f'¡Felicidades! Has acertado. Era {person}.'
         })
     else:
         # Wrong guess - give another hint automatically
@@ -822,7 +822,7 @@ def make_guess():
             return jsonify({
                 'status': 'success',
                 'correct': False,
-                'message': f'Wrong guess! Here is another hint to help you.',
+                'message': f'¡Incorrecto! Aquí tienes otra pista para ayudarte.',
                 'new_hint': hint,
                 'difficulty': hint_obj.get('dificultad', 0),
                 'hints_remaining': hints_remaining
@@ -835,7 +835,7 @@ def make_guess():
             return jsonify({
                 'status': 'success',
                 'correct': False,
-                'message': f'Wrong guess! No more hints available. Try again or reveal the answer.',
+                'message': f'¡Incorrecto! No quedan más pistas. Inténtalo de nuevo o revela la respuesta.',
                 'hints_remaining': 0
             })
 
@@ -844,7 +844,7 @@ def make_guess():
 def get_answer():
     """Reveal the answer and end the game"""
     if 'current_person' not in session:
-        return jsonify({'status': 'error', 'message': 'No game in progress.'})
+        return jsonify({'status': 'error', 'message': 'No hay partida en curso.'})
     
     person = session['current_person']
     game_session_id = session.get('game_session_id')
@@ -861,7 +861,7 @@ def get_answer():
     return jsonify({
         'status': 'success',
         'answer': person,
-        'message': f'The answer was {person}. Better luck next time!'
+        'message': f'La respuesta era {person}. ¡Mejor suerte la próxima vez!'
     })
 
 @app.route('/stats')
