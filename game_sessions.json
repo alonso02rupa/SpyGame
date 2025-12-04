@@ -175,5 +175,32 @@
     "acierto": false,
     "timestamp": "2025-12-02T17:48:13.375234",
     "last_updated": "2025-12-02T17:48:13.375247"
+  },
+  {
+    "session_id": "72a06efd-7444-4062-b2f6-2af0249fbf5e",
+    "person": "Ludwig van Beethoven",
+    "pista": [
+      "Padeci\u00f3 saturnismo debido a la ingesta de agua contaminada con plomo.",
+      "Su muerte se atribuye a una insuficiencia hep\u00e1tica que desencaden\u00f3 un coma hep\u00e1tico.",
+      "Compuso treinta y dos sonatas para piano y nueve sinfon\u00edas."
+    ],
+    "guesses": [
+      "",
+      "test"
+    ],
+    "acierto": false,
+    "timestamp": "2025-12-04T17:46:33.999971",
+    "last_updated": "2025-12-04T17:46:54.043492"
+  },
+  {
+    "session_id": "4717e3b3-5172-441e-8d2b-8704de7c4bcc",
+    "person": "Dante Alighieri",
+    "pista": [
+      "Fue desterrado de su ciudad natal debido a su participaci\u00f3n en luchas pol\u00edticas entre g\u00fcelfos y gibelinos."
+    ],
+    "guesses": [],
+    "acierto": false,
+    "timestamp": "2025-12-04T17:47:04.064132",
+    "last_updated": "2025-12-04T17:47:09.075497"
   }
 ]
