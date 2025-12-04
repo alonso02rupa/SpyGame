@@ -26,6 +26,35 @@ MongoDB is only accessible internally within the Docker network:
 - Only the web service container can connect to MongoDB
 - This prevents direct external access to the database
 
+**Accessing MongoDB for Administration:**
+
+To access MongoDB for backups, restores, or other admin tasks, use `docker exec`:
+
+```bash
+# Access MongoDB shell
+docker-compose exec mongodb mongosh -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase admin spygame
+
+# Backup the database
+docker-compose exec mongodb mongodump -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase admin --db spygame --out /data/db/backup
+
+# Copy backup to host
+docker cp $(docker-compose ps -q mongodb):/data/db/backup ./backup
+
+# Restore from backup
+docker cp ./backup $(docker-compose ps -q mongodb):/data/db/backup
+docker-compose exec mongodb mongorestore -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase admin --db spygame /data/db/backup/spygame
+```
+
+**Note:** If you need temporary external access to MongoDB for development tools like MongoDB Compass, you can add the ports back temporarily by creating a `docker-compose.override.yml`:
+
+```yaml
+# docker-compose.override.yml (DO NOT use in production)
+services:
+  mongodb:
+    ports:
+      - "27017:27017"
+```
+
 ### 3. Password Validation
 
 User passwords must meet the following requirements:

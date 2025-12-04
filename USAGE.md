@@ -78,7 +78,26 @@ docker-compose exec web bash
 
 ### Acceder a MongoDB CLI
 ```bash
-docker-compose exec mongodb mongosh spygame
+# Con autenticación (requerido)
+docker-compose exec mongodb mongosh -u spygame -p your_password --authenticationDatabase admin spygame
+```
+
+### Backup de la base de datos
+```bash
+# Crear backup
+docker-compose exec mongodb mongodump -u spygame -p your_password --authenticationDatabase admin --db spygame --out /data/db/backup
+
+# Copiar backup al host
+docker cp $(docker-compose ps -q mongodb):/data/db/backup ./backup
+```
+
+### Restaurar base de datos
+```bash
+# Copiar backup al contenedor
+docker cp ./backup $(docker-compose ps -q mongodb):/data/db/backup
+
+# Restaurar
+docker-compose exec mongodb mongorestore -u spygame -p your_password --authenticationDatabase admin --db spygame /data/db/backup/spygame
 ```
 
 ### Reiniciar servicios
