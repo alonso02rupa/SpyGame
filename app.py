@@ -4,15 +4,38 @@ import os
 from datetime import datetime
 import random
 import uuid
+import re
+import logging
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 # Load environment variables from .env file
 load_dotenv()
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
+
+# CSRF Protection
+csrf = CSRFProtect(app)
+
+# Rate Limiting - global limits: 200 requests per day, 50 per hour
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
 
 # MongoDB configuration
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
@@ -26,7 +49,7 @@ def get_db_collections():
         db = client.spygame
         return db.sessions, db.users, db.pistas, True
     except Exception as e:
-        print(f"MongoDB connection failed: {e}")
+        logger.error(f"MongoDB connection failed: {e}")
         return None, None, None, False
 
 def load_hints_from_json(filepath='pistas.json'):
@@ -35,13 +58,13 @@ def load_hints_from_json(filepath='pistas.json'):
     If the file doesn't exist or MongoDB is not available, the app starts normally.
     """
     if not os.path.exists(filepath):
-        print(f"No hints file found at {filepath}. Starting without loading hints.")
+        logger.info(f"No hints file found at {filepath}. Starting without loading hints.")
         return
     
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
     if not mongodb_available:
-        print("MongoDB not available. Skipping hints loading from JSON.")
+        logger.warning("MongoDB not available. Skipping hints loading from JSON.")
         return
     
     try:
@@ -54,11 +77,11 @@ def load_hints_from_json(filepath='pistas.json'):
         elif isinstance(data, dict):
             personas = list(data.values())
         else:
-            print(f"Unrecognized JSON format in {filepath}. Skipping hints loading.")
+            logger.warning(f"Unrecognized JSON format in {filepath}. Skipping hints loading.")
             return
         
         if not personas:
-            print(f"No persons found in {filepath}. Skipping hints loading.")
+            logger.warning(f"No persons found in {filepath}. Skipping hints loading.")
             return
         
         loaded = 0
@@ -80,15 +103,15 @@ def load_hints_from_json(filepath='pistas.json'):
                 )
                 loaded += 1
             except Exception as e:
-                print(f"Error loading person {nombre}: {e}")
+                logger.error(f"Error loading person {nombre}: {e}")
         
         total = pistas_collection.count_documents({})
-        print(f"Hints loaded from {filepath}: {loaded} persons processed. Total in DB: {total}")
+        logger.info(f"Hints loaded from {filepath}: {loaded} persons processed. Total in DB: {total}")
         
     except json.JSONDecodeError as e:
-        print(f"Error parsing JSON file {filepath}: {e}")
+        logger.error(f"Error parsing JSON file {filepath}: {e}")
     except Exception as e:
-        print(f"Error loading hints from {filepath}: {e}")
+        logger.error(f"Error loading hints from {filepath}: {e}")
 
 def get_person_from_db():
     """Get a random person from the database, prioritizing unplayed ones"""
@@ -138,9 +161,9 @@ def get_person_from_db():
                         'from_db': True
                     }
             else:
-                print("No hay personas en la base de datos. Usando datos de fallback.")
+                logger.info("No hay personas en la base de datos. Usando datos de fallback.")
         except Exception as e:
-            print(f"Error al obtener persona de MongoDB: {e}")
+            logger.error(f"Error al obtener persona de MongoDB: {e}")
     
     # Fallback: usar pistas.json si existe
     pistas_file = 'pistas.json'
@@ -158,7 +181,7 @@ def get_person_from_db():
                     'from_db': False
                 }
         except Exception as e:
-            print(f"Error al leer pistas.json: {e}")
+            logger.error(f"Error al leer pistas.json: {e}")
     
     # Last resort fallback with minimal data
     return {
@@ -193,7 +216,7 @@ def load_sessions(username=None):
             sessions = list(sessions_collection.find(query, {'_id': 0}))
             return sessions
         except Exception as e:
-            print(f"MongoDB error: {e}")
+            logger.error(f"MongoDB error: {e}")
     
     # Fallback to JSON file if MongoDB is not available
     if os.path.exists(SESSIONS_FILE):
@@ -231,7 +254,7 @@ def create_game_session(person, session_id, first_hint):
             sessions_collection.insert_one(session_data)
             return
         except Exception as e:
-            print(f"MongoDB error: {e}")
+            logger.error(f"MongoDB error: {e}")
     
     # Fallback to JSON file if MongoDB is not available
     sessions = []
@@ -260,7 +283,7 @@ def update_game_session_hint(session_id, hint):
             )
             return
         except Exception as e:
-            print(f"MongoDB error: {e}")
+            logger.error(f"MongoDB error: {e}")
     
     # Fallback to JSON file if MongoDB is not available
     if os.path.exists(SESSIONS_FILE):
@@ -294,7 +317,7 @@ def update_game_session_result(session_id, correct):
             )
             return
         except Exception as e:
-            print(f"MongoDB error: {e}")
+            logger.error(f"MongoDB error: {e}")
     
     # Fallback to JSON file if MongoDB is not available
     if os.path.exists(SESSIONS_FILE):
@@ -325,7 +348,7 @@ def add_guess_to_session(session_id, guess):
             )
             return
         except Exception as e:
-            print(f"MongoDB error: {e}")
+            logger.error(f"MongoDB error: {e}")
     
     # Fallback to JSON file if MongoDB is not available
     if os.path.exists(SESSIONS_FILE):
@@ -371,6 +394,50 @@ def is_guess_correct(guess, person_name):
     
     return False
 
+# Input validation patterns for NoSQL injection prevention
+USERNAME_PATTERN = re.compile(r'^[a-zA-Z0-9_]{3,20}$')
+
+def validate_username(username):
+    """
+    Validate username to prevent NoSQL injection.
+    Username must be alphanumeric and underscore only, 3-20 characters.
+    Returns (is_valid, error_message)
+    """
+    if not username:
+        return False, 'Username is required'
+    if len(username) < 3:
+        return False, 'Username must be at least 3 characters long'
+    if len(username) > 20:
+        return False, 'Username must be at most 20 characters long'
+    if not USERNAME_PATTERN.match(username):
+        return False, 'Username can only contain letters, numbers, and underscores'
+    return True, None
+
+def validate_password(password):
+    """
+    Validate password strength.
+    Password must be at least 12 characters with uppercase, lowercase, number, and special character.
+    Returns (is_valid, error_message)
+    """
+    if not password:
+        return False, 'Password is required'
+    if len(password) < 12:
+        return False, 'Password must be at least 12 characters long'
+    if not re.search(r'[A-Z]', password):
+        return False, 'Password must contain at least one uppercase letter'
+    if not re.search(r'[a-z]', password):
+        return False, 'Password must contain at least one lowercase letter'
+    if not re.search(r'[0-9]', password):
+        return False, 'Password must contain at least one number'
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\;\'`~]', password):
+        return False, 'Password must contain at least one special character'
+    return True, None
+
+@app.context_processor
+def inject_csrf_token():
+    """Inject CSRF token into all templates"""
+    return dict(csrf_token=generate_csrf)
+
 @app.route('/')
 def index():
     """Main game page"""
@@ -378,20 +445,29 @@ def index():
     return render_template('index.html', current_user=current_user)
 
 @app.route('/register', methods=['POST'])
+@limiter.limit("3 per minute")
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def register():
     """Register a new user"""
     data = request.get_json()
+    if not data:
+        return jsonify({'status': 'error', 'message': 'Invalid request data'})
+    
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
     
     if not username or not password:
         return jsonify({'status': 'error', 'message': 'Username and password are required'})
     
-    if len(username) < 3:
-        return jsonify({'status': 'error', 'message': 'Username must be at least 3 characters long'})
+    # Validate username (NoSQL injection prevention)
+    is_valid, error_msg = validate_username(username)
+    if not is_valid:
+        return jsonify({'status': 'error', 'message': error_msg})
     
-    if len(password) < 6:
-        return jsonify({'status': 'error', 'message': 'Password must be at least 6 characters long'})
+    # Validate password strength
+    is_valid, error_msg = validate_password(password)
+    if not is_valid:
+        return jsonify({'status': 'error', 'message': error_msg})
     
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
@@ -399,7 +475,7 @@ def register():
         return jsonify({'status': 'error', 'message': 'User registration requires database connection. Please try again later or play as guest.'})
     
     try:
-        # Check if user already exists
+        # Check if user already exists (use validated username)
         if users_collection.find_one({'username': username}):
             return jsonify({'status': 'error', 'message': 'Username already exists'})
         
@@ -420,18 +496,28 @@ def register():
         })
         
     except Exception as e:
-        print(f"Registration error: {e}")
+        logger.error(f"Registration error: {e}")
         return jsonify({'status': 'error', 'message': 'Registration failed. Please try again.'})
 
 @app.route('/login', methods=['POST'])
+@limiter.limit("5 per minute")
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def login():
     """Login an existing user"""
     data = request.get_json()
+    if not data:
+        return jsonify({'status': 'error', 'message': 'Invalid request data'})
+    
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
     
     if not username or not password:
         return jsonify({'status': 'error', 'message': 'Username and password are required'})
+    
+    # Validate username format (NoSQL injection prevention)
+    is_valid, error_msg = validate_username(username)
+    if not is_valid:
+        return jsonify({'status': 'error', 'message': 'Invalid username or password'})
     
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     
@@ -450,10 +536,11 @@ def login():
             return jsonify({'status': 'error', 'message': 'Invalid username or password'})
             
     except Exception as e:
-        print(f"Login error: {e}")
+        logger.error(f"Login error: {e}")
         return jsonify({'status': 'error', 'message': 'Login failed. Please try again.'})
 
 @app.route('/logout', methods=['POST'])
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def logout():
     """Logout the current user"""
     username = session.get('username')
@@ -471,6 +558,7 @@ def logout():
     })
 
 @app.route('/save_knowledge_profile', methods=['POST'])
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def save_knowledge_profile():
     """Save the optional knowledge profile survey for a user"""
     data = request.get_json()
@@ -530,7 +618,7 @@ def save_knowledge_profile():
         })
         
     except Exception as e:
-        print(f"Error saving knowledge profile: {e}")
+        logger.error(f"Error saving knowledge profile: {e}")
         return jsonify({'status': 'error', 'message': 'Failed to save knowledge profile. Please try again.'})
 
 @app.route('/check_knowledge_profile', methods=['GET'])
@@ -557,10 +645,11 @@ def check_knowledge_profile():
         })
         
     except Exception as e:
-        print(f"Error checking knowledge profile: {e}")
+        logger.error(f"Error checking knowledge profile: {e}")
         return jsonify({'status': 'error', 'message': 'Failed to check profile status.'})
 
 @app.route('/play_as_guest', methods=['POST'])
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def play_as_guest():
     """Start playing as guest"""
     session.pop('username', None)  # Remove any existing login
@@ -570,6 +659,7 @@ def play_as_guest():
     })
 
 @app.route('/start_game', methods=['POST'])
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def start_game():
     """Start a new game by selecting a random person and providing first hint automatically"""
     persona_data = get_person_from_db()
@@ -620,6 +710,7 @@ def start_game():
         })
 
 @app.route('/get_hint', methods=['POST'])
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def get_hint():
     """Get a hint for the current person"""
     if 'current_person' not in session:
@@ -664,12 +755,18 @@ def get_hint():
     })
 
 @app.route('/make_guess', methods=['POST'])
+@limiter.limit("20 per minute")
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def make_guess():
     """Make a guess for the current person"""
     if 'current_person' not in session:
         return jsonify({'status': 'error', 'message': 'No game in progress. Start a new game first!'})
     
-    guess = request.json.get('guess', '').strip()
+    data = request.get_json()
+    if not data:
+        return jsonify({'status': 'error', 'message': 'Invalid request data'})
+    
+    guess = data.get('guess', '').strip()
     if not guess:
         return jsonify({'status': 'error', 'message': 'Please enter a guess!'})
     
@@ -741,6 +838,7 @@ def make_guess():
             })
 
 @app.route('/get_answer', methods=['POST'])
+@csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def get_answer():
     """Reveal the answer and end the game"""
     if 'current_person' not in session:

@@ -244,13 +244,14 @@ FLASK_PORT=5000
 FLASK_DEBUG=False
 
 # MongoDB
-MONGODB_URI=mongodb://mongodb:27017/spygame
 MONGO_INITDB_DATABASE=spygame
 MONGODB_PORT=27017
+# MongoDB Authentication (required for Docker deployment)
+MONGO_INITDB_ROOT_USERNAME=spygame
+MONGO_INITDB_ROOT_PASSWORD=change_this_password_in_production
 
 # Docker
 DOCKER_WEB_PORT=5000
-DOCKER_MONGO_PORT=27017
 
 # Hugging Face
 HUGGINGFACE_API_KEY=your-huggingface-api-key
@@ -259,3 +260,39 @@ HUGGINGFACE_MODEL_NAME=meta-llama/Meta-Llama-3-8B-Instruct
 # Wikipedia
 WIKIPEDIA_USER_AGENT=SpyGame/1.0.0 (contact: your@email.com)
 ```
+
+---
+
+## Seguridad
+
+### Autenticación MongoDB
+
+MongoDB ahora requiere autenticación. Configura las credenciales en tu archivo `.env`:
+
+```env
+MONGO_INITDB_ROOT_USERNAME=spygame
+MONGO_INITDB_ROOT_PASSWORD=tu_password_segura_aqui
+```
+
+**Importante:** 
+- Cambia las credenciales por defecto en producción
+- MongoDB solo es accesible internamente (los puertos no están expuestos al host)
+
+### Requisitos de Contraseña
+
+Las contraseñas de usuario deben cumplir:
+- Mínimo 12 caracteres
+- Al menos una letra mayúscula
+- Al menos una letra minúscula
+- Al menos un número
+- Al menos un carácter especial
+
+### Rate Limiting
+
+La aplicación incluye límites de peticiones:
+- `/login`: 5 intentos por minuto
+- `/register`: 3 intentos por minuto
+- `/make_guess`: 20 intentos por minuto
+- Global: 200 peticiones/día, 50 peticiones/hora
+
+Para más información sobre seguridad, consulta [SECURITY.md](SECURITY.md).

@@ -11,19 +11,27 @@ services:
       - .env
     environment:
       - FLASK_ENV=${FLASK_ENV:-development}
-      - MONGODB_URI=mongodb://mongodb:${MONGODB_PORT:-27017}/${MONGO_INITDB_DATABASE:-spygame}
+      # MongoDB URI with authentication - credentials from environment variables
+      - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME:-spygame}:${MONGO_INITDB_ROOT_PASSWORD:-spygame_secret}@mongodb:${MONGODB_PORT:-27017}/${MONGO_INITDB_DATABASE:-spygame}?authSource=admin
+    # Development only: Mount specific subdirectories instead of entire directory
+    # For production, use COPY in Dockerfile instead of bind mounts
     volumes:
-      - .:/app
+      - ./static:/app/static
+      - ./templates:/app/templates
+      - ./datatreatment:/app/datatreatment
     networks:
       - spygame-network
 
   mongodb:
     image: mongo:7.0
     restart: always
-    ports:
-      - "${DOCKER_MONGO_PORT:-27017}:27017"
+    # MongoDB ports are NOT exposed externally for security
+    # MongoDB is only accessible internally by the web service through the Docker network
     environment:
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE:-spygame}
+      # MongoDB authentication credentials
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-spygame}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-spygame_secret}
     volumes:
       - mongodb_data:/data/db
     networks:

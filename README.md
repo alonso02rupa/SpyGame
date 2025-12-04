@@ -115,9 +115,11 @@ FLASK_HOST=0.0.0.0
 FLASK_PORT=5000
 
 # MongoDB Configuration
-MONGODB_URI=mongodb://mongodb:27017/spygame
 MONGO_INITDB_DATABASE=spygame
 MONGODB_PORT=27017
+# MongoDB Authentication (required)
+MONGO_INITDB_ROOT_USERNAME=spygame
+MONGO_INITDB_ROOT_PASSWORD=change_this_password_in_production
 
 # Hugging Face API (Required for processing new people)
 HUGGINGFACE_API_KEY=your_huggingface_api_key_here
@@ -128,14 +130,30 @@ WIKIPEDIA_USER_AGENT=SpyGame/1.0.0 (contact: your_email@example.com)
 
 # Docker Ports
 DOCKER_WEB_PORT=5000
-DOCKER_MONGO_PORT=27017
 ```
 
 ### Security Notes
 - ⚠️ **Never commit your `.env` file** to version control
 - Use strong, unique values for `FLASK_SECRET_KEY` in production
+- **Change MongoDB credentials** before deploying to production
+- MongoDB is only accessible internally (ports are not exposed)
 - Get your Hugging Face API key from: https://huggingface.co/settings/tokens
 - Replace the contact email in `WIKIPEDIA_USER_AGENT` with your actual email
+- See [SECURITY.md](SECURITY.md) for complete security documentation
+
+## 🔐 Security Features
+
+SpyGame includes the following security features:
+
+- **MongoDB Authentication**: Database requires username/password
+- **Network Security**: MongoDB ports are not exposed externally
+- **Strong Password Validation**: 12+ characters with complexity requirements
+- **Rate Limiting**: Protection against brute-force attacks
+- **CSRF Protection**: Cross-site request forgery prevention
+- **Input Validation**: NoSQL injection prevention
+- **Secure Logging**: Proper error handling and logging
+
+For detailed security configuration, see [SECURITY.md](SECURITY.md).
 
 ## 🎯 How to Play
 
