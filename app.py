@@ -406,7 +406,7 @@ def validate_username(username):
     Returns (is_valid, error_message)
     """
     if not username:
-        return False, 'El nombre de usuario es requerido'
+        return False, 'El nombre de usuario es necesario'
     if len(username) < 3:
         return False, 'El nombre de usuario debe tener al menos 3 caracteres'
     if len(username) > 20:
@@ -422,7 +422,7 @@ def validate_password(password):
     Returns (is_valid, error_message)
     """
     if not password:
-        return False, 'La contraseña es requerida'
+        return False, 'La contraseña es necesaria'
     if len(password) < 12:
         return False, 'La contraseña debe tener al menos 12 caracteres'
     if not re.search(r'[A-Z]', password):
@@ -459,7 +459,7 @@ def register():
     password = data.get('password', '').strip()
     
     if not username or not password:
-        return jsonify({'status': 'error', 'message': 'Usuario y contraseña son requeridos'})
+        return jsonify({'status': 'error', 'message': 'Usuario y contraseña son necesarios'})
     
     # Validate username (NoSQL injection prevention)
     is_valid, error_msg = validate_username(username)
@@ -514,7 +514,7 @@ def login():
     password = data.get('password', '').strip()
     
     if not username or not password:
-        return jsonify({'status': 'error', 'message': 'Usuario y contraseña son requeridos'})
+        return jsonify({'status': 'error', 'message': 'Usuario y contraseña son necesarios'})
     
     # Validate username format (NoSQL injection prevention)
     is_valid, error_msg = validate_username(username)
