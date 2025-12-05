@@ -37,7 +37,7 @@
             
             <div class="stats-nav">
                 <!-- Navigation section to return to the main game -->
-                <a href="/" class="btn btn-primary">← Volver al Juego</a>
+                <a href="{{ url_for('index') }}" class="btn btn-primary">← Volver al Juego</a>
                 <!-- Link back to the main page (/) with arrow indicating direction -->
             </div>
 
@@ -211,7 +211,7 @@
                         <h3>Sin Historial</h3>
                         <!-- Heading indicating no games have been played -->
                         
-                        <p>Aún no has jugado ninguna partida. <a href="/">¡Empieza tu primera partida!</a></p>
+                        <p>Aún no has jugado ninguna partida. <a href="{{ url_for('index') }}">¡Empieza tu primera partida!</a></p>
                         <!-- 
                             Encouraging message with a link back to the main game page
                             <a href="/"> creates a link to the root page (main game)

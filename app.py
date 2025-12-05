@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect, generate_csrf
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,7 +24,38 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# URL prefix for the application (e.g., /spygame)
+# This allows the app to be served from a subpath behind a reverse proxy
+APPLICATION_PREFIX = os.getenv('APPLICATION_PREFIX', '/spygame')
+
 app = Flask(__name__)
+
+# Configure app to work behind a reverse proxy (nginx)
+# This ensures correct handling of X-Forwarded headers for IP, protocol, etc.
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
+class ReverseProxied:
+    """
+    Middleware to handle SCRIPT_NAME/PATH_INFO from X-Script-Name header.
+    This allows the app to be served from a subpath (e.g., /spygame) behind nginx.
+    """
+    def __init__(self, wsgi_app, script_name=None):
+        self.wsgi_app = wsgi_app
+        self.script_name = script_name
+
+    def __call__(self, environ, start_response):
+        # Get script name from header or use configured prefix
+        script_name = environ.get('HTTP_X_SCRIPT_NAME', self.script_name)
+        if script_name:
+            environ['SCRIPT_NAME'] = script_name
+            path_info = environ.get('PATH_INFO', '')
+            if path_info.startswith(script_name):
+                environ['PATH_INFO'] = path_info[len(script_name):]
+        return self.wsgi_app(environ, start_response)
+
+# Apply the reverse proxy middleware with the configured prefix
+app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=APPLICATION_PREFIX)
+
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
 
 # CSRF Protection
