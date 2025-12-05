@@ -9,6 +9,8 @@ import logging
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.exceptions import NotFound
 from dotenv import load_dotenv
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -41,6 +43,18 @@ limiter = Limiter(
     default_limits=["200 per day", "50 per hour"],
     storage_uri="memory://"
 )
+
+
+def simple_404_app(environ, start_response):
+    """Simple WSGI app that returns 404 for the root path"""
+    start_response('404 Not Found', [('Content-Type', 'text/html')])
+    return [b'<h1>404 Not Found</h1><p>Please go to <a href="/spygame/">/spygame/</a></p>']
+
+
+# Mount the app at /spygame for direct access without nginx
+application = DispatcherMiddleware(simple_404_app, {
+    '/spygame': app.wsgi_app
+})
 
 # MongoDB configuration
 MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/spygame')
@@ -883,4 +897,7 @@ if __name__ == '__main__':
     debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() in ['true', '1', 'yes']
     host = os.getenv('FLASK_HOST', '0.0.0.0')
     port = int(os.getenv('FLASK_PORT', 5000))
-    app.run(debug=debug_mode, host=host, port=port)
+    
+    # Use the dispatcher middleware to serve the app at /spygame
+    from werkzeug.serving import run_simple
+    run_simple(host, port, application, use_debugger=debug_mode, use_reloader=debug_mode)
