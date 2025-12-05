@@ -46,7 +46,7 @@ SpyGame challenges players to guess famous Wikipedia personalities using an AI-p
 
 5. **Open your browser**
    ```
-   http://localhost:5000
+   http://localhost/spygame
    ```
 
 **Using helper scripts (recommended):**
@@ -63,6 +63,56 @@ chmod +x spygame.sh
 ./spygame.sh start
 ./spygame.sh init
 ```
+
+## 🌐 Nginx Configuration
+
+The application is configured to run behind nginx for production deployment, providing:
+- Reverse proxy with security headers
+- Rate limiting to prevent abuse
+- Gzip compression for better performance
+- URL prefix support (serves app at `/spygame` path)
+
+### Accessing the Application
+
+Once running with Docker Compose, the app is available at:
+- **Main application**: `http://localhost/spygame` (or `http://YOUR_IP/spygame` from other devices)
+- **Health check**: `http://localhost/health`
+
+### Allowing External Access Temporarily
+
+To allow connections from other devices on your network:
+
+1. Find your local IP address:
+   - **Windows**: `ipconfig` (look for IPv4 Address)
+   - **Linux/Mac**: `ip addr` or `ifconfig`
+
+2. Configure your firewall to allow port 80:
+   - **Windows**: `netsh advfirewall firewall add rule name="SpyGame" dir=in action=allow protocol=TCP localport=80`
+   - **Linux**: `sudo ufw allow 80/tcp`
+
+3. Share the URL with other devices: `http://YOUR_IP/spygame`
+
+4. **To disable external access** when done:
+   - **Windows**: `netsh advfirewall firewall delete rule name="SpyGame"`
+   - **Linux**: `sudo ufw delete allow 80/tcp`
+
+### Security Features
+
+The nginx configuration includes:
+- **X-Frame-Options**: Prevents clickjacking attacks
+- **X-Content-Type-Options**: Prevents MIME-type sniffing
+- **X-XSS-Protection**: Enables browser XSS filtering
+- **Rate Limiting**: 10 requests/second with burst of 20
+- **Connection Limiting**: Max 20 concurrent connections per IP
+- **Request Size Limiting**: Max 1MB request body
+
+### Customizing the Configuration
+
+Edit `nginx/nginx.conf` to customize:
+- Port (default: 80)
+- Rate limits
+- Security headers
+- Caching settings
 
 ## 📚 Documentation
 
@@ -220,6 +270,7 @@ The game automatically tracks all gameplay activities:
 - **Docker**: Application containerization
 - **Docker Compose**: Multi-container orchestration
 - **MongoDB**: Persistent data with volume mounting
+- **Nginx**: Reverse proxy for production deployment
 
 ## 📁 Project Structure
 
@@ -236,6 +287,8 @@ SpyGame/
 ├── USAGE.md                    # Detailed usage guide
 ├── game_sessions.json          # Fallback storage
 ├── pistas.json                 # Example hints (for init only)
+├── nginx/
+│   └── nginx.conf              # Nginx reverse proxy configuration
 ├── datatreatment/
 │   └── data_processor.py       # Wikipedia processing & AI
 ├── static/
@@ -243,9 +296,8 @@ SpyGame/
 ├── templates/
 │   ├── index.html              # Main game interface
 │   └── stats.html              # Statistics page
-└── LICENSE                     # MIT License
-```
-└── README.md            # This file
+├── LICENSE                     # MIT License
+└── README.md                   # This file
 ```
 
 ## CSS Architecture & Styling
