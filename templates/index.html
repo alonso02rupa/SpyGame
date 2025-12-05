@@ -610,7 +610,7 @@
          */
         
         // Base URL for API calls - uses Flask's url_for to get the correct prefix
-        const BASE_URL = '{{ url_for("index") }}'.replace(/\/$/, '');
+        const BASE_URL = '{{ url_for("index") }}';
         
         // Game state variable to track if a game is currently active
         let gameActive = false;
