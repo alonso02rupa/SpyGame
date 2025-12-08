@@ -116,6 +116,7 @@ Edit `nginx/nginx.conf` to customize:
 
 ## 📚 Documentation
 
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - **Guía completa de despliegue en servidor** (castellano)
 - **[USAGE.md](USAGE.md)** - Complete usage guide and Docker commands
 - **[.env.example](.env.example)** - Environment variables template
 
