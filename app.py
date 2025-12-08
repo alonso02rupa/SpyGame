@@ -39,8 +39,12 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
 
 # Configure server-side sessions using MongoDB
+# Create MongoDB client and get database
+session_client = MongoClient(os.getenv('MONGODB_URI', 'mongodb://mongodb:27017/spygame'))
+session_db = session_client.get_database('spygame')
+
 app.config['SESSION_TYPE'] = 'mongodb'
-app.config['SESSION_MONGODB'] = MongoClient(os.getenv('MONGODB_URI', 'mongodb://mongodb:27017/spygame'))
+app.config['SESSION_MONGODB'] = session_client
 app.config['SESSION_MONGODB_DB'] = 'spygame'
 app.config['SESSION_MONGODB_COLLECT'] = 'flask_sessions'
 app.config['SESSION_PERMANENT'] = True
