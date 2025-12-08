@@ -13,6 +13,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_session import Session
 
 # Load environment variables from .env file
 load_dotenv()
@@ -37,13 +38,24 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
 
+# Configure server-side sessions using MongoDB
+app.config['SESSION_TYPE'] = 'mongodb'
+app.config['SESSION_MONGODB'] = MongoClient(os.getenv('MONGODB_URI', 'mongodb://mongodb:27017/spygame'))
+app.config['SESSION_MONGODB_DB'] = 'spygame'
+app.config['SESSION_MONGODB_COLLECT'] = 'flask_sessions'
+app.config['SESSION_PERMANENT'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hour
+app.config['SESSION_USE_SIGNER'] = True  # Sign session cookies for security
+app.config['SESSION_KEY_PREFIX'] = 'spygame:'
+
+# Initialize server-side session
+Session(app)
+
 # Configure session cookie to work properly
 app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
-app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hour
-app.config['SESSION_PERMANENT'] = False
 
 # CSRF Protection
 csrf = CSRFProtect(app)
