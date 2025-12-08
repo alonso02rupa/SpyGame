@@ -31,37 +31,30 @@ APPLICATION_PREFIX = os.getenv('APPLICATION_PREFIX', '/spygame')
 app = Flask(__name__)
 
 # Configure app to work behind a reverse proxy (nginx)
-# This ensures correct handling of X-Forwarded headers for IP, protocol, etc.
+# ProxyFix handles X-Forwarded headers
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
-class ReverseProxied:
+class ScriptNameMiddleware:
     """
-    Middleware to handle SCRIPT_NAME/PATH_INFO from X-Script-Name header.
-    This allows the app to be served from a subpath (e.g., /spygame) behind nginx.
-    Only applies when X-Script-Name header is present (i.e., behind nginx).
+    Simple middleware to set SCRIPT_NAME from X-Script-Name header sent by nginx.
+    This allows Flask's url_for() to generate correct URLs when behind a reverse proxy.
     """
-    def __init__(self, wsgi_app, script_name=None):
-        self.wsgi_app = wsgi_app
-        self.script_name = script_name
+    def __init__(self, app):
+        self.app = app
 
     def __call__(self, environ, start_response):
-        # Only apply script name manipulation if X-Script-Name header is present
-        # This ensures the app works normally when accessed directly (not through nginx)
-        script_name = environ.get('HTTP_X_SCRIPT_NAME')
+        # If nginx sends X-Script-Name header, use it to set SCRIPT_NAME
+        script_name = environ.get('HTTP_X_SCRIPT_NAME', '').rstrip('/')
         if script_name:
             environ['SCRIPT_NAME'] = script_name
-            path_info = environ.get('PATH_INFO', '')
-            if path_info.startswith(script_name):
-                environ['PATH_INFO'] = path_info[len(script_name):]
-        return self.wsgi_app(environ, start_response)
+        return self.app(environ, start_response)
 
-# Apply the reverse proxy middleware
-app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=APPLICATION_PREFIX)
+# Apply the script name middleware
+app.wsgi_app = ScriptNameMiddleware(app.wsgi_app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
 
-# Configure session cookie to work with URL prefix
-# When behind nginx at /spygame, cookies need to be set for that path
+# Configure session cookie to work properly
 app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
@@ -818,9 +811,24 @@ def make_guess():
     hints_used = session.get('hints_used', [])
     correct = is_guess_correct(guess, person)
     
+    # Count hints used
+    hints_count = len(hints_used)
+    
     # Store the guess
     if game_session_id:
         add_guess_to_session(game_session_id, guess)
+    
+    # Get total attempts (including this one)
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    attempts_count = 1  # At least this guess
+    
+    if mongodb_available and game_session_id:
+        try:
+            session_data = sessions_collection.find_one({'session_id': game_session_id})
+            if session_data and 'guesses' in session_data:
+                attempts_count = len(session_data['guesses']) + 1  # +1 for current guess
+        except Exception as e:
+            logger.error(f"Error counting attempts: {e}")
     
     if correct:
         # Correct guess - update session and end game
@@ -837,6 +845,8 @@ def make_guess():
             'status': 'success',
             'correct': True,
             'person': person,
+            'hints_count': hints_count,
+            'attempts_count': attempts_count,
             'message': f'¡Felicidades! Has acertado. Era {person}.'
         })
     else:
@@ -889,6 +899,22 @@ def get_answer():
     
     person = session['current_person']
     game_session_id = session.get('game_session_id')
+    hints_used = session.get('hints_used', [])
+    
+    # Count hints and attempts
+    hints_count = len(hints_used)
+    
+    # Get total attempts
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    attempts_count = 0
+    
+    if mongodb_available and game_session_id:
+        try:
+            session_data = sessions_collection.find_one({'session_id': game_session_id})
+            if session_data and 'guesses' in session_data:
+                attempts_count = len(session_data['guesses'])
+        except Exception as e:
+            logger.error(f"Error counting attempts: {e}")
     
     # Mark session as not successful (revealed answer)
     if game_session_id:
@@ -898,10 +924,13 @@ def get_answer():
     session.pop('hints_used', None)
     session.pop('game_start_time', None)
     session.pop('game_session_id', None)
+    session.pop('current_pistas', None)
     
     return jsonify({
         'status': 'success',
         'answer': person,
+        'hints_count': hints_count,
+        'attempts_count': attempts_count,
         'message': f'La respuesta era {person}. ¡Mejor suerte la próxima vez!'
     })
 

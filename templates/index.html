@@ -228,9 +228,13 @@
                 <h3>🎉 ¡Felicidades!</h3>
             </div>
             <div class="modal-body">
-                <p class="victory-modal-text" style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">
+                <p class="victory-modal-text" style="text-align: center; font-size: 1.2em; margin-bottom: 15px;">
                     ¡Has acertado! La persona era <strong id="victory-person-name"></strong>
                 </p>
+                <div style="text-align: center; color: #c4b5fd; margin-bottom: 20px;">
+                    <p style="margin: 5px 0;">📊 <strong>Pistas usadas:</strong> <span id="victory-hints-count">0</span></p>
+                    <p style="margin: 5px 0;">🎯 <strong>Intentos:</strong> <span id="victory-attempts-count">0</span></p>
+                </div>
                 <div class="form-actions" style="justify-content: center;">
                     <button type="button" class="btn btn-primary" id="victory-new-game">Nueva Partida</button>
                     <button type="button" class="btn btn-secondary" id="victory-close">Cerrar</button>
@@ -246,9 +250,13 @@
                 <h3>😔 Partida Finalizada</h3>
             </div>
             <div class="modal-body">
-                <p class="defeat-modal-text" style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">
+                <p class="defeat-modal-text" style="text-align: center; font-size: 1.2em; margin-bottom: 10px;">
                     La respuesta era <strong id="defeat-person-name"></strong>
                 </p>
+                <div style="text-align: center; color: #c4b5fd; margin-bottom: 15px;">
+                    <p style="margin: 5px 0;">📊 <strong>Pistas usadas:</strong> <span id="defeat-hints-count">0</span></p>
+                    <p style="margin: 5px 0;">🎯 <strong>Intentos:</strong> <span id="defeat-attempts-count">0</span></p>
+                </div>
                 <p style="text-align: center; color: #c4b5fd; margin-bottom: 20px;">
                     ¡No te rindas! Inténtalo de nuevo.
                 </p>
@@ -708,12 +716,16 @@
         // Victory modal elements
         const victoryModal = document.getElementById('victory-modal');
         const victoryPersonName = document.getElementById('victory-person-name');
+        const victoryHintsCount = document.getElementById('victory-hints-count');
+        const victoryAttemptsCount = document.getElementById('victory-attempts-count');
         const victoryNewGameBtn = document.getElementById('victory-new-game');
         const victoryCloseBtn = document.getElementById('victory-close');
 
         // Defeat modal elements
         const defeatModal = document.getElementById('defeat-modal');
         const defeatPersonName = document.getElementById('defeat-person-name');
+        const defeatHintsCount = document.getElementById('defeat-hints-count');
+        const defeatAttemptsCount = document.getElementById('defeat-attempts-count');
         const defeatNewGameBtn = document.getElementById('defeat-new-game');
         const defeatCloseBtn = document.getElementById('defeat-close');
 
@@ -1137,8 +1149,12 @@
                         guessInput.disabled = true;
                         submitGuessBtn.disabled = true;
                         
-                        // Show victory modal with the correct answer
-                        showVictoryModal(data.person || 'Desconocido');
+                        // Show victory modal with the correct answer and stats
+                        showVictoryModal(
+                            data.person || 'Desconocido',
+                            data.hints_count || 0,
+                            data.attempts_count || 0
+                        );
                     } else {
                         // Wrong guess - apply shake animation
                         guessInput.classList.add('shake');
@@ -1234,8 +1250,12 @@
                     guessInput.disabled = true;
                     submitGuessBtn.disabled = true;
                     
-                    // Show defeat modal with the answer
-                    showDefeatModal(data.answer || 'Desconocido');
+                    // Show defeat modal with the answer and stats
+                    showDefeatModal(
+                        data.answer || 'Desconocido',
+                        data.hints_count || 0,
+                        data.attempts_count || 0
+                    );
                 } else {
                     // Server error
                     showToast(data.message, 'error');
@@ -1251,9 +1271,11 @@
         /* 
          * Victory and Defeat Modal Functions
          */
-        function showVictoryModal(personName) {
+        function showVictoryModal(personName, hintsCount = 0, attemptsCount = 0) {
             if (victoryModal && victoryPersonName) {
                 victoryPersonName.textContent = personName;
+                if (victoryHintsCount) victoryHintsCount.textContent = hintsCount;
+                if (victoryAttemptsCount) victoryAttemptsCount.textContent = attemptsCount;
                 victoryModal.style.display = 'block';
             }
         }
@@ -1264,9 +1286,11 @@
             }
         }
 
-        function showDefeatModal(personName) {
+        function showDefeatModal(personName, hintsCount = 0, attemptsCount = 0) {
             if (defeatModal && defeatPersonName) {
                 defeatPersonName.textContent = personName;
+                if (defeatHintsCount) defeatHintsCount.textContent = hintsCount;
+                if (defeatAttemptsCount) defeatAttemptsCount.textContent = attemptsCount;
                 defeatModal.style.display = 'block';
             }
         }
