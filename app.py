@@ -34,7 +34,7 @@ app = Flask(__name__, static_url_path=f'{APPLICATION_PREFIX}/static')
 
 # Configure app to work behind a reverse proxy (nginx)
 # ProxyFix handles X-Forwarded headers
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=0)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
 
@@ -847,8 +847,11 @@ def make_guess():
         return jsonify({'status': 'error', 'message': 'Datos de solicitud inválidos'})
     
     guess = data.get('guess', '').strip()
+    
+    # --- CAMBIO 1: Si el guess está vacío, lo tratamos como pedir pista ---
     if not guess:
-        return jsonify({'status': 'error', 'message': '¡Por favor, escribe una respuesta!'})
+        return get_hint()
+    # ---------------------------------------------------------------------
     
     person = session['current_person']
     game_session_id = session.get('game_session_id')
@@ -874,7 +877,10 @@ def make_guess():
         try:
             session_data = sessions_collection.find_one({'session_id': game_session_id})
             if session_data and 'guesses' in session_data:
-                attempts_count = len(session_data['guesses']) + 1  # +1 for current guess
+                # --- CAMBIO 2: Filtramos las pistas (strings vacíos) para contar solo intentos reales ---
+                real_guesses = [g for g in session_data['guesses'] if g.strip()]
+                attempts_count = len(real_guesses) + 1  # +1 for current guess
+                # --------------------------------------------------------------------------------------
         except Exception as e:
             logger.error(f"Error counting attempts: {e}")
     
@@ -894,7 +900,7 @@ def make_guess():
             'correct': True,
             'person': person,
             'hints_count': hints_count,
-            'attempts_count': attempts_count,
+            'attempts_count': attempts_count - 1,
             'message': f'¡Felicidades! Has acertado. Era {person}.'
         })
     else:
@@ -961,7 +967,10 @@ def get_answer():
         try:
             session_data = sessions_collection.find_one({'session_id': game_session_id})
             if session_data and 'guesses' in session_data:
-                attempts_count = len(session_data['guesses'])
+                # --- CAMBIO: Filtramos las pistas (strings vacíos) ---
+                real_guesses = [g for g in session_data['guesses'] if g.strip()]
+                attempts_count = len(real_guesses)
+                # -----------------------------------------------------
         except Exception as e:
             logger.error(f"Error counting attempts: {e}")
     
@@ -979,7 +988,7 @@ def get_answer():
         'status': 'success',
         'answer': person,
         'hints_count': hints_count,
-        'attempts_count': attempts_count,
+        'attempts_count': attempts_count - 1,
         'message': f'La respuesta era {person}. ¡Mejor suerte la próxima vez!'
     })
 
