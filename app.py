@@ -41,6 +41,7 @@ app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_pr
 app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hour
 app.config['SESSION_PERMANENT'] = False
 
@@ -213,6 +214,41 @@ def get_person_from_db():
         ],
         'from_db': False
     }
+
+def get_person_by_name(name):
+    """Get a specific person by name from the database"""
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if mongodb_available and pistas_collection is not None:
+        try:
+            persona = pistas_collection.find_one({'nombre': name})
+            if persona:
+                return {
+                    'nombre': persona.get('nombre', name),
+                    'pistas': persona.get('pistas', []),
+                    'from_db': True
+                }
+        except Exception as e:
+            logger.error(f"MongoDB error getting person {name}: {e}")
+    
+    # Fallback to pistas.json
+    if os.path.exists('pistas.json'):
+        try:
+            with open('pistas.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                personas = data.get('personas', [])
+                for persona in personas:
+                    if persona.get('nombre') == name:
+                        return {
+                            'nombre': persona.get('nombre', name),
+                            'pistas': persona.get('pistas', []),
+                            'from_db': False
+                        }
+        except Exception as e:
+            logger.error(f"Error al leer pistas.json: {e}")
+    
+    # Not found
+    return None
 
 # File to store game sessions (legacy - now using MongoDB)
 SESSIONS_FILE = 'game_sessions.json'
@@ -688,8 +724,9 @@ def start_game():
     # Generate unique session ID for this game
     game_session_id = str(uuid.uuid4())
     
+    # Store minimal data in session to avoid cookie size limits
     session['current_person'] = persona_data['nombre']
-    session['current_pistas'] = persona_data['pistas']
+    # Don't store current_pistas - we'll fetch from DB when needed
     session['game_session_id'] = game_session_id
     session['game_start_time'] = datetime.now().isoformat()
     session.modified = True  # Explicitly mark session as modified
@@ -703,6 +740,7 @@ def start_game():
         first_hint = first_hint_obj['pista']
         hints_used = [first_hint]
         session['hints_used'] = hints_used
+        session.modified = True
         
         # Create game session with first hint
         create_game_session(
@@ -725,6 +763,7 @@ def start_game():
     else:
         # No hints available (shouldn't happen but handle gracefully)
         session['hints_used'] = []
+        session.modified = True
         return jsonify({
             'status': 'error',
             'message': 'Error: No hay pistas disponibles para este personaje.',
@@ -739,9 +778,15 @@ def get_hint():
         return jsonify({'status': 'error', 'message': 'No hay partida en curso. ¡Inicia una nueva partida primero!'})
     
     person = session['current_person']
-    pistas = session.get('current_pistas', [])
     hints_used = session.get('hints_used', [])
     game_session_id = session.get('game_session_id')
+    
+    # Fetch pistas from database instead of session to avoid cookie size limits
+    persona_data = get_person_by_name(person)
+    if not persona_data:
+        return jsonify({'status': 'error', 'message': 'Error: No se encontraron pistas para este personaje.'})
+    
+    pistas = persona_data.get('pistas', [])
     
     # Ordenar pistas por dificultad (de mayor a menor)
     pistas_ordenadas = sorted(pistas, key=lambda x: x.get('dificultad', 0), reverse=True)
@@ -795,9 +840,12 @@ def make_guess():
     
     person = session['current_person']
     game_session_id = session.get('game_session_id')
-    pistas = session.get('current_pistas', [])
     hints_used = session.get('hints_used', [])
     correct = is_guess_correct(guess, person)
+    
+    # Fetch pistas from database instead of session
+    persona_data = get_person_by_name(person)
+    pistas = persona_data.get('pistas', []) if persona_data else []
     
     # Count hints used
     hints_count = len(hints_used)
@@ -851,6 +899,7 @@ def make_guess():
             hint = hint_obj['pista']
             hints_used.append(hint)
             session['hints_used'] = hints_used
+            session.modified = True  # Explicitly mark as modified
             
             # Update session with new hint
             if game_session_id:
