@@ -28,7 +28,8 @@ logger = logging.getLogger(__name__)
 # This allows the app to be served from a subpath behind a reverse proxy
 APPLICATION_PREFIX = os.getenv('APPLICATION_PREFIX', '/spygame')
 
-app = Flask(__name__)
+# Configure Flask with the correct static URL path to match our prefix
+app = Flask(__name__, static_url_path=f'{APPLICATION_PREFIX}/static')
 
 # Configure app to work behind a reverse proxy (nginx)
 # ProxyFix handles X-Forwarded headers
@@ -40,6 +41,8 @@ app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_pr
 app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 hour
+app.config['SESSION_PERMANENT'] = False
 
 # CSRF Protection
 csrf = CSRFProtect(app)
@@ -689,6 +692,7 @@ def start_game():
     session['current_pistas'] = persona_data['pistas']
     session['game_session_id'] = game_session_id
     session['game_start_time'] = datetime.now().isoformat()
+    session.modified = True  # Explicitly mark session as modified
     
     # Ordenar pistas por dificultad (de mayor a menor)
     pistas_ordenadas = sorted(persona_data['pistas'], key=lambda x: x.get('dificultad', 0), reverse=True)
@@ -758,6 +762,7 @@ def get_hint():
     hint = hint_obj['pista']
     hints_used.append(hint)
     session['hints_used'] = hints_used
+    session.modified = True  # Explicitly mark session as modified
     
     # Update game session with new hint (sets acierto to false)
     if game_session_id:
