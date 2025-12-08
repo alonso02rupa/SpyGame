@@ -38,14 +38,16 @@ class ReverseProxied:
     """
     Middleware to handle SCRIPT_NAME/PATH_INFO from X-Script-Name header.
     This allows the app to be served from a subpath (e.g., /spygame) behind nginx.
+    Only applies when X-Script-Name header is present (i.e., behind nginx).
     """
     def __init__(self, wsgi_app, script_name=None):
         self.wsgi_app = wsgi_app
         self.script_name = script_name
 
     def __call__(self, environ, start_response):
-        # Get script name from header or use configured prefix
-        script_name = environ.get('HTTP_X_SCRIPT_NAME', self.script_name)
+        # Only apply script name manipulation if X-Script-Name header is present
+        # This ensures the app works normally when accessed directly (not through nginx)
+        script_name = environ.get('HTTP_X_SCRIPT_NAME')
         if script_name:
             environ['SCRIPT_NAME'] = script_name
             path_info = environ.get('PATH_INFO', '')
@@ -53,7 +55,7 @@ class ReverseProxied:
                 environ['PATH_INFO'] = path_info[len(script_name):]
         return self.wsgi_app(environ, start_response)
 
-# Apply the reverse proxy middleware with the configured prefix
+# Apply the reverse proxy middleware
 app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=APPLICATION_PREFIX)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')

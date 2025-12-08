@@ -70,13 +70,14 @@ The application is configured to run behind nginx for production deployment, pro
 - Reverse proxy with security headers
 - Rate limiting to prevent abuse
 - Gzip compression for better performance
-- URL prefix support (serves app at `/spygame` path)
+- URL prefix support (serves app at `/spygame` path only)
 
 ### Accessing the Application
 
 Once running with Docker Compose, the app is available at:
 - **Main application**: `http://localhost/spygame` (or `http://YOUR_IP/spygame` from other devices)
 - **Health check**: `http://localhost/health`
+- **Root path**: `http://localhost/` is available for other services (no redirect to spygame)
 
 ### Allowing External Access Temporarily
 
@@ -99,9 +100,9 @@ To allow connections from other devices on your network:
 ### Security Features
 
 The nginx configuration includes:
+- **Content-Security-Policy**: Restricts content sources for enhanced security
 - **X-Frame-Options**: Prevents clickjacking attacks
 - **X-Content-Type-Options**: Prevents MIME-type sniffing
-- **X-XSS-Protection**: Enables browser XSS filtering
 - **Rate Limiting**: 10 requests/second with burst of 20
 - **Connection Limiting**: Max 20 concurrent connections per IP
 - **Request Size Limiting**: Max 1MB request body

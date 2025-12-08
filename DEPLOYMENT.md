@@ -96,30 +96,24 @@ docker compose up -d
 
 ## 🔒 Acceso a las Rutas de la Aplicación
 
-### Pregunta: ¿Redirigir localhost:80 a /spygame quita acceso a otras rutas?
+### Configuración de Rutas
 
-**Respuesta corta:** No, el resto de rutas siguen funcionando perfectamente.
+La configuración de nginx está diseñada para servir la aplicación **únicamente** en `/spygame`, dejando la raíz y otras rutas disponibles para otros usos.
 
 ### Explicación Detallada
 
 La configuración actual de nginx funciona así:
 
-#### 1. Redirección de la Raíz (líneas 70-73 de nginx.conf)
-```nginx
-location = / {
-    return 302 /spygame/;
-}
+#### 1. Raíz del Servidor (/)
+```
+http://localhost/
 ```
 
-- **Solo afecta a:** `http://localhost/` (la raíz exacta)
-- **Qué hace:** Redirecciona automáticamente a `http://localhost/spygame/`
-- **NO afecta a otras rutas como:**
-  - `http://localhost/spygame` ✅ Funciona
-  - `http://localhost/spygame/stats` ✅ Funciona
-  - `http://localhost/spygame/login` ✅ Funciona
-  - `http://localhost/health` ✅ Funciona
+- **No configurada** - Disponible para otros servicios o aplicaciones
+- No hay redirección automática
+- Devolverá 404 si no hay otro servicio configurado
 
-#### 2. Aplicación Principal (líneas 76-104)
+#### 2. Aplicación Principal (líneas 76-104 de nginx.conf)
 ```nginx
 location /spygame {
     # Proxy a Flask
@@ -138,7 +132,7 @@ location /spygame {
   - `/spygame/start_game` → API para iniciar juego
   - etc.
 
-#### 3. Archivos Estáticos (líneas 107-115)
+#### 3. Archivos Estáticos (líneas 107-115 de nginx.conf)
 ```nginx
 location /spygame/static {
     # Archivos CSS, imágenes, etc.
@@ -146,7 +140,7 @@ location /spygame/static {
 }
 ```
 
-#### 4. Health Check (líneas 118-122)
+#### 4. Health Check (líneas 118-122 de nginx.conf)
 ```nginx
 location /health {
     return 200 "healthy\n";
@@ -160,12 +154,14 @@ location /health {
 
 | Ruta | Funcionamiento | Descripción |
 |------|----------------|-------------|
-| `http://localhost/` | ↪️ Redirige a `/spygame/` | Redirección automática |
+| `http://localhost/` | ⚪ No configurada | Disponible para otros servicios |
 | `http://localhost/spygame` | ✅ Funciona | Juego principal |
 | `http://localhost/spygame/stats` | ✅ Funciona | Estadísticas |
 | `http://localhost/spygame/static/style.css` | ✅ Funciona | Archivos CSS/JS |
 | `http://localhost/health` | ✅ Funciona | Monitoreo del servidor |
-| `http://localhost/otra-ruta` | ❌ 404 | No configurado en nginx |
+| `http://localhost/otra-ruta` | ⚪ No configurada | Disponible para otros servicios |
+
+**Nota:** La raíz (`/`) y otras rutas están disponibles para que puedas configurar otros servicios o aplicaciones en el mismo servidor nginx.
 
 ---
 
