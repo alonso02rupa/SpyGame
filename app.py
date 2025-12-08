@@ -28,7 +28,10 @@ logger = logging.getLogger(__name__)
 # This allows the app to be served from a subpath behind a reverse proxy
 APPLICATION_PREFIX = os.getenv('APPLICATION_PREFIX', '/spygame')
 
-app = Flask(__name__)
+# Configure Flask with static files at the correct path
+# static_url_path tells Flask where to serve static files from (in URLs)
+# With APPLICATION_ROOT, we still use /static (nginx will strip the prefix)
+app = Flask(__name__, static_url_path='/static')
 
 # Configure app to work behind a reverse proxy (nginx)
 # ProxyFix handles X-Forwarded headers
