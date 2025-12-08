@@ -34,32 +34,15 @@ app = Flask(__name__)
 # ProxyFix handles X-Forwarded headers
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
-class ScriptNameMiddleware:
-    """
-    Simple middleware to set SCRIPT_NAME from X-Script-Name header sent by nginx.
-    This allows Flask's url_for() to generate correct URLs when behind a reverse proxy.
-    """
-    def __init__(self, app):
-        self.app = app
-
-    def __call__(self, environ, start_response):
-        # If nginx sends X-Script-Name header, use it to set SCRIPT_NAME
-        script_name = environ.get('HTTP_X_SCRIPT_NAME', '').rstrip('/')
-        if script_name:
-            environ['SCRIPT_NAME'] = script_name
-            # Remove the script name from PATH_INFO if present
-            path_info = environ.get('PATH_INFO', '')
-            if path_info.startswith(script_name):
-                environ['PATH_INFO'] = path_info[len(script_name):] or '/'
-        return self.app(environ, start_response)
-
-# Apply the script name middleware
-app.wsgi_app = ScriptNameMiddleware(app.wsgi_app)
-
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
 
+# Configure Flask to handle the URL prefix
+# Set APPLICATION_ROOT so Flask knows it's mounted under /spygame
+app.config['APPLICATION_ROOT'] = APPLICATION_PREFIX
+
 # Configure session cookie to work properly
-app.config['SESSION_COOKIE_PATH'] = '/'
+# Session cookie path should match the application root
+app.config['SESSION_COOKIE_PATH'] = APPLICATION_PREFIX
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 

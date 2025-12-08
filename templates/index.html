@@ -657,7 +657,8 @@
          */
         
         // Base URL for API calls - uses Flask's url_for to get the correct prefix
-        const BASE_URL = '{{ url_for("index") }}';
+        // url_for('index') returns '/spygame/' so we strip the trailing slash
+        const BASE_URL = '{{ url_for("index") }}'.replace(/\/$/, '');
         
         // Game state variable to track if a game is currently active
         let gameActive = false;
