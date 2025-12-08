@@ -221,6 +221,45 @@
         </div>
     </div>
 
+    <!-- Victory Modal -->
+    <div id="victory-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎉 ¡Felicidades!</h3>
+            </div>
+            <div class="modal-body">
+                <p class="victory-modal-text" style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">
+                    ¡Has acertado! La persona era <strong id="victory-person-name"></strong>
+                </p>
+                <div class="form-actions" style="justify-content: center;">
+                    <button type="button" class="btn btn-primary" id="victory-new-game">Nueva Partida</button>
+                    <button type="button" class="btn btn-secondary" id="victory-close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Defeat Modal -->
+    <div id="defeat-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>😔 Partida Finalizada</h3>
+            </div>
+            <div class="modal-body">
+                <p class="defeat-modal-text" style="text-align: center; font-size: 1.2em; margin-bottom: 20px;">
+                    La respuesta era <strong id="defeat-person-name"></strong>
+                </p>
+                <p style="text-align: center; color: #c4b5fd; margin-bottom: 20px;">
+                    ¡No te rindas! Inténtalo de nuevo.
+                </p>
+                <div class="form-actions" style="justify-content: center;">
+                    <button type="button" class="btn btn-primary" id="defeat-new-game">Nueva Partida</button>
+                    <button type="button" class="btn btn-secondary" id="defeat-close">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Info/About Modal -->
     <div id="info-modal" class="modal" style="display: none;">
         <div class="modal-content info-modal-content">
@@ -666,6 +705,18 @@
         const confirmRevealYes = document.getElementById('confirm-reveal-yes');
         const confirmRevealNo = document.getElementById('confirm-reveal-no');
 
+        // Victory modal elements
+        const victoryModal = document.getElementById('victory-modal');
+        const victoryPersonName = document.getElementById('victory-person-name');
+        const victoryNewGameBtn = document.getElementById('victory-new-game');
+        const victoryCloseBtn = document.getElementById('victory-close');
+
+        // Defeat modal elements
+        const defeatModal = document.getElementById('defeat-modal');
+        const defeatPersonName = document.getElementById('defeat-person-name');
+        const defeatNewGameBtn = document.getElementById('defeat-new-game');
+        const defeatCloseBtn = document.getElementById('defeat-close');
+
         // User authentication state - initialize from server session
         let currentUser = '{{ current_user }}' || 'guest';
         // Ensure we treat empty strings as guest
@@ -737,6 +788,20 @@
             if (confirmRevealYes) confirmRevealYes.addEventListener('click', confirmRevealAnswer);
             if (confirmRevealNo) confirmRevealNo.addEventListener('click', hideRevealConfirmModal);
             
+            // Victory modal event listeners
+            if (victoryNewGameBtn) victoryNewGameBtn.addEventListener('click', function() {
+                hideVictoryModal();
+                startNewGame();
+            });
+            if (victoryCloseBtn) victoryCloseBtn.addEventListener('click', hideVictoryModal);
+            
+            // Defeat modal event listeners
+            if (defeatNewGameBtn) defeatNewGameBtn.addEventListener('click', function() {
+                hideDefeatModal();
+                startNewGame();
+            });
+            if (defeatCloseBtn) defeatCloseBtn.addEventListener('click', hideDefeatModal);
+            
             // Close modals when clicking outside them
             window.addEventListener('click', function(e) {
                 if (e.target === loginModal) hideLoginModal();
@@ -744,6 +809,8 @@
                 if (e.target === knowledgeProfileModal) hideKnowledgeProfileModal();
                 if (e.target === infoModal) hideInfoModal();
                 if (e.target === revealConfirmModal) hideRevealConfirmModal();
+                if (e.target === victoryModal) hideVictoryModal();
+                if (e.target === defeatModal) hideDefeatModal();
             });
 
             // Initialize user display on page load
@@ -1063,13 +1130,15 @@
                     if (data.correct) {
                         // Correct guess - end the game
                         gameActive = false;                      // Set game as inactive
-                        showToast(data.message, 'success');     // Show success toast
                         
                         // Disable all game buttons since game is over
                         getHintBtn.disabled = true;
                         revealAnswerBtn.disabled = true;
                         guessInput.disabled = true;
                         submitGuessBtn.disabled = true;
+                        
+                        // Show victory modal with the correct answer
+                        showVictoryModal(data.person || 'Desconocido');
                     } else {
                         // Wrong guess - apply shake animation
                         guessInput.classList.add('shake');
@@ -1158,13 +1227,15 @@
                 if (data.status === 'success') {
                     // Answer revealed - end the game
                     gameActive = false;                      // Set game as inactive
-                    showToast(data.message, 'warning');     // Show the answer toast
                     
                     // Disable all game controls since game is over
                     getHintBtn.disabled = true;
                     revealAnswerBtn.disabled = true;
                     guessInput.disabled = true;
                     submitGuessBtn.disabled = true;
+                    
+                    // Show defeat modal with the answer
+                    showDefeatModal(data.answer || 'Desconocido');
                 } else {
                     // Server error
                     showToast(data.message, 'error');
@@ -1175,6 +1246,35 @@
                 console.error('Error:', error);
                 showToast('Error al revelar la respuesta. Por favor, inténtalo de nuevo.', 'error');
             });
+        }
+
+        /* 
+         * Victory and Defeat Modal Functions
+         */
+        function showVictoryModal(personName) {
+            if (victoryModal && victoryPersonName) {
+                victoryPersonName.textContent = personName;
+                victoryModal.style.display = 'block';
+            }
+        }
+
+        function hideVictoryModal() {
+            if (victoryModal) {
+                victoryModal.style.display = 'none';
+            }
+        }
+
+        function showDefeatModal(personName) {
+            if (defeatModal && defeatPersonName) {
+                defeatPersonName.textContent = personName;
+                defeatModal.style.display = 'block';
+            }
+        }
+
+        function hideDefeatModal() {
+            if (defeatModal) {
+                defeatModal.style.display = 'none';
+            }
         }
 
         /* Authentication Functions */

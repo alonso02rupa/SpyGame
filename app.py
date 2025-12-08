@@ -60,6 +60,12 @@ app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=APPLICATION_PREFIX)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
 
+# Configure session cookie to work with URL prefix
+# When behind nginx at /spygame, cookies need to be set for that path
+app.config['SESSION_COOKIE_PATH'] = '/'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 # CSRF Protection
 csrf = CSRFProtect(app)
 
@@ -830,6 +836,7 @@ def make_guess():
         return jsonify({
             'status': 'success',
             'correct': True,
+            'person': person,
             'message': f'¡Felicidades! Has acertado. Era {person}.'
         })
     else:
