@@ -28,10 +28,7 @@ logger = logging.getLogger(__name__)
 # This allows the app to be served from a subpath behind a reverse proxy
 APPLICATION_PREFIX = os.getenv('APPLICATION_PREFIX', '/spygame')
 
-# Configure Flask with static files at the correct path
-# static_url_path tells Flask where to serve static files from (in URLs)
-# With APPLICATION_ROOT, we still use /static (nginx will strip the prefix)
-app = Flask(__name__, static_url_path='/static')
+app = Flask(__name__)
 
 # Configure app to work behind a reverse proxy (nginx)
 # ProxyFix handles X-Forwarded headers
@@ -39,13 +36,8 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback_secret_key_change_in_production')
 
-# Configure Flask to handle the URL prefix
-# Set APPLICATION_ROOT so Flask knows it's mounted under /spygame
-app.config['APPLICATION_ROOT'] = APPLICATION_PREFIX
-
 # Configure session cookie to work properly
-# Session cookie path should match the application root
-app.config['SESSION_COOKIE_PATH'] = APPLICATION_PREFIX
+app.config['SESSION_COOKIE_PATH'] = '/'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
@@ -463,13 +455,14 @@ def inject_csrf_token():
     """Inject CSRF token into all templates"""
     return dict(csrf_token=generate_csrf)
 
-@app.route('/')
+@app.route('/spygame/')
+@app.route('/spygame')
 def index():
     """Main game page"""
     current_user = get_current_user()
     return render_template('index.html', current_user=current_user)
 
-@app.route('/register', methods=['POST'])
+@app.route('/spygame/register', methods=['POST'])
 @limiter.limit("3 per minute")
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def register():
@@ -524,7 +517,7 @@ def register():
         logger.error(f"Registration error: {e}")
         return jsonify({'status': 'error', 'message': 'Error en el registro. Por favor, inténtalo de nuevo.'})
 
-@app.route('/login', methods=['POST'])
+@app.route('/spygame/login', methods=['POST'])
 @limiter.limit("5 per minute")
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def login():
@@ -564,7 +557,7 @@ def login():
         logger.error(f"Login error: {e}")
         return jsonify({'status': 'error', 'message': 'Error al iniciar sesión. Por favor, inténtalo de nuevo.'})
 
-@app.route('/logout', methods=['POST'])
+@app.route('/spygame/logout', methods=['POST'])
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def logout():
     """Logout the current user"""
@@ -582,7 +575,7 @@ def logout():
         'message': message
     })
 
-@app.route('/save_knowledge_profile', methods=['POST'])
+@app.route('/spygame/save_knowledge_profile', methods=['POST'])
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def save_knowledge_profile():
     """Save the optional knowledge profile survey for a user"""
@@ -646,7 +639,7 @@ def save_knowledge_profile():
         logger.error(f"Error saving knowledge profile: {e}")
         return jsonify({'status': 'error', 'message': 'Error al guardar el perfil de conocimientos. Por favor, inténtalo de nuevo.'})
 
-@app.route('/check_knowledge_profile', methods=['GET'])
+@app.route('/spygame/check_knowledge_profile', methods=['GET'])
 def check_knowledge_profile():
     """Check if the current user has completed the knowledge profile survey"""
     username = session.get('username')
@@ -673,7 +666,7 @@ def check_knowledge_profile():
         logger.error(f"Error checking knowledge profile: {e}")
         return jsonify({'status': 'error', 'message': 'Error al verificar el estado del perfil.'})
 
-@app.route('/play_as_guest', methods=['POST'])
+@app.route('/spygame/play_as_guest', methods=['POST'])
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def play_as_guest():
     """Start playing as guest"""
@@ -683,7 +676,7 @@ def play_as_guest():
         'message': 'Jugando como invitado. Tus partidas no se guardarán en tu perfil.'
     })
 
-@app.route('/start_game', methods=['POST'])
+@app.route('/spygame/start_game', methods=['POST'])
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def start_game():
     """Start a new game by selecting a random person and providing first hint automatically"""
@@ -734,7 +727,7 @@ def start_game():
             'source': 'database' if persona_data['from_db'] else 'fallback'
         })
 
-@app.route('/get_hint', methods=['POST'])
+@app.route('/spygame/get_hint', methods=['POST'])
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def get_hint():
     """Get a hint for the current person"""
@@ -779,7 +772,7 @@ def get_hint():
         'hints_remaining': len(available_hints) - 1
     })
 
-@app.route('/make_guess', methods=['POST'])
+@app.route('/spygame/make_guess', methods=['POST'])
 @limiter.limit("20 per minute")
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def make_guess():
@@ -880,7 +873,7 @@ def make_guess():
                 'hints_remaining': 0
             })
 
-@app.route('/get_answer', methods=['POST'])
+@app.route('/spygame/get_answer', methods=['POST'])
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def get_answer():
     """Reveal the answer and end the game"""
@@ -924,7 +917,7 @@ def get_answer():
         'message': f'La respuesta era {person}. ¡Mejor suerte la próxima vez!'
     })
 
-@app.route('/stats')
+@app.route('/spygame/stats')
 def stats():
     """View game statistics"""
     sessions = load_sessions()
