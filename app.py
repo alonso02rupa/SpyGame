@@ -47,6 +47,10 @@ class ScriptNameMiddleware:
         script_name = environ.get('HTTP_X_SCRIPT_NAME', '').rstrip('/')
         if script_name:
             environ['SCRIPT_NAME'] = script_name
+            # Remove the script name from PATH_INFO if present
+            path_info = environ.get('PATH_INFO', '')
+            if path_info.startswith(script_name):
+                environ['PATH_INFO'] = path_info[len(script_name):] or '/'
         return self.app(environ, start_response)
 
 # Apply the script name middleware
