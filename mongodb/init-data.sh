@@ -61,6 +61,3 @@ fi
 echo "Build-time data initialization complete!"
 echo "Data will be available after admin user is created on first container start"
 
-
-
-

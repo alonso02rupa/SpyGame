@@ -21,7 +21,3 @@ RUN rm /tmp/init-data.sh /tmp/pistas.json
 # Use custom entrypoint that handles auth initialization
 ENTRYPOINT ["/usr/local/bin/custom-entrypoint.sh"]
 CMD ["mongod"]
-
-
-
-
