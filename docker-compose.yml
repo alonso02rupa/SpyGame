@@ -43,7 +43,7 @@ services:
       - spygame-network
 
   mongodb:
-    image: mongo:7.0
+    build: ./mongodb
     restart: always
     # MongoDB port exposed for MongoDB Compass access
     # For production deployment, remove this port mapping for security
