@@ -1,12 +1,12 @@
 FROM mongo:7.0
 
-# Install mongosh if not already present (it should be in mongo:7.0)
 # Copy the data file and initialization script  
 COPY pistas.json /tmp/pistas.json
 COPY init-data.sh /tmp/init-data.sh
+COPY custom-entrypoint.sh /usr/local/bin/custom-entrypoint.sh
 
-# Make the script executable
-RUN chmod +x /tmp/init-data.sh
+# Make the scripts executable
+RUN chmod +x /tmp/init-data.sh /usr/local/bin/custom-entrypoint.sh
 
 # Create data directory
 RUN mkdir -p /data/db
@@ -17,5 +17,11 @@ RUN /tmp/init-data.sh
 
 # Clean up temporary files
 RUN rm /tmp/init-data.sh /tmp/pistas.json
+
+# Use custom entrypoint that handles auth initialization
+ENTRYPOINT ["/usr/local/bin/custom-entrypoint.sh"]
+CMD ["mongod"]
+
+
 
 

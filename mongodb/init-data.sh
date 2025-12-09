@@ -59,5 +59,8 @@ if pgrep -x mongod > /dev/null; then
 fi
 
 echo "Build-time data initialization complete!"
-echo "MongoDB image now contains preloaded data in /data/db"
+echo "Data will be available after admin user is created on first container start"
+
+
+
 
