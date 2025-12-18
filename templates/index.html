@@ -198,7 +198,70 @@
         <!-- End of main content area -->
     </div>
     <!-- End of container div -->
-
+        <!-- Leaderboard Section -->
+    {% if leaderboard %}
+    <div class="leaderboard-section-home" style="margin:  40px auto; max-width: 900px; background: rgba(30, 20, 60, 0.6); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 15px; padding: 25px;">
+        <h3 style="text-align: center; color: #fbbf24; margin-bottom: 15px; font-size: 1.8em;">🏆 Leaderboard - Top Jugadores</h3>
+        <p style="text-align: center; color:  #c4b5fd; margin-bottom: 20px;">
+            Los mejores jugadores de SpyGame
+        </p>
+        
+        <div style="overflow-x: auto; position: relative;">
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Posición</th>
+                        <th>Usuario</th>
+                        <th>Victorias</th>
+                        <th>Ratio Eficiencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set max_visible = 5 if current_user != 'guest' else 3 %}
+                    {% for player in leaderboard %}
+                    <tr {% if loop.index > max_visible %}class="blurred-row"{% endif %} 
+                        {% if player.username == current_user %}style="background-color:  rgba(139, 92, 246, 0.2);"{% endif %}>
+                        <td style="text-align: center; font-size: 1.5em;">
+                            {% if loop.index == 1 %}
+                                🥇
+                            {% elif loop.index == 2 %}
+                                🥈
+                            {% elif loop. index == 3 %}
+                                🥉
+                            {% else %}
+                                {{ loop. index }}
+                            {% endif %}
+                        </td>
+                        <td style="font-weight: bold;">
+                            {{ player.username }}
+                            {% if player.username == current_user %}
+                                <span style="color: #a78bfa;">(Tú)</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">{{ player.victorias }}</td>
+                        <td style="text-align: center; font-weight:  bold; color: #10b981;">
+                            {{ player.ratio }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Overlay para usuarios no registrados -->
+            {% if current_user == 'guest' and leaderboard|length > 3 %}
+            <div class="leaderboard-overlay">
+                <div class="leaderboard-overlay-content">
+                    <h4 style="color: #fbbf24; margin-bottom: 10px;">Contenido Bloqueado</h4>
+                    <p style="color: #e0e0e0; margin-bottom: 15px;">Regístrate para tener acceso completo a la leaderboard</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('register-btn').click();">
+                        Registrarse
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
     <!-- Info button moved to bottom of page -->
     <div class="info-button-bottom">
         <button id="info-btn" class="btn btn-info" title="Acerca de este proyecto">🕵️</button>
@@ -1384,7 +1447,10 @@
                     hideLoginModal();
                     updateUserDisplay();
                     showToast(data.message, 'success');
-                    // Don't show survey on login, only on registration
+                    // Reload page to update session state
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);  // Quick reload
                 } else {
                     // Show error message in the modal
                     if (loginError) {
@@ -1432,6 +1498,10 @@
                     setTimeout(() => {
                         showKnowledgeProfileModal();
                     }, 500);  // Small delay for better UX
+                    // Reload page after survey or after timeout
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);  // Quick reload
                 } else {
                     // Show error message in the modal
                     if (registerError) {
@@ -1486,6 +1556,10 @@
                 // Clear any active game when logging out
                 gameActive = false;
                 resetGameUI();
+                // Reload page after logout
+                setTimeout(() => {
+                    window.location.reload();
+                }, 300);
             })
             .catch(error => {
                 console.error('Logout error:', error);
@@ -1544,6 +1618,10 @@
             if (knowledgeProfileModal) {
                 knowledgeProfileModal.style.display = 'none';
                 knowledgeProfileForm.reset();
+                // Reload page when closing modal (skip survey)
+                setTimeout(() => {
+                    window.location.reload();
+                }, 300);
             }
         }
 
@@ -1596,6 +1674,10 @@
                 if (data.status === 'success') {
                     hideKnowledgeProfileModal();
                     showToast(data.message, 'success');
+                    // Reload page after successful submission
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);
                 } else {
                     showToast(data.message, 'error');
                 }

@@ -1772,3 +1772,104 @@ thead tr:hover {
 .stats-table tbody tr:nth-child(3) {
     background: linear-gradient(135deg, rgba(205, 127, 50, 0.15) 0%, rgba(30, 20, 60, 0.6) 100%);
 }
+
+/* ========================================
+   LEADERBOARD HOME SECTION STYLES
+   ======================================== */
+
+.leaderboard-section-home {
+    position: relative;
+}
+
+.leaderboard-section-home .stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+}
+
+.leaderboard-section-home .stats-table th,
+.leaderboard-section-home .stats-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.leaderboard-section-home .stats-table th {
+    background-color: rgba(139, 92, 246, 0.2);
+    color: #fbbf24;
+    font-weight: bold;
+}
+
+.leaderboard-section-home .stats-table tr:hover:not(.blurred-row) {
+    background-color: rgba(139, 92, 246, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+/* Filas difuminadas para usuarios no registrados */
+. leaderboard-section-home . blurred-row {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Overlay de registro */
+.leaderboard-overlay {
+    position: absolute;
+    bottom: 0;
+    left:  0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to bottom, 
+        rgba(20, 10, 40, 0) 0%, 
+        rgba(20, 10, 40, 0.8) 20%, 
+        rgba(20, 10, 40, 0.95) 40%,
+        rgba(20, 10, 40, 1) 60%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 15px 15px;
+    z-index: 10;
+}
+
+.leaderboard-overlay-content {
+    text-align: center;
+    padding: 20px;
+    z-index: 11;
+}
+
+.leaderboard-overlay-content h4 {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.leaderboard-overlay-content p {
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+/* Responsive adjustments para leaderboard home */
+@media (max-width: 768px) {
+    .leaderboard-section-home {
+        margin: 20px 10px;
+        padding:  15px;
+    }
+    
+    .leaderboard-section-home h3 {
+        font-size: 1.4em ! important;
+    }
+    
+    .leaderboard-section-home .stats-table th,
+    .leaderboard-section-home .stats-table td {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+    
+    .leaderboard-overlay-content h4 {
+        font-size: 1.2em;
+    }
+    
+    .leaderboard-overlay-content p {
+        font-size: 0.95em;
+    }
+}

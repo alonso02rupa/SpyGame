@@ -561,7 +561,11 @@ def inject_csrf_token():
 def index():
     """Main game page"""
     current_user = get_current_user()
-    return render_template('index.html', current_user=current_user)
+    leaderboard = calcular_leaderboard()  
+    
+    return render_template('index.html', 
+                         current_user=current_user,
+                         leaderboard=leaderboard)
 
 @app.route('/spygame/register', methods=['POST'])
 @limiter.limit("3 per minute")
