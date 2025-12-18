@@ -297,15 +297,16 @@ def load_sessions(username=None):
                 return [s for s in all_sessions if s.get('username') == username]
     return []
 
-def create_game_session(person, session_id, first_hint):
-    """Create a new game session in MongoDB with first hint"""
+def create_game_session(person, session_id, first_hint, pistas_order):
+    """Create a new game session in MongoDB with first hint and randomized order"""
     sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     username = get_current_user()
     session_data = {
         'session_id': session_id,
         'person': person,
         'pista': [first_hint],  # Array of hints requested
-        'guesses': [],  # Array of user guesses (same length as pista when game ends)
+        'guesses': [""],  # Array of user guesses (same length as pista when game ends)
+        'pistas_order': pistas_order,  # Randomized order of hints for this game (for analysis)
         'acierto': False,  # Will be set to true only on correct guess
         'timestamp': datetime.now().isoformat(),
         'last_updated': datetime.now().isoformat()
@@ -432,31 +433,80 @@ def add_guess_to_session(session_id, guess):
         with open(SESSIONS_FILE, 'w') as f:
             json.dump(sessions, f, indent=2)
 
+def levenshtein_distance(s1, s2):
+    """
+    Calculate the Levenshtein distance between two strings.
+    Pure Python implementation without external libraries.
+    """
+    if len(s1) < len(s2):
+        return levenshtein_distance(s2, s1)
+    
+    if len(s2) == 0:
+        return len(s1)
+    
+    # Create a matrix to store distances
+    previous_row = range(len(s2) + 1)
+    
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            # Cost of insertions, deletions, or substitutions
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    
+    return previous_row[-1]
+
 def is_guess_correct(guess, person_name):
     """
-    Check if a guess matches a person's name.
+    Check if a guess matches a person's name. 
     Accepts full name or any individual part (first name, last name, etc.)
-    Case-insensitive matching.
+    Also accepts consecutive word combinations (e.g., "Da Vinci" for "Leonardo Da Vinci")
+    Case-insensitive matching with Levenshtein distance tolerance (max 2 errors).
     
     Examples:
-        - "Niels Bohr" matches: "niels bohr", "Niels", "bohr", "BOHR"
-        - "Marie Curie" matches: "marie", "Curie", "marie curie"
+        - "Niels Bohr" matches:  "niels bohr", "Niels", "bohr", "BOHR"
+        - "Leonardo Da Vinci" matches: "leonardo", "da vinci", "Da Vinci", "leonardo da vinci"
+        - "Mahatma Gandhi" matches: "gandhi", "ghandi", "mahatma", "mahatma gandhi"
     """
     # Normalize both strings: lowercase and strip whitespace
     guess_normalized = guess.lower().strip()
     person_normalized = person_name.lower().strip()
     
+    # Maximum allowed Levenshtein distance
+    MAX_DISTANCE = 2
+    
     # Check for exact match first (most common case)
     if guess_normalized == person_normalized:
+        return True
+    
+    # Check with Levenshtein distance for full name
+    if levenshtein_distance(guess_normalized, person_normalized) <= MAX_DISTANCE:
         return True
     
     # Split person's name into parts (words)
     name_parts = person_normalized.split()
     
-    # Check if guess matches any individual part of the name
+    # Check if guess matches any individual part of the name (with tolerance)
     for part in name_parts:
         if guess_normalized == part:
             return True
+        # Allow small typos in individual name parts
+        if levenshtein_distance(guess_normalized, part) <= MAX_DISTANCE:
+            return True
+    
+    # Check if guess matches any consecutive combination of words
+    # For example: "da vinci" in "leonardo da vinci"
+    for i in range(len(name_parts)):
+        for j in range(i + 1, len(name_parts) + 1):
+            combination = ' '.join(name_parts[i:j])
+            if guess_normalized == combination:
+                return True
+            # Allow small typos in combinations
+            if levenshtein_distance(guess_normalized, combination) <= MAX_DISTANCE:
+                return True
     
     return False
 
@@ -743,8 +793,9 @@ def start_game():
     session['game_start_time'] = datetime.now().isoformat()
     session.modified = True  # Explicitly mark session as modified
     
-    # Ordenar pistas por dificultad (de mayor a menor)
-    pistas_ordenadas = sorted(persona_data['pistas'], key=lambda x: x.get('dificultad', 0), reverse=True)
+    # Aleatorizar pistas para análisis (en lugar de ordenar por dificultad)
+    pistas_ordenadas = persona_data['pistas'].copy()
+    random.shuffle(pistas_ordenadas)
     
     # Get the first hint automatically
     if pistas_ordenadas:
@@ -754,11 +805,12 @@ def start_game():
         session['hints_used'] = hints_used
         session.modified = True
         
-        # Create game session with first hint
+        # Create game session with first hint and randomized order
         create_game_session(
             person=persona_data['nombre'],
             session_id=game_session_id,
-            first_hint=first_hint
+            first_hint=first_hint,
+            pistas_order=pistas_ordenadas
         )
         
         # Calculate remaining hints
@@ -793,15 +845,25 @@ def get_hint():
     hints_used = session.get('hints_used', [])
     game_session_id = session.get('game_session_id')
     
-    # Fetch pistas from database instead of session to avoid cookie size limits
-    persona_data = get_person_by_name(person)
-    if not persona_data:
-        return jsonify({'status': 'error', 'message': 'Error: No se encontraron pistas para este personaje.'})
+    # Fetch randomized order from MongoDB
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    pistas_ordenadas = []
     
-    pistas = persona_data.get('pistas', [])
+    if mongodb_available and game_session_id:
+        try:
+            session_data = sessions_collection.find_one({'session_id': game_session_id})
+            if session_data and 'pistas_order' in session_data:
+                pistas_ordenadas = session_data['pistas_order']
+        except Exception as e:
+            logger.error(f"Error fetching pistas_order: {e}")
     
-    # Ordenar pistas por dificultad (de mayor a menor)
-    pistas_ordenadas = sorted(pistas, key=lambda x: x.get('dificultad', 0), reverse=True)
+    # Fallback: fetch from database and randomize if not in session
+    if not pistas_ordenadas:
+        persona_data = get_person_by_name(person)
+        if not persona_data:
+            return jsonify({'status': 'error', 'message': 'Error: No se encontraron pistas para este personaje.'})
+        pistas_ordenadas = persona_data.get('pistas', []).copy()
+        random.shuffle(pistas_ordenadas)
     
     # Filtrar pistas que ya se usaron
     available_hints = [p for p in pistas_ordenadas if p['pista'] not in hints_used]
@@ -814,7 +876,7 @@ def get_hint():
             'hints_remaining': 0
         })
     
-    # Tomar la siguiente pista (la más difícil disponible)
+    # Tomar la siguiente pista (del orden aleatorizado)
     hint_obj = available_hints[0]
     hint = hint_obj['pista']
     hints_used.append(hint)
@@ -848,19 +910,31 @@ def make_guess():
     
     guess = data.get('guess', '').strip()
     
-    # --- CAMBIO 1: Si el guess está vacío, lo tratamos como pedir pista ---
     if not guess:
         return get_hint()
-    # ---------------------------------------------------------------------
     
     person = session['current_person']
     game_session_id = session.get('game_session_id')
     hints_used = session.get('hints_used', [])
     correct = is_guess_correct(guess, person)
     
-    # Fetch pistas from database instead of session
-    persona_data = get_person_by_name(person)
-    pistas = persona_data.get('pistas', []) if persona_data else []
+    # Fetch randomized pistas_order from MongoDB
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    pistas_ordenadas = []
+    
+    if mongodb_available and game_session_id:
+        try:
+            session_data = sessions_collection.find_one({'session_id': game_session_id})
+            if session_data and 'pistas_order' in session_data:
+                pistas_ordenadas = session_data['pistas_order']
+        except Exception as e:
+            logger.error(f"Error fetching pistas_order: {e}")
+    
+    # Fallback: fetch from database and randomize if not in session
+    if not pistas_ordenadas:
+        persona_data = get_person_by_name(person)
+        pistas_ordenadas = persona_data.get('pistas', []).copy() if persona_data else []
+        random.shuffle(pistas_ordenadas)
     
     # Count hints used
     hints_count = len(hints_used)
@@ -870,17 +944,14 @@ def make_guess():
         add_guess_to_session(game_session_id, guess)
     
     # Get total attempts (including this one)
-    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
     attempts_count = 1  # At least this guess
     
     if mongodb_available and game_session_id:
         try:
             session_data = sessions_collection.find_one({'session_id': game_session_id})
             if session_data and 'guesses' in session_data:
-                # --- CAMBIO 2: Filtramos las pistas (strings vacíos) para contar solo intentos reales ---
                 real_guesses = [g for g in session_data['guesses'] if g.strip()]
-                attempts_count = len(real_guesses) + 1  # +1 for current guess
-                # --------------------------------------------------------------------------------------
+                attempts_count = len(real_guesses)  # El guess actual ya está incluido en la sesión
         except Exception as e:
             logger.error(f"Error counting attempts: {e}")
     
@@ -900,14 +971,12 @@ def make_guess():
             'correct': True,
             'person': person,
             'hints_count': hints_count,
-            'attempts_count': attempts_count - 1,
+            'attempts_count': attempts_count,
             'message': f'¡Felicidades! Has acertado. Era {person}.'
         })
     else:
         # Wrong guess - give another hint automatically
-        # Sort hints by difficulty (highest to lowest)
-        pistas_ordenadas = sorted(pistas, key=lambda x: x.get('dificultad', 0), reverse=True)
-        
+        # Use the randomized order already loaded
         # Find available hints (not yet used)
         available_hints = [p for p in pistas_ordenadas if p['pista'] not in hints_used]
         
@@ -922,6 +991,8 @@ def make_guess():
             # Update session with new hint
             if game_session_id:
                 update_game_session_hint(game_session_id, hint)
+                # Add empty string to guesses to maintain correspondence with hints
+                add_guess_to_session(game_session_id, "")
             
             hints_remaining = len(available_hints) - 1
             
@@ -976,6 +1047,7 @@ def get_answer():
     
     # Mark session as not successful (revealed answer)
     if game_session_id:
+        add_guess_to_session(game_session_id, "")  # Añadir "" por rendición
         update_game_session_result(game_session_id, False)
     
     session.pop('current_person', None)
@@ -988,7 +1060,7 @@ def get_answer():
         'status': 'success',
         'answer': person,
         'hints_count': hints_count,
-        'attempts_count': attempts_count - 1,
+        'attempts_count': attempts_count,
         'message': f'La respuesta era {person}. ¡Mejor suerte la próxima vez!'
     })
 
@@ -997,7 +1069,78 @@ def stats():
     """View game statistics"""
     sessions = load_sessions()
     current_user = get_current_user()
-    return render_template('stats.html', sessions=sessions, current_user=current_user)
+    
+    # Calcular leaderboard
+    leaderboard = calcular_leaderboard()
+    
+    return render_template('stats.html', sessions=sessions, current_user=current_user, leaderboard=leaderboard)
+
+
+def calcular_leaderboard():
+    """Calcula el ranking de usuarios basado en victorias y eficiencia"""
+    sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+    
+    if not mongodb_available: 
+        return []
+    
+    try:
+        # Obtener todas las sesiones con usuario (excluyendo guests)
+        all_sessions = list(sessions_collection.find({'username': {'$exists': True}}))
+        
+        # Diccionario para almacenar estadísticas por usuario
+        user_stats = {}
+        
+        for session in all_sessions:
+            username = session.get('username')
+            if not username or username == 'guest':
+                continue
+            
+            # Inicializar usuario si no existe
+            if username not in user_stats:
+                user_stats[username] = {
+                    'username': username,
+                    'total_partidas': 0,
+                    'victorias': 0,
+                    'total_guesses': 0
+                }
+            
+            # Contar partida
+            user_stats[username]['total_partidas'] += 1
+            
+            # Contar victoria
+            if session.get('acierto', False):
+                user_stats[username]['victorias'] += 1
+            
+            # Contar guesses (filtrando strings vacíos que son pistas)
+            guesses = session.get('guesses', [])
+            real_guesses = [g for g in guesses if g.strip()]
+            user_stats[username]['total_guesses'] += len(real_guesses)
+        
+        # Convertir a lista y calcular ratio
+        leaderboard = []
+        for username, stats in user_stats.items():
+            # Calcular ratio de eficiencia (victorias / guesses usados) * 100
+            # Cuanto mayor el ratio, mejor (más victorias con menos intentos)
+            if stats['total_guesses'] > 0:
+                ratio = (stats['victorias'] / stats['total_guesses']) * 100
+            else:
+                ratio = 0
+            
+            stats['ratio'] = round(ratio, 2)
+            leaderboard.append(stats)
+        
+        # Ordenar por número de victorias (descendente), luego por ratio (descendente) como desempate
+        leaderboard.sort(key=lambda x: (x['victorias'], x['ratio']), reverse=True)
+        
+        # Limitar al top 10
+        return leaderboard[:10]
+        
+    except Exception as e: 
+        logger.error(f"Error calculando leaderboard: {e}")
+        return []
+
+
+
 
 if __name__ == '__main__':
     # Load hints from pistas.json into the database on startup

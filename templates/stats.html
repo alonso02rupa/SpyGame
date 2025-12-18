@@ -50,7 +50,64 @@
                     sessions is a variable passed from the Flask server containing game data
                     The if sessions statement checks if the sessions list has any data
                 -->
-                
+                {% if leaderboard %}
+                <div class="leaderboard-section" style="margin-bottom: 40px; background: rgba(30, 20, 60, 0.6); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 15px; padding: 25px;">
+                    <h3 style="text-align: center; color: #fbbf24; margin-bottom: 15px; font-size: 1.8em;">🏆 Leaderboard - Top Jugadores</h3>
+                    <p style="text-align: center; color: #c4b5fd; margin-bottom: 10px;">
+                        Ranking por número de victorias. En caso de empate, gana quien tenga mejor ratio de eficiencia.
+                    </p>
+                    <p style="text-align: center; color: #a78bfa; font-size: 0.9em; margin-bottom: 20px;">
+                        💡 <strong>Ratio de Eficiencia</strong> = (Victorias / Intentos Totales) × 100. Cuanto mayor, mejor. Un ratio de 40 significa que ganas 4 de cada 10 intentos.
+                    </p>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Usuario</th>
+                                    <th>Partidas</th>
+                                    <th>Victorias</th>
+                                    <th>Intentos Totales</th>
+                                    <th>Ratio Eficiencia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for player in leaderboard %}
+                                <tr {% if player.username == current_user %}style="background-color: rgba(139, 92, 246, 0.2);"{% endif %}>
+                                    <td style="text-align: center; font-size: 1.5em;">
+                                        {% if loop.index == 1 %}
+                                            🥇
+                                        {% elif loop. index == 2 %}
+                                            🥈
+                                        {% elif loop.index == 3 %}
+                                            🥉
+                                        {% else %}
+                                            {{ loop. index }}
+                                        {% endif %}
+                                    </td>
+                                    <td style="font-weight: bold;">
+                                        {{ player.username }}
+                                        {% if player.username == current_user %}
+                                            <span style="color: #a78bfa;">(Tú)</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align: center;">{{ player.total_partidas }}</td>
+                                    <td style="text-align: center;">{{ player.victorias }}</td>
+                                    <td style="text-align: center;">{{ player.total_guesses }}</td>
+                                    <td style="text-align: center; font-weight: bold; color: #10b981;">
+                                        {{ player.ratio }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <hr style="border: 1px solid rgba(139, 92, 246, 0.3); margin: 40px 0;">
+                {% endif %}
+
                     <div class="stats-summary">
                         <!-- Summary section showing key metrics -->
                         <h3>Resumen de Partidas</h3>

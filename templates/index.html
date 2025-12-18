@@ -830,6 +830,9 @@
             updateUserDisplay();
             
             console.log('All event listeners added successfully');
+            setTimeout(() => {
+                showInfoModal();
+            }, 500);
         } catch (error) {
             console.error('Error setting up event listeners:', error);
         }
