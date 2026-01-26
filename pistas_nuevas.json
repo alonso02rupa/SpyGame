@@ -1,0 +1,1002 @@
+[
+    {
+        "nombre": "William Shakespeare",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su influencia en la literatura hispana se hizo notar especialmente en el siglo XIX"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue traducido al español por Ramón de la Cruz en 1772 y Leandro Fernández de Moratín en 1798"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su obra 'La tempestad' inspiró al ensayista José Enrique Rodó en su obra 'Ariel'"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su influencia en la literatura alemana se vio reflejada en la obra de Goethe y Friedrich von Schiller"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue bautizado en la iglesia de la Santísima Trinidad en Stratford-upon-Avon"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en Stratford-upon-Avon el 23 de abril de 1616"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es considerado el escritor más importante en lengua inglesa"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un poeta y dramaturgo venerado ya en su tiempo"
+            }
+        ],
+        "wikidata_id": "Q692",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/William_Shakespeare",
+        "ultima_actualizacion": "2025-12-19T12:32:04.566848"
+    },
+    {
+        "nombre": "Ronald Reagan",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue miembro de la fraternidad Tau Kappa Epsilon en la universidad."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Se unió a la campaña de Barry Goldwater en 1964."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Promovió el desmontaje del sistema público de hospitales psiquiátricos."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue presidente de la Screen Actors Guild."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en el edificio del banco local en Tampico, Illinois."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue gobernador de California durante dos mandatos."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue el 40.º presidente de los Estados Unidos."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un actor y político estadounidense."
+            }
+        ],
+        "wikidata_id": "Q9960",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Ronald_Reagan",
+        "ultima_actualizacion": "2025-12-19T12:32:24.931285"
+    },
+    {
+        "nombre": "Mahoma",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su nombre completo en árabe es Abū l-Qāsim Muḥammad ibn ‘Abd Allāh ibn ‘Abd al-Muṭṭalib al-Hāšim al-Qurayšī"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Adoptó la costumbre de retirarse periódicamente a orar a una caverna en la montaña llamada la cueva de Hira"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Unió a las tribus bajo la constitución de Medina"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Reunió un ejército de 10 000 musulmanes conversos y marchó sobre la ciudad de La Meca"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Era miembro del clan de Háshim, de la tribu de los coraichitas"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en Medina a la edad de 62 años"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue el fundador de la religión islámica"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Recibió revelaciones de Dios a través del arcángel Gabriel"
+            }
+        ],
+        "wikidata_id": "Q9458",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Mahoma",
+        "ultima_actualizacion": "2025-12-19T12:32:35.785038"
+    },
+    {
+        "nombre": "Franklin D. Roosevelt",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Redactó la Constitución de Haití de 1915, impuesta por Estados Unidos"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue miembro de la convención del estado de Nueva York en 1788"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Creó la National Recovery Administration para aliviar la situación de los desempleados"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Estableció la estrategia de «Europa primero» en la Segunda Guerra Mundial"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se casó con la sobrina de Theodore Roosevelt"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue gobernador del estado de Nueva York entre 1929 y 1932"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue el presidente de Estados Unidos que más tiempo ha permanecido en el cargo"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Puso en marcha el programa nacional conocido como New Deal"
+            }
+        ],
+        "wikidata_id": "Q8007",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Franklin_D._Roosevelt",
+        "ultima_actualizacion": "2025-12-19T12:32:45.441948"
+    },
+    {
+        "nombre": "Oscar Wilde",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Escribió De Profundis, una larga carta que describe su viaje espiritual en prisión."
+            },
+            {
+                "dificultad": 4,
+                "pista": " Dio conferencias en Estados Unidos y Canadá sobre el renacimiento inglés."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Publicó un libro de poemas y escribió la novela El retrato de Dorian Gray."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Escribió cuatro comedias divertidas para gente seria a principios de la década de 1890."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se convirtió al catolicismo en su lecho de muerte."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió de meningitis en París a los 46 años, en la indigencia."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un escritor, poeta y dramaturgo británico de origen irlandés."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Escribió la obra maestra La importancia de llamarse Ernesto."
+            }
+        ],
+        "wikidata_id": "Q30875",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Oscar_Wilde",
+        "ultima_actualizacion": "2025-12-19T12:32:55.113397"
+    },
+    {
+        "nombre": "Benjamin Franklin",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Creó un plan de trece virtudes para cultivar su carácter a los 20 años"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue secretario de la logia masónica de 1735 a 1738"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fundó la Union Fire Company, el primer cuerpo de bomberos de Filadelfia en 1736"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Creó el Grupo Junto, un grupo de tertulias sobre temas del día en 1727"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue el decimoctavo hijo de un total de 22 hermanos"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en Filadelfia a los 84 años"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un político y científico estadounidense considerado uno de los padres fundadores de los Estados Unidos"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Inventó el pararrayos en 1753"
+            }
+        ],
+        "wikidata_id": "Q34969",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Benjamin_Franklin",
+        "ultima_actualizacion": "2025-12-19T12:33:04.926747"
+    },
+    {
+        "nombre": "Cristóbal Colón",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Calculó la circunferencia de la Tierra en 29 000 km, según Posidonio y Ailly."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Se basó en Los viajes de Marco Polo para planificar su ruta hacia el oriente."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue gobernador colonial y fue acusado de brutalidad por sus contemporáneos."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su antropónimo inspiró denominaciones como Colombia y la Columbia Británica."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se estableció en Portugal en 1477 y vivió en Porto Santo y Madeira."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue destituido del cargo de gobernador colonial en 1500."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Encabezó el Descubrimiento de América en 1492 y abrió rutas de navegación hacia el Nuevo Mundo."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Realizó cuatro viajes a las Indias y regresó a Europa, estableciendo vínculos permanentes con Europa."
+            }
+        ],
+        "wikidata_id": "Q7322",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Crist%C3%B3bal_Col%C3%B3n",
+        "ultima_actualizacion": "2025-12-19T12:33:15.870603"
+    },
+    {
+        "nombre": "Victor Hugo",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su teoría del drama romántico se expuso en la introducción de Cromwell en 1827"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue condenado al exilio durante veinte años del Segundo Imperio francés"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su obra El hombre que ríe se publicó en 1869"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su drama Hernani se estrenó en 1830"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en París el 22 de mayo de 1885"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Besanzón el 26 de febrero de 1802"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un destacado novelista y dramaturgo romántico francés"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es conocido por obras como Nuestra Señora de París y Los miserables"
+            }
+        ],
+        "wikidata_id": "Q535",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Victor_Hugo",
+        "ultima_actualizacion": "2025-12-19T12:33:25.045459"
+    },
+    {
+        "nombre": "Molière",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su obra 'Tartufo' fue prohibida por el Parlamento francés debido a su crítica a la hipocresía religiosa."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue influenciado por la Comedia del arte y la comedia francesa más refinada en sus obras."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Escribió la comedia 'La escuela de los maridos' y 'La escuela de las mujeres', que fueron representadas en el Louvre."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su obra 'El médico enamorado' fue representada ante el rey en el Louvre."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en una familia próspera y estudió en el Collège de Clermont."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se casó con Armande Béjart, hija de Madeleine Béjart, en 1662."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un dramaturgo y actor francés del siglo XVII, conocido por sus obras de teatro clásicas."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es considerado uno de los maestros del Clasicismo francés y su influencia en la lengua francesa es muy grande."
+            }
+        ],
+        "wikidata_id": "Q687",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Moli%C3%A8re",
+        "ultima_actualizacion": "2025-12-19T12:33:36.565955"
+    },
+    {
+        "nombre": "Marie Curie",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue la primera persona en recibir sepultura con honores en el Panteón de París por méritos propios en 1995"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Recibió una beca de la Fundación Alexandrowitch para financiar su educación universitaria"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fundó el Instituto Curie en París y en Varsovia, centros de investigación médica"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Desarrolló técnicas para el aislamiento de isótopos radiactivos"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Varsovia, en lo que entonces era el Zarato de Polonia"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en 1934 a los 66 años, en el sanatorio Sancellemoz en Passy"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue pionera en el campo de la radiactividad y recibió dos premios Nobel"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fundó el Instituto del Radio y fue la primera mujer en ocupar el puesto de profesora en la Universidad de París"
+            }
+        ],
+        "wikidata_id": "Q7186",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Marie_Curie",
+        "ultima_actualizacion": "2025-12-19T12:33:47.414629"
+    },
+    {
+        "nombre": "Adolf Hitler",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue influenciado por la ariosofía en su ideología política"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Se afilió al Partido Obrero Alemán en 1919"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Redactó la primera parte de su libro Mi lucha en la cárcel"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Promovió el rearme de Alemania y violó el Tratado de Versalles"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue nombrado canciller imperial en enero de 1933"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se autoproclamó líder y canciller imperial tras la muerte de Paul von Hindenburg"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue el líder del Tercer Reich y responsable del inicio de la Segunda Guerra Mundial"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Implementó políticas de discriminación y exterminio que causaron la muerte de millones de personas"
+            }
+        ],
+        "wikidata_id": "Q352",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Adolf_Hitler",
+        "ultima_actualizacion": "2025-12-19T12:33:57.232336"
+    },
+    {
+        "nombre": "Vincent van Gogh",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su infancia fue descrita como triste, fría y estéril por él mismo."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Estudió en la Academia de Bellas Artes de Bruselas en 1880."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Realizó esbozos y dibujos basados en las pinturas de Jean-François Millet."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Pintó la naturaleza de los alrededores de Arlés, incluyendo el canal del sur."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue hijo de un pastor protestante neerlandés llamado Theodorus."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Su hermano menor Theo le prestó apoyo financiero de manera continua."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un pintor neerlandés y uno de los principales exponentes del postimpresionismo."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es conocido por sus obras que caracterizan la luz y los colores vivos."
+            }
+        ],
+        "wikidata_id": "Q5582",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Vincent_van_Gogh",
+        "ultima_actualizacion": "2025-12-19T12:34:07.448421"
+    },
+    {
+        "nombre": "Franz Kafka",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su amigo Max Brod ignoró sus deseos de destruir los manuscritos después de su muerte."
+            },
+            {
+                "dificultad": 4,
+                "pista": "La Gestapo confiscó 20 cuadernos y 35 cartas de su compañera Dora Diamant en 1933."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Escribió cartas a su padre, prometida Felice Bauer, hermana Ottla y amiga Milena Jesenská."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su obra fue publicada en alemán, excepto algunas cartas en checo dirigidas a Milena."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió a los 40 años en 1924 debido a la tuberculosis."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Praga, Imperio austrohúngaro, actual capital de República Checa."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es conocido por sus obras literarias que describen situaciones absurdas y angustiosas."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Se hizo famoso después de su muerte, con obras como La metamorfosis."
+            }
+        ],
+        "wikidata_id": "Q905",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Franz_Kafka",
+        "ultima_actualizacion": "2025-12-19T12:34:17.262046"
+    },
+    {
+        "nombre": "Agustín de Hipona",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su doctrina del filioque fue rechazada por la Iglesia ortodoxa oriental."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Fue miembro de la Orden de los Ermitaños Agustinos antes de convertirse en líder religioso."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su obra 'La Trinidad' influyó en la cosmovisión medieval y en la Iglesia católica."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su libro 'Confesiones' es considerado un modelo de biografía interior para muchos autores."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue canonizado por aclamación popular y reconocido como Doctor de la Iglesia en 1298."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió el 28 de agosto de 430, poco después de que los vándalos sitiaron Hipona."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un escritor, teólogo y filósofo cristiano que dirigió luchas contra herejías en África."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es reconocido como santo en la Iglesia católica, la Iglesia ortodoxa oriental y otras iglesias cristianas."
+            }
+        ],
+        "wikidata_id": "Q8018",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Agust%C3%ADn_de_Hipona",
+        "ultima_actualizacion": "2025-12-19T12:34:47.314955"
+    },
+    {
+        "nombre": "Nelson Mandela",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue secretario general del Movimiento de Países No Alineados entre 1998 y 2002"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Influenciado por el marxismo, entró en secreto al Partido Comunista Sudafricano"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Presidió el Congreso Popular de 1955 y fue parte de la directiva del CNA"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fundó y comandó la organización guerrillera Umkhonto we Sizwe en 1961"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Estudió Derecho en la Universidad de Fort Hare y la Universidad de Witwatersrand"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se casó con Graça Machel, una activista política mozambiqueña, después de su divorcio"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue el primer presidente de raza negra en la historia de Sudáfrica"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Recibió el Premio Nobel de la Paz por su activismo contra el apartheid"
+            }
+        ],
+        "wikidata_id": "Q8023",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Nelson_Mandela",
+        "ultima_actualizacion": "2025-12-19T12:34:58.430298"
+    },
+    {
+        "nombre": "Corbin Bleu",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue el primer miembro de High School Musical en aparecer en Broadway"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Comenzó a tomar clases de jazz y ballet clásico a una edad temprana"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Protagonizó la película de Disney Jump In! junto a su padre"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Participó en la serie de televisión The Beautiful Life en 2009"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Tiene ascendencia jamaicana e italiana"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Apareció en comerciales de televisión desde la edad de dos años"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es conocido por su rol en High School Musical como Chad Danforth"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es un actor y cantante estadounidense"
+            }
+        ],
+        "wikidata_id": "Q4617",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Corbin_Bleu",
+        "ultima_actualizacion": "2025-12-19T12:35:28.437373"
+    },
+    {
+        "nombre": "Abraham Lincoln",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue nominado para ser candidato a vicepresidente en la primera Convención Nacional del Partido Republicano en 1856"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Se casó con Nancy Hanks en 1806, cuando ella tenía veintidós años de edad"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Promovió una rápida modernización de la economía a través de sectores como el bancario, los impuestos y los ferrocarriles"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Debatió a Douglas en una serie de cuestiones que representaron una discusión nacional sobre las cuestiones que estuvieron a punto de dividir la nación"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació el 12 de febrero de 1809 en una granja situada cerca de la ciudad de Hodgenville, en el actual condado de LaRue, Kentucky"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue asesinado por John Wilkes Booth, un simpatizante de la causa del sur, el 14 de abril de 1865"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue elegido presidente de los Estados Unidos de América por el Partido Republicano en 1860"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Se convirtió en líder de la facción moderada de los republicanos y abogó por la abolición de la esclavitud"
+            }
+        ],
+        "wikidata_id": "Q91",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Abraham_Lincoln",
+        "ultima_actualizacion": "2025-12-19T12:35:38.258124"
+    },
+    {
+        "nombre": "Aristóteles",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su teoría hilemórfica describe la sustancia y la forma como componentes de las entidades sensibles"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Influyó en el pensamiento islámico durante la Edad Media y en la escolástica cristiana"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Formuló la teoría de la generación espontánea y el principio de no contradicción"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Distingue tres tipos de filosofías: saber práctico, saber productivo y saber teórico"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en la ciudad de Estagira, al norte de la Antigua Grecia"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en Calcis a la edad de 62 años"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es considerado uno de los padres de la filosofía occidental"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fundó la Escuela peripatética de filosofía en el Liceo de Atenas"
+            }
+        ],
+        "wikidata_id": "Q868",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Arist%C3%B3teles",
+        "ultima_actualizacion": "2025-12-19T12:35:57.847871"
+    },
+    {
+        "nombre": "Rabindranath Tagore",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue el primer asiático en ganar un Premio Nobel en 1913"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Vivió en el campo bengalí durante diez años, lo que influyó en su pensamiento político"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fundó la escuela experimental de Santiniketan en 1901"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Escribió novelas, ensayos, historias cortas, diarios de viaje y teatro"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue conocido como el bardo de Bengala y recibió apodos como Gurudeb y Kobiguru"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Sus canciones son los himnos nacionales de Bangladés y la India"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un poeta y escritor que revolucionó la literatura bengalí"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Ganó el Premio Nobel de Literatura en 1913 por su obra Gitanjali"
+            }
+        ],
+        "wikidata_id": "Q7241",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Rabindranath_Tagore",
+        "ultima_actualizacion": "2025-12-19T12:36:07.341553"
+    },
+    {
+        "nombre": "Antón Chéjov",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue un maestro del relato corto en la historia de la literatura"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Su obra El canto del cisne es un estudio dramático en un acto"
+            },
+            {
+                "dificultad": 3,
+                "pista": "La corista es una de sus obras representadas en televisión"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su estilo dramático se encuentra en el naturalismo con toques de simbolismo"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en Badenweiler, Imperio alemán, en 1904"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Taganrog, Imperio ruso, en 1860"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un destacado autor de relatos cortos y obras de teatro"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es considerado uno de los más importantes autores del género en la historia de la literatura"
+            }
+        ],
+        "wikidata_id": "Q5685",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Ant%C3%B3n_Ch%C3%A9jov",
+        "ultima_actualizacion": "2025-12-19T12:36:26.335135"
+    },
+    {
+        "nombre": "Charles Dickens",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Influenció a novelistas como Thomas Hardy y George Grissing"
+            },
+            {
+                "dificultad": 4,
+                "pista": "Su novela Tiempos difíciles trata de la clase obrera"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Escribió la novela Casa desolada en 1853"
+            },
+            {
+                "dificultad": 3,
+                "pista": "Su obra Nuestro amigo mutuo incluye un retrato positivo de un personaje judío"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió en Gads Hill Place en 1870"
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en Landport en 1812"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un escritor inglés conocido por sus novelas y personajes"
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es considerado el mejor novelista de la época victoriana"
+            }
+        ],
+        "wikidata_id": "Q5686",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Charles_Dickens",
+        "ultima_actualizacion": "2025-12-19T12:36:45.743177"
+    },
+    {
+        "nombre": "Immanuel Kant",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Fue bautizado como Emanuel, pero cambió su nombre a Immanuel tras aprender hebreo."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Su padre era un artesano alemán de Memel, en aquel tiempo la ciudad más al noreste de Prusia."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Desarrolló pensamientos físicos, geológicos y astronómicos, incluyendo la hipótesis de la formación del sistema solar."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Influyó en filósofos como Reinhold, Fichte, Schelling, Hegel y Novalis durante las décadas de 1780 y 1790."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Nació en 1724 en el puerto de Königsberg, Prusia, y pasó toda su vida en la región."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Creció en un hogar pietista que enfatizaba la devoción religiosa y la humildad personal."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un filósofo prusiano de la Ilustración y precursor del idealismo alemán."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es conocido por sus obras capitales, como la Crítica de la razón pura y la Crítica de la razón práctica."
+            }
+        ],
+        "wikidata_id": "Q9312",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Immanuel_Kant",
+        "ultima_actualizacion": "2025-12-19T12:36:55.919920"
+    },
+    {
+        "nombre": "Nikola Tesla",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Desarrolló un sistema mundial para la transmisión de energía eléctrica sin cables."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Trabajó en la empresa Continental Edison en el ámbito de la telefonía."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Construyó uno de los primeros barcos con control remoto inalámbrico."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Investigó la iluminación inalámbrica y la distribución inalámbrica de energía eléctrica."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Se convirtió en ciudadano estadounidense en 1891 a la edad de 35 años."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Fue vicepresidente del Instituto Americano de Ingenieros Eléctricos de 1892 a 1894."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es célebre por sus contribuciones al diseño del moderno suministro de electricidad de corriente alterna."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Obtuvo más de 280 patentes en 26 países."
+            }
+        ],
+        "wikidata_id": "Q9036",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Nikola_Tesla",
+        "ultima_actualizacion": "2025-12-19T12:38:50.542719"
+    },
+    {
+        "nombre": "René Descartes",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Su pensamiento se aproximó a la pintura de Poussin por su estilo claro y ordenado."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Escribió una parte de sus obras en latín y la otra en francés, su idioma nativo."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Desarrolló la teoría del mecanicismo en ciencias y la geometría analítica en matemática."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Publicó el Discurso del método para dirigir bien la razón y hallar la verdad en las ciencias en 1637."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Rompió con la tradición aristotélica estableciendo un dualismo sustancial entre alma y cuerpo."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Su influencia estuvo presente durante todo el siglo XVII en la filosofía y la teología."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es considerado el creador de la geometría analítica y del mecanicismo."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Fue un filósofo y matemático que revolucionó la forma de pensar en la época moderna."
+            }
+        ],
+        "wikidata_id": "Q9191",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Ren%C3%A9_Descartes",
+        "ultima_actualizacion": "2025-12-19T12:39:02.371540"
+    },
+    {
+        "nombre": "Platón",
+        "pistas": [
+            {
+                "dificultad": 5,
+                "pista": "Sus obras están escritas en forma de diálogos con Sócrates como figura principal."
+            },
+            {
+                "dificultad": 4,
+                "pista": "Intentó implementar su teoría política en Siracusa, Sicilia, pero fracasó en dos ocasiones."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Desarrolló la teoría de las formas o ideas, considerando el mundo sensible como una sombra de otro más real."
+            },
+            {
+                "dificultad": 3,
+                "pista": "Fue considerado uno de los fundadores de la filosofía política con la idea de la ciudad justa gobernada por filósofos reyes."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Murió a los 80 años de edad, dedicándose a impartir enseñanzas en la Academia de su ciudad natal."
+            },
+            {
+                "dificultad": 2,
+                "pista": "Su influencia en la historia de la filosofía occidental ha sido incalculable, según Alfred North Whitehead."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es conocido por desarrollar doctrinas filosóficas mediante mitos y alegorías."
+            },
+            {
+                "dificultad": 1,
+                "pista": "Es considerado uno de los más importantes filósofos de la historia, con una influencia duradera en la filosofía occidental."
+            }
+        ],
+        "wikidata_id": "Q859",
+        "url_wikipedia": "https://es.wikipedia.org/wiki/Plat%C3%B3n",
+        "ultima_actualizacion": "2025-12-19T12:39:33.038586"
+    }
+]

@@ -284,7 +284,7 @@ def generar_pistas(url, nombre_persona):
         print(f"Error al generar pistas con Hugging Face: {e}")
         return None
 
-def guardar_pistas_json(pistas, nombre_persona, wikidata_id=None, url_wikipedia=None, filepath="pistas.json"):
+def guardar_pistas_json(pistas, nombre_persona, wikidata_id=None, url_wikipedia=None, filepath="pistas_nuevas.json"):
     if not pistas: return
 
     timestamp = pd.Timestamp.now().isoformat()

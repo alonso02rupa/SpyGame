@@ -901,7 +901,7 @@ def get_hint():
     })
 
 @app.route('/spygame/make_guess', methods=['POST'])
-@limiter.limit("20 per minute")
+@limiter.limit("72 per minute")
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def make_guess():
     """Make a guess for the current person"""
