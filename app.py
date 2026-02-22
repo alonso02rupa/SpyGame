@@ -561,11 +561,32 @@ def inject_csrf_token():
 def index():
     """Main game page"""
     current_user = get_current_user()
-    leaderboard = calcular_leaderboard()  
-    
-    return render_template('index.html', 
+    leaderboard = calcular_leaderboard()
+
+    # Fetch all available person names sorted alphabetically for the Objetivos modal
+    personas = []
+    try:
+        sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
+        if mongodb_available and pistas_collection is not None:
+            personas = sorted(
+                [doc['nombre'] for doc in pistas_collection.find({}, {'nombre': 1, '_id': 0}) if doc.get('nombre')]
+            )
+        else:
+            pistas_file = 'pistas.json'
+            if os.path.exists(pistas_file):
+                with open(pistas_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                if isinstance(data, list):
+                    personas = sorted([p['nombre'] for p in data if p.get('nombre')])
+                elif isinstance(data, dict):
+                    personas = sorted([p['nombre'] for p in data.values() if isinstance(p, dict) and p.get('nombre')])
+    except Exception as e:
+        logger.error(f"Error fetching personas for index: {e}")
+
+    return render_template('index.html',
                          current_user=current_user,
-                         leaderboard=leaderboard)
+                         leaderboard=leaderboard,
+                         personas=personas)
 
 @app.route('/spygame/register', methods=['POST'])
 @limiter.limit("3 per minute")

@@ -185,6 +185,7 @@
                             Button to submit the guess.
                             When clicked, JavaScript gets the value from the input field above
                         -->
+                        <button id="objetivos-btn" class="btn btn-secondary" type="button">Objetivos</button>
                     </div>
                 </div>
 
@@ -356,6 +357,31 @@
                 </div>
                 <div class="form-actions" style="justify-content: center;">
                     <button type="button" class="btn btn-primary" id="close-info-btn">¡Entendido!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Objetivos Modal -->
+    <div id="objetivos-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎯 Objetivos</h3>
+                <span class="close" id="objetivos-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 12px; color: #c4b5fd;">Mundo cerrado: todas las personas disponibles en el juego.</p>
+                {% if personas %}
+                <ol class="objetivos-list">
+                    {% for persona in personas %}
+                    <li>{{ persona }}</li>
+                    {% endfor %}
+                </ol>
+                {% else %}
+                <p style="color: #c4b5fd; text-align: center;">No hay personas disponibles.</p>
+                {% endif %}
+                <div class="form-actions" style="justify-content: center; margin-top: 16px;">
+                    <button type="button" class="btn btn-secondary" id="close-objetivos-btn">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -744,6 +770,7 @@
         const guessSection = document.getElementById('guess-section');       // Guess input container
         const guessInput = document.getElementById('guess-input');          // Text input field
         const submitGuessBtn = document.getElementById('submit-guess-btn'); // Submit guess button
+        const objetivosBtn = document.getElementById('objetivos-btn');     // Objetivos button
         const resultSection = document.getElementById('result-section');     // Results display area
         const infoBtn = document.getElementById('info-btn');               // Info button
         const loadingOverlay = document.getElementById('loading-overlay'); // Loading overlay
@@ -770,6 +797,11 @@
         const infoModal = document.getElementById('info-modal');
         const infoClose = document.getElementById('info-close');
         const closeInfoBtn = document.getElementById('close-info-btn');
+
+        // Objetivos modal elements
+        const objetivosModal = document.getElementById('objetivos-modal');
+        const objetivosClose = document.getElementById('objetivos-close');
+        const closeObjetivosBtn = document.getElementById('close-objetivos-btn');
 
         // Reveal confirm modal elements
         const revealConfirmModal = document.getElementById('reveal-confirm-modal');
@@ -818,6 +850,11 @@
             
             // When the "Submit Guess" button is clicked, call the makeGuess function
             if (submitGuessBtn) submitGuessBtn.addEventListener('click', makeGuess);
+            
+            // Objetivos button event listeners
+            if (objetivosBtn) objetivosBtn.addEventListener('click', showObjetivosModal);
+            if (objetivosClose) objetivosClose.addEventListener('click', hideObjetivosModal);
+            if (closeObjetivosBtn) closeObjetivosBtn.addEventListener('click', hideObjetivosModal);
             
             // Listen for key presses in the guess input field
             if (guessInput) {
@@ -887,6 +924,14 @@
                 if (e.target === revealConfirmModal) hideRevealConfirmModal();
                 if (e.target === victoryModal) hideVictoryModal();
                 if (e.target === defeatModal) hideDefeatModal();
+                if (e.target === objetivosModal) hideObjetivosModal();
+            });
+
+            // Close objetivos modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && objetivosModal && objetivosModal.style.display === 'block') {
+                    hideObjetivosModal();
+                }
             });
 
             // Initialize user display on page load
@@ -1603,6 +1648,20 @@
         function hideInfoModal() {
             if (infoModal) {
                 infoModal.style.display = 'none';
+            }
+        }
+
+        /* Objetivos Modal Functions */
+
+        function showObjetivosModal() {
+            if (objetivosModal) {
+                objetivosModal.style.display = 'block';
+            }
+        }
+
+        function hideObjetivosModal() {
+            if (objetivosModal) {
+                objetivosModal.style.display = 'none';
             }
         }
 

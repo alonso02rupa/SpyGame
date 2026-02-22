@@ -1873,3 +1873,35 @@ thead tr:hover {
         font-size: 0.95em;
     }
 }
+/* Objetivos modal list */
+.objetivos-list {
+    padding-left: 28px;
+    margin: 0;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.objetivos-list li {
+    color: #e2e8f0;
+    padding: 4px 0;
+    line-height: 1.5;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95em;
+}
+
+.objetivos-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.objetivos-list::-webkit-scrollbar-track {
+    background: #1e1b4b;
+}
+
+.objetivos-list::-webkit-scrollbar-thumb {
+    background: #6d28d9;
+    border-radius: 3px;
+}
+
+.objetivos-list::-webkit-scrollbar-thumb:hover {
+    background: #7c3aed;
+}
