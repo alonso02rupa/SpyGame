@@ -1265,9 +1265,18 @@ thead tr:hover {
     }
     
     .form-actions {
-        flex-direction: column;                                 /* Stack buttons vertically */
+        flex-direction: column;                            /* Stack buttons vertically */
     }
-    
+
+    .objetivos-list {
+        column-count: 1;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 1000px) {
+    .objetivos-list {
+        column-count: 2;
+    }
 }
 
 /* Knowledge Profile Survey Styles */
@@ -1872,4 +1881,45 @@ thead tr:hover {
     .leaderboard-overlay-content p {
         font-size: 0.95em;
     }
+}
+/* Objetivos modal list */
+.objetivos-modal-content {
+    max-width: 750px;
+    width: 95%;
+}
+
+.objetivos-list {
+    padding-left: 20px;
+    margin: 0;
+    max-height: 55vh;
+    overflow-y: auto;
+    column-count: 3;
+    column-gap: 24px;
+    list-style-type: disc;
+}
+
+.objetivos-list li {
+    color: #e2e8f0;
+    padding: 3px 0;
+    line-height: 1.4;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    break-inside: avoid;
+}
+
+.objetivos-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.objetivos-list::-webkit-scrollbar-track {
+    background: #1e1b4b;
+}
+
+.objetivos-list::-webkit-scrollbar-thumb {
+    background: #6d28d9;
+    border-radius: 3px;
+}
+
+.objetivos-list::-webkit-scrollbar-thumb:hover {
+    background: #7c3aed;
 }
