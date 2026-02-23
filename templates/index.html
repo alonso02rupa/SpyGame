@@ -364,19 +364,18 @@
 
     <!-- Objetivos Modal -->
     <div id="objetivos-modal" class="modal" style="display: none;">
-        <div class="modal-content">
+        <div class="modal-content objetivos-modal-content">
             <div class="modal-header">
                 <h3>🎯 Objetivos</h3>
                 <span class="close" id="objetivos-close">&times;</span>
             </div>
             <div class="modal-body">
-                <p style="margin-bottom: 12px; color: #c4b5fd;">Mundo cerrado: todas las personas disponibles en el juego.</p>
                 {% if personas %}
-                <ol class="objetivos-list">
+                <ul class="objetivos-list">
                     {% for persona in personas %}
                     <li>{{ persona }}</li>
                     {% endfor %}
-                </ol>
+                </ul>
                 {% else %}
                 <p style="color: #c4b5fd; text-align: center;">No hay personas disponibles.</p>
                 {% endif %}
