@@ -1,0 +1,72 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+\section{Contexto}
+Históricamente, la provisión de pistas o retroalimentación incremental ha constituido el núcleo de los \textit{Intelligent Tutoring Systems} (ITS) y de los sistemas interactivos orientados al aprendizaje. Desde sus inicios, el objetivo de estos sistemas ha sido guiar al usuario mediante estímulos progresivos que logren mitigar la carga de trabajo mental sin suprimir el esfuerzo necesario para la resolución del problema. Este delicado equilibrio entre apoyo y desafío es fundamental para fomentar una comprensión profunda, evitando caer tanto en la frustración por falta de ayuda como en la dependencia excesiva de la misma (\textit{gaming the system}).
+
+No obstante, la literatura evidencia que la eficacia de una pista no reside únicamente en su contenido semántico, sino también en su formulación, su nivel de abstracción y, crucialmente, en la oportunidad de su presentación (\textit{timing}). Una misma información puede detonar efectos dispares según la fase de resolución en la que se encuentre el usuario o la manera en que se enuncie, condicionando cómo este integra el dato y reajusta su estrategia. En este sentido, los ITS han funcionado como entornos experimentales para observar cómo variaciones sutiles en el diseño de la ayuda alteran significativamente el desempeño del estudiante.
+
+En este escenario, múltiples investigaciones han abordado las consecuencias del uso de pistas, documentando fenómenos como la evitación de ayuda (\textit{help avoidance}) o la pérdida de iniciativa en la resolución. La evidencia en tutoría inteligente señala que una intervención mal diseñada, o presentada a destiempo, puede resultar inocua o incluso entorpecer el razonamiento del usuario, mientras que una pista pertinente acelera la convergencia hacia la solución sin sacrificar el aprendizaje subyacente \cite{Maniktala_2020}. Estos hallazgos corroboran que la utilidad de una ayuda es una propiedad eminentemente contextual y no intrínseca.
+
+Paralelamente, el campo del modelado de usuario ha integrado enfoques de minería de datos educativos para inferir el nivel de conocimiento del aprendiz a partir de su conducta observable. Técnicas como el \textit{Bayesian Knowledge Tracing} (BKT) estiman la probabilidad de que un aprendiz domine una habilidad basándose en su historial de éxitos y errores, consolidándose como referencia en entornos estructurados \cite{BayesianKnowledgeTracing}. No obstante, su aplicación en dominios no procedimentales (como el razonamiento deductivo o la resolución de enigmas) plantea desafíos específicos: la ausencia de una definición canónica de \textit{habilidad} y la no linealidad de las trayectorias de resolución dificultan la proyección directa de estos modelos sobre datos de interacción heterogéneos \cite{ITSAdaptation}.
+
+Más allá de los ejercicios procedimentales, la minería de datos educativos ha extendido su alcance a los entornos de juego educativo (\textit{game-based learning}), donde las interacciones son ricas en señal implícita \cite{Koedinger2012DataDrivenHints}. En estos contextos, el análisis de secuencias de uso de pistas, intentos de respuesta y patrones de error permite obtener una visión granular del proceso deductivo sin necesidad de autoreporte explícito. La naturaleza lúdica del entorno genera datos de interacción naturales y en mayor volumen que los ejercicios convencionales, lo que lo convierte en un banco de pruebas idóneo para evaluar la eficacia funcional de las ayudas generadas automáticamente y detectar deficiencias en su formulación \cite{VanLehn2006}.
+
+Recientemente, la irrupción de los modelos de lenguaje de gran escala (\textit{Large Language Models}, LLMs) ha transformado las posibilidades de generación automática de \textit{feedback}. Diversos estudios han comenzado a explorar el uso de LLMs para producir pistas contextualizadas en tiempo real, aprovechando su fluidez para generar explicaciones en lenguaje natural \cite{tonga2024automaticgenerationquestionhints}. Esta capacidad promete resolver el problema de la escalabilidad en la creación de contenido de ayuda.
+
+Sin embargo, las revisiones más actuales sobre la integración de LLMs en sistemas tutoriales advierten de una limitación crítica: aunque estos modelos simulan con gran fidelidad un rol instructivo, carecen de mecanismos internos para validar la utilidad pedagógica o funcional de la información que emiten \cite{Marquez-Carpintero_Lopez-Sellers_Cazorla_2025}. Por consiguiente, su adopción en sistemas adaptativos exige capas de supervisión y modelado externo. El estado del arte nos presenta, así, un panorama rico en técnicas de generación, pero fragmentado por la ausencia de métricas formales que permitan auditar la calidad de dicha ayuda de manera sistemática.
+
+
+\section{Motivación}
+A pesar del extenso volumen de investigación sobre \textit{feedback} adaptativo, persiste una brecha notable entre la capacidad técnica de generar pistas automáticamente y la capacidad metodológica de evaluar su impacto real en el proceso deductivo del usuario. En gran parte de los sistemas interactivos actuales, se opera bajo la asunción implícita de que una pista factualmente correcta es, por extensión, útil. Esta premisa ignora factores determinantes como la ambigüedad semántica, la sobrecarga informativa o la falta de alineación con el estado mental actual del usuario.
+
+Esta deficiencia se vuelve crítica en los sistemas potenciados por LLMs. Si bien la generación de contenido es virtualmente ilimitada, su calidad funcional es heterogénea. Una pista puede ser técnicamente válida y, sin embargo, fallar en reducir el espacio de búsqueda del usuario, inducir a falsas interpretaciones o simplemente añadir ruido a la interacción. En la práctica, esto deriva en experiencias en las que el usuario recibe información que, aunque veraz, no contribuye a desbloquear su razonamiento ni a avanzar en la tarea.
+
+La carencia de criterios formales para distinguir entre pistas útiles, neutras o disruptivas obstaculiza la mejora iterativa de estos sistemas. Generalmente, la eficacia de la ayuda se mide mediante indicadores agregados y finalistas, como bien pueden ser la tasa de aciertos o el tiempo total de resolución. Sin embargo, estas métricas son insuficientes para comprender la dinámica de la interacción: no nos dicen si una pista específica clarificó una duda o si el usuario resolvió el problema a pesar de la pista y no gracias a ella.
+
+Como consecuencia, se pierde la oportunidad de analizar con precisión el proceso de razonamiento subyacente e identificar transiciones clave en la interacción, como momentos de exploración, convergencia o estancamiento. Esta falta de granularidad limita severamente la capacidad del sistema para adaptarse de forma inteligente y explicar el éxito o fracaso de sus intervenciones en distintos contextos de uso.
+
+Ante el problema presentado, este proyecto propone avanzar hacia un marco que formalice la noción de \textit{buena pista}, integrando dimensiones como su poder discriminativo y su capacidad para activar el razonamiento. La literatura sugiere que una personalización efectiva debe considerar tanto el perfil del usuario como el contexto inmediato de la tarea \cite{ITSAdaptation}, lo que justifica la necesidad de métricas observables que vinculen las pistas individuales con cambios medibles en el comportamiento del usuario.
+
+La validación empírica de estas métricas en escenarios reales de juego permite cerrar el ciclo de evaluación: los datos de interacción de los usuarios no solo sirven para medir el impacto de las pistas en el acierto, sino también para estimar empíricamente los pesos relativos de cada dimensión de calidad. Este enfoque cobra especial relevancia en dominios donde el razonamiento es incremental y menos lineal que en los ejercicios escolares tradicionales, como ocurre en los juegos de deducción. En estos entornos, el análisis del comportamiento observable (solicitudes de pista, intentos fallidos, tasa de acierto) actúa como señal directa de la fricción cognitiva introducida por el contenido generado por el LLM, habilitando la detección de patrones subóptimos a partir de datos reales de interacción.
+
+
+\section{Objetivos}
+
+\subsection{Objetivo general}
+
+El objetivo general de este trabajo es proponer y evaluar un marco formal que permita analizar y optimizar la calidad de las pistas generadas automáticamente por modelos de lenguaje de gran tamaño (LLMs) en sistemas interactivos de deducción, combinando métricas semánticas intrínsecas al texto con validación empírica sobre datos reales de interacción de usuarios.
+
+\subsection{Objetivos específicos}
+
+\begin{itemize}
+    \item \textbf{Establecer métricas observables para evaluar la contribución individual de cada pista al proceso de razonamiento del usuario}, atendiendo a aspectos como su poder discriminativo, su redundancia o su posible efecto confusor.
+
+    \item \textbf{Integrar modelos de lenguaje de gran tamaño como generadores automáticos de pistas en lenguaje natural}, analizando de forma sistemática las limitaciones de este enfoque en términos de ambigüedad semántica y utilidad cognitiva.
+
+    \item \textbf{Analizar experimentalmente el impacto de diferentes tipos de pistas sobre la dinámica de interacción del usuario}, estudiando cómo influyen en la tasa de acierto del jugador y en los patrones de comportamiento observados en distintas modalidades de respuesta.
+
+    \item \textbf{Identificar patrones recurrentes de generación subóptima de pistas por parte de los LLMs}, empleando el análisis estadístico de los datos de interacción real como herramienta para detectar ruido cognitivo, falta de discriminación o ambigüedades persistentes.
+\end{itemize}
+
+En este contexto, este trabajo propone QUILL, un marco formal para caracterizar y evaluar la calidad de pistas en función de su impacto funcional sobre el razonamiento del usuario, y lo valida mediante Spygame, un sistema interactivo con datos reales de interacción.
+
+\section{Estructura del documento}
+Este documento se estructura en varios capítulos, cada uno orientado a desarrollar las distintas fases del proyecto realizado. A continuación, se detalla el contenido de cada uno de ellos:
+
+\begin{itemize}
+    \item \textbf{Capítulo 1 - Introducción:} Describe el contexto en el que se desarrolla el trabajo, expone la motivación que justifica su realización y define tanto el objetivo general como los objetivos específicos planteados.
+
+    \item \textbf{Capítulo 2 - Estado del arte:} Revisa los enfoques existentes en la generación de pistas adaptativas, el modelado del estudiante en sistemas de tutoría inteligente y la integración de LLMs en contextos interactivos, situando el trabajo en el marco de la investigación actual.
+
+    \item \textbf{Capítulo 3 - Metodología:} Describe en detalle el diseño experimental seguido. Se introduce el juego SpyGame y la aplicación empleada para recopilar los datos, el proceso de generación de pistas mediante LLM y las métricas de calidad definidas para evaluar su utilidad.
+
+    \item \textbf{Capítulo 4 - Evaluación:} Presenta el marco formal de evaluación de pistas, describiendo las métricas semánticas empleadas (PD, AMB, nGAIN, LEC, CONS), su fundamentación teórica y la función de calidad compuesta \textbf{QUILL} (\textit{Quality Index for Ludic Learning hints}).
+
+    \item \textbf{Capítulo 5 - Resultados:} Expone los resultados empíricos obtenidos en las dos fases experimentales, incluyendo el análisis descriptivo del corpus de pistas, la validación con usuarios en modalidad abierta y cerrada, y el análisis de regresión sobre las propiedades lingüísticas de las pistas.
+
+    \item \textbf{Capítulo 6 - Conclusiones y trabajos futuros:} Resume los hallazgos principales del proyecto, evalúa el grado de cumplimiento de los objetivos y propone líneas de investigación para trabajos futuros.
+
+    \item \textbf{Bibliografía:} Compila las fuentes bibliográficas y los trabajos previos que han servido como fundamento para el desarrollo del proyecto.
+\end{itemize}
+\end{document}

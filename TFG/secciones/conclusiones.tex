@@ -1,0 +1,147 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+\section{Conclusiones}
+
+El problema abordado en este trabajo es la ausencia de criterios formales para evaluar la calidad de pistas generadas automáticamente por LLMs en sistemas interactivos de deducción. Sin una métrica objetiva que distinga pistas útiles de pistas ambiguas o redundantes, resulta imposible mejorar iterativamente los sistemas generativos ni validar científicamente su comportamiento. Este trabajo propone QUILL como respuesta a esa carencia, definiendo cinco dimensiones semánticas de calidad y validándolas empíricamente sobre datos reales de interacción.
+
+El objetivo general de este trabajo era proponer y evaluar un marco formal que permitiera analizar y optimizar la calidad de las pistas generadas automáticamente por LLMs en entornos interactivos de deducción. Los resultados empíricos obtenidos a lo largo de las dos fases experimentales (3.412 interacciones registradas, 45 objetivos, 360 pistas) confirman que dicho objetivo ha sido alcanzado: se han definido cinco métricas semánticas con respaldo teórico, se ha implementado la función de calidad compuesta QUILL con capacidad de adaptación empírica de sus pesos mediante regresión logística, y se ha validado estadísticamente la hipótesis de que las propiedades lingüísticas superficiales modulan de manera sistemática la utilidad de una pista. Las subsecciones siguientes sintetizan los hallazgos más relevantes y los traducen en principios de diseño aplicables.
+
+La transición del modelado estadístico a la formulación de principios de diseño nos permite traducir los hallazgos empíricos en heurísticas aplicables para la generación de pistas en entornos de mundo abierto. Si bien las características sintácticas superficiales explican solo una fracción de la varianza total (lo cual confirma que la calidad semántica depende primordialmente del contenido proposicional), la consistencia de los efectos detectados revela una jerarquía clara de influencia lingüística. El análisis demuestra que la forma en que se estructura la información modula significativamente su utilidad epistemológica para el jugador.
+
+\subsection{Consecución de los objetivos planteados}
+
+Esta sección contrasta los objetivos planteados al inicio del proyecto con los resultados empíricos obtenidos, poniendo de manifiesto en qué medida cada uno de ellos ha sido alcanzado.
+
+\subsubsection{Objetivo general}
+
+El objetivo general del trabajo era proponer y evaluar un marco formal que permitiese analizar y optimizar la calidad de las pistas generadas automáticamente por LLMs en sistemas interactivos de deducción, combinando métricas semánticas intrínsecas al texto con validación empírica sobre datos reales de interacción de usuarios. Este objetivo puede considerarse plenamente alcanzado: se ha definido una función de calidad compuesta $Q$ sobre cinco dimensiones semánticas y formales, se ha validado empíricamente a través de dos experimentos con un total de $N=3\,412$ interacciones reales, y se han derivado pesos optimizados para cada modalidad de juego mediante regresión logística.
+
+\subsubsection{Objetivos específicos}
+
+\begin{itemize}
+    \item \textbf{Establecer métricas observables para evaluar la contribución individual de cada pista.}
+    Objetivo cubierto mediante la definición, implementación y validación de cinco métricas independientes: Poder Discriminativo (PD), Ambigüedad Semántica (AMB), Ganancia de Información Normalizada (nGAIN), Lecturabilidad (LEC) y Consistencia interna (CONS). La independencia de estas dimensiones fue verificada mediante análisis de correlación de Pearson, y su capacidad explicativa fue evaluada tanto individualmente como a través de la función compuesta $Q$.
+
+    \item \textbf{Integrar modelos de lenguaje de gran tamaño como generadores automáticos de pistas.}
+    Se diseñó un pipeline de generación basado en \textit{in-context learning} con un LLM, produciendo un corpus de 360 pistas sobre 45 personajes (8 pistas por personaje). El análisis sistemático de las limitaciones del modelo, entre ellas la recurrencia de patrones verbales genéricos y la baja discriminación en dominios semánticamente densos, ha permitido identificar sesgos específicos mediante el análisis OLS de las características lingüísticas del corpus generado.
+
+    \item \textbf{Analizar experimentalmente el impacto de diferentes tipos de pistas sobre la dinámica de interacción del usuario.}
+    Se realizaron dos experimentos controlados con usuarios reales: un primer experimento en modalidad de evocación libre ($N_{abierto}=2\,293$ interacciones) y un segundo en modalidad de reconocimiento deductivo ($N_{cerrado}=1\,119$ interacciones). La comparación entre modalidades reveló que el impacto de cada dimensión de calidad sobre la tasa de acierto varía sustancialmente en función del contexto de uso, con PD emergiendo como predictor dominante en mundo cerrado ($\beta=+0.333$) y un patrón multivariado más equilibrado en mundo abierto.
+
+    \item \textbf{Identificar patrones recurrentes de generación subóptima de pistas por parte de los LLMs.}
+    El análisis de regresión OLS sobre las características lingüísticas del corpus puso de manifiesto patrones sistemáticos: el exceso de verbos genéricos (VERB\_Ratio) penaliza cuatro de las cinco métricas de calidad, y el uso de léxico extremadamente infrecuente (Max\_IDF elevado) incrementa la ambigüedad al tiempo que reduce el poder discriminativo. Estos hallazgos constituyen una guía concreta para el refinamiento del \textit{prompt} de generación y la mejora iterativa del sistema.
+\end{itemize}
+
+\subsection{El verbo como determinante negativo de la calidad}
+
+El hallazgo más contundente y transversal de este experimento es el efecto negativo y altamente significativo de la densidad verbal sobre la calidad general de la pista. Lejos de dinamizar la información, el verbo actúa como un elemento de dispersión semántica. Las regresiones demuestran que un incremento en el ratio de verbos impacta negativamente en cuatro de las cinco métricas evaluadas, consolidándose como el predictor lingüístico más poderoso del estudio.
+
+En términos de consistencia interna ($\beta = -0.302$, $p < 0.001$), los verbos introducen múltiples ejes de acción que fragmentan el foco temático. Una pista estructurada en torno a una secuencia de acciones biográficas toca necesariamente diversos eventos cronológicos, mientras que una formulación nominal mantiene un foco único. Asimismo, en lo relativo a la ganancia de información ($\beta = -0.209$, $p < 0.001$) y al poder discriminativo ($\beta = -0.133$, $p < 0.05$), los verbos de uso frecuente operan como ruido entrópico; las acciones genéricas suelen ser compartidas por múltiples candidatos dentro del espacio latente, diluyendo la señal del objetivo frente a sus competidores. Finalmente, la acumulación de verbos penaliza la lecturabilidad ($\beta = -0.214$, $p = 0.001$) al introducir subordinación y relaciones temporales que incrementan la carga cognitiva del receptor.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llp{7.5cm}}
+\hline
+\textbf{Métrica} & \textbf{Efecto del VERB\_Ratio} & \textbf{Interpretación del impacto} \\
+\hline
+\textbf{CONS} & $\beta = -0.302$ ($***$) & Muy fuerte: Dispersa el foco temático. \\
+\textbf{LEC} & $\beta = -0.214$ ($**$) & Fuerte: Incrementa la carga cognitiva sintáctica. \\
+\textbf{nGAIN} & $\beta = -0.209$ ($***$) & Fuerte: Introduce ruido entrópico no discriminativo. \\
+\textbf{PD} & $\beta = -0.133$ ($*$) & Moderado: Activa características compartidas por competidores. \\
+\hline
+\end{tabular}
+\caption{Impacto estandarizado de la densidad verbal sobre las métricas de calidad.}
+\label{tab:verb_impact}
+\end{table}
+
+\subsection{La carga atributiva y la eficiencia cognitiva}
+
+El segundo gran determinante estructural de la calidad es la proporción de adjetivos, cuyo impacto se concentra de manera exclusiva y significativa sobre la facilidad de procesamiento del texto. El modelo OLS para la lecturabilidad revela que el ratio de adjetivos ostenta el coeficiente individual más grande de todo el análisis ($\beta = -0.379$, $p < 0.001$). 
+
+El uso intensivo de modificadores atributivos alarga las oraciones sin aportar, por lo general, información factual que permita restringir el espacio de búsqueda. Conceptos calificativos comunes en las descripciones generativas no reducen la entropía del sistema, ya que son aplicables a la inmensa mayoría de las entidades que componen la base de datos del juego. Por tanto, la supresión de la adjetivación vacía emerge como la intervención editorial más eficiente para mejorar la asimilación de la pista sin sacrificar su utilidad resolutiva.
+
+\subsection{El valor del anclaje factual y la profundidad estructural}
+
+En contraposición a la dispersión que generan verbos y adjetivos, las entidades nombradas se consolidan como los pilares de la reducción de incertidumbre. Cada entidad reconocida (organizaciones, premios, obras o localizaciones) incrementa de manera medible la ganancia de información ($\beta = +0.124$, $p < 0.05$). Las entidades operan como anclajes duros que cortan drásticamente el espacio de probabilidad, transformando formulaciones genéricas en restricciones lógicas inequívocas.
+
+Por otro lado, la profundidad del árbol sintáctico presenta un comportamiento estructural de gran interés analítico. Si bien no afecta significativamente a la legibilidad en esta muestra, sí ejerce un efecto positivo y significativo sobre la consistencia ($\beta = +0.113$, $p < 0.05$). Las oraciones sintácticamente más complejas, provistas de relaciones anidadas, logran articular la información de manera más cohesionada. Esta complejidad permite agrupar atributos bajo un mismo paraguas semántico, favoreciendo que el conjunto de pistas apunte hacia un horizonte conceptual unificado.
+
+\subsection{La naturaleza inmanente de la ambigüedad}
+
+Desde una perspectiva teórica, uno de los resultados más reveladores es la escasa capacidad de las variables estructurales para predecir la ambigüedad. El modelo asociado presenta una varianza explicada muy reducida ($R^2 \approx 0.02$), aunque resulta globalmente significativo ($p = 0.004$). El único predictor individual que alcanza significancia estadística es \textbf{Max\_IDF} ($\beta = +0.076$, $p = 0.002$): una mayor rareza léxica se asocia con un ligero incremento de la ambigüedad, sugiriendo que los términos infrecuentes activan regiones semánticas dispersas del espacio de embeddings. Sin embargo, la magnitud del efecto es muy pequeña y la sintaxis en su conjunto apenas explica nada de la varianza de AMB.
+
+Este fenómeno subraya que la ambigüedad es fundamentalmente una propiedad relacional y semántica, no sintáctica. Una pista puede presentar una redacción impecable (desprovista de verbos genéricos y rica en entidades concretas) y, sin embargo, resultar altamente ambigua si el clúster de información que proyecta en el espacio de embeddings es compartido por un subconjunto denso de personajes competidores. En consecuencia, la calibración de la dificultad no puede depender exclusivamente de la edición gramatical, sino que exige un análisis topológico del campo semántico en el que habita el objetivo.
+
+\subsection{Perfil empírico y el principio de especificidad nominal}
+
+A partir de la evidencia estadística recopilada, es posible trazar el arquetipo de la pista óptima para el sistema. Este perfil exige minimizar el ratio de verbos y adjetivos para proteger la lecturabilidad y el poder discriminativo, maximizando al mismo tiempo la presencia de entidades nombradas ($\geq 1$) para asegurar una ganancia de información efectiva. Como referencia orientativa, el primer cuartil del corpus sitúa el VERB\_Ratio por debajo de 0.09 y el ADJ\_Ratio por debajo de 0.05, umbrales que delimitan el rango de las pistas con mayor rendimiento observado. Un grado de anidamiento sintáctico moderado complementará este perfil garantizando la consistencia interna.
+
+\begin{itemize}
+\item \textbf{Arquetipo de alta calidad:} \textit{``Autor de El Quijote, publicado en 1605.''} (Ausencia de adjetivos y verbos conjugados de acción, alta densidad de entidades nominales y anclajes numéricos).
+\item \textbf{Arquetipo subóptimo:} \textit{``Es un personaje muy famoso que hizo muchas cosas importantes y fue muy reconocido en su disciplina.''} (Alta densidad de verbos genéricos y adjetivos valorativos, nula presencia de anclajes factuales concretos).
+\end{itemize}
+
+En síntesis, la jerarquía de influencia lingüística deducida de los modelos OLS postula un principio rector para el diseño en mundo abierto: \textbf{una pista de calidad es aquella que maximiza la densidad de sustantivos y entidades concretas, minimizando el uso de verbos genéricos y adjetivos vacíos.} La efectividad del sistema reside en la especificidad nominal, no en la fluidez de la narrativa verbal. Las mejores pistas, desde la perspectiva de la teoría de la información, asimilan su estructura a la precisión de una entrada enciclopédica antes que a la retórica de un texto literario.
+
+\subsection{Consideraciones metodológicas y limitaciones}
+
+Es imperativo contextualizar estos hallazgos dentro de los límites metodológicos del experimento. En primer lugar, los coeficientes de determinación ($R^2$) moderados en métricas como el poder discriminativo y la ganancia de información ($\sim 5\text{--}6\%$) confirman que la sintaxis es un modulador del rendimiento, pero el determinante primario sigue siendo el valor intrínseco de los datos aportados. 
+
+En segundo lugar, las métricas de polaridad y subjetividad utilizadas, derivadas de modelos estandarizados, presentan limitaciones de sensibilidad al aplicarse sobre textos generativos en español, lo que sugiere que herramientas nativas podrían capturar matrices de varianza actualmente ocultas. Finalmente, la naturaleza del corpus (generado mediante \textit{in-context learning} por un modelo de lenguaje con restricciones estrictas de longitud) induce una homogeneidad estructural de base. Esta uniformidad artificial puede estar comprimiendo la varianza natural de las características lingüísticas, lo que implica que los efectos penalizadores de verbos y adjetivos en un entorno de creación humana libre podrían ser aún más pronunciados empíricamente.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{2.8cm}p{3cm}p{2.8cm}p{4.5cm}}
+\hline
+\textbf{Propiedad} & \textbf{Valor recomendado} & \textbf{Métrica afectada} & \textbf{Efecto esperado} \\
+\hline
+VERB\_Ratio & $< 0.09$ (Q1 del corpus) & CONS, LEC, nGAIN, PD & Reduce dispersión semántica y carga cognitiva \\
+ADJ\_Ratio & $< 0.05$ (Q1 del corpus) & LEC & Elimina carga atributiva vacía \\
+NER\_Count & $\geq 1$ & nGAIN & Incrementa ganancia de información \\
+Tree\_Depth & Moderada & CONS & Favorece cohesión interna \\
+Subjectivity & Baja & LEC & Reduce interpretaciones ambiguas \\
+\hline
+\end{tabular}
+\caption{Perfil empírico de la pista óptima según los modelos OLS. Los umbrales VERB\_Ratio y ADJ\_Ratio corresponden al primer cuartil del corpus.}
+\label{tab:perfil_optimo}
+\end{table}
+
+A lo largo del proceso experimental surgieron tres desafíos técnicos reseñables. Primero, la fuerte colinealidad negativa ($r = -0.80$) entre PD y AMB exigió linealizar la penalización de la ambigüedad y ajustar los pesos mediante regresión logística, asignando la carga principal al PD y un rol corrector secundario a la AMB. Segundo, la lecturabilidad exhibió un efecto paradójico: un coeficiente negativo ($\beta_{LEC} = -0.10$) frente a la tasa de acierto, dado que las pistas más simples tendían a ser semánticamente vacuas; en consecuencia, LEC se reinterpretó como un filtro higiénico de calidad mínima, no como un objetivo a maximizar. Tercero, el desbalanceo inherente al corpus de interacciones reales se mitigó mediante aprendizaje sensible al coste (\textit{class\_weight=`balanced'}), preservando la fiabilidad de los coeficientes extraídos independientemente de la frecuencia base de aciertos.
+
+\section{Impacto social y medioambiental}
+
+El desarrollo y refinamiento de sistemas basados en Procesamiento de Lenguaje Natural (PLN) trasciende el ámbito puramente técnico, proyectando implicaciones directas sobre la accesibilidad cognitiva de los usuarios y la sostenibilidad de las infraestructuras tecnológicas. La presente investigación, al decodificar las estructuras lingüísticas que maximizan la claridad y reducen la entropía, se alinea de manera fundamental con los Objetivos de Desarrollo Sostenible (ODS) promovidos por la Asamblea General de las Naciones Unidas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.15\textwidth]{imagenes/ods4.jpg}
+    \caption{ODS 4: Educación de calidad.}
+    \label{fig:ods4}
+\end{figure}
+
+
+En primer lugar, los hallazgos impactan directamente en el \textbf{ODS 4 (Educación de Calidad)}. La demostración empírica de que la carga atributiva (adjetivos) y la densidad verbal perjudican severamente la lecturabilidad ofrece una heurística valiosa para el diseño de materiales didácticos y plataformas de aprendizaje adaptativo. Al aplicar el principio de \textit{especificidad nominal}, los educadores y desarrolladores de tecnología educativa pueden generar textos explicativos y evaluaciones (como juegos de preguntas o trivias) con una menor barrera cognitiva. Esto resulta especialmente relevante para garantizar el acceso equitativo a la información en usuarios con dificultades de comprensión lectora, trastornos del neurodesarrollo o aquellos que operan en un idioma que no es su lengua materna.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.15\textwidth]{imagenes/ods9.jpg}
+    \caption{ODS 9: Industria, innovación e infraestructura.}
+    \label{fig:ods9}
+\end{figure}
+
+
+En segundo lugar, el proyecto contribuye al \textbf{ODS 9 (Industria, Innovación e Infraestructura)}. La creación de metodologías que permiten evaluar y auditar matemáticamente la calidad semántica del texto generado por inteligencia artificial fomenta el desarrollo de infraestructuras tecnológicas más robustas y fiables. En lugar de depender de la validación humana constante, este marco analítico impulsa la innovación hacia sistemas autónomos capaces de auto-regular la información que proyectan, mejorando la interacción humano-máquina en entornos lúdicos, educativos y de recuperación de información.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.15\textwidth]{imagenes/ods12.png}
+    \caption{ODS 12: Producción y consumo responsables.}
+    \label{fig:ods12}
+\end{figure}
+
+
+Finalmente, desde una perspectiva medioambiental, la investigación abraza los principios de la \textit{Green AI} (IA Verde), alineándose con el \textbf{ODS 12 (Producción y Consumo Responsables)}. Los Modelos de Lenguaje Grande (LLMs) requieren enormes cantidades de energía y recursos computacionales para la inferencia. Al demostrar que las pistas más eficientes son aquellas más sintéticas (minimizando verbos y adjetivos), se fomenta la creación de \textit{prompts} y respuestas más concisas. Reducir la longitud de los textos generados y eliminar la ambigüedad disminuye directamente el número de tokens procesados por las API, mitigando la huella de carbono asociada al uso masivo de inteligencia artificial en aplicaciones de mundo abierto.
+
+\end{document}

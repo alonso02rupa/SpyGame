@@ -1,0 +1,123 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{Agradecimientos}{I}{chapter*.1}%
+\contentsline {section}{Resumen}{II}{chapter*.2}%
+\contentsline {section}{Abstract}{III}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Introducción}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Contexto}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Motivación}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Objetivos}{3}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Objetivo general}{3}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Objetivos específicos}{3}{subsection.1.3.2}%
+\contentsline {section}{\numberline {1.4}Estructura del documento}{3}{section.1.4}%
+\contentsline {chapter}{\numberline {2}Estado del arte}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Sistemas de tutoría inteligente y generación de pistas}{5}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Intelligent Tutoring Systems clásicos}{5}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Estructura y diseño de pistas en ITS}{5}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Modelado del estudiante y decisión de ayuda}{6}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Limitaciones de los enfoques tradicionales}{6}{subsection.2.1.4}%
+\contentsline {section}{\numberline {2.2}Generación automática de pistas mediante modelos de lenguaje}{6}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Uso de modelos de lenguaje en la generación de ayuda}{6}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Evaluación de LLMs en la generación de pistas}{7}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Comparación entre pistas humanas y pistas generadas}{7}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Generación de múltiples niveles de pistas}{8}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Modelado cognitivo del usuario mediante estados latentes}{8}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Bayesian Knowledge Tracing y modelos ocultos de Markov}{8}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Estados cognitivos como procesos dinámicos}{9}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Limitaciones del estado del arte}{9}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}Evaluación automática de la calidad de las pistas}{10}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Evaluación de la utilidad de las pistas}{10}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Ambigüedad, redundancia y trampas semánticas}{10}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Evaluación basada en comportamiento del usuario}{11}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Resumen de limitaciones y objetivos del TFG}{11}{section.2.5}%
+\contentsline {chapter}{\numberline {3}Metodología}{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Metodología}{13}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Extracción de datos}{14}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Generación de pistas}{16}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Caracterización de las pistas}{17}{subsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.1.4}Recogida de interacciones reales}{18}{subsection.3.1.4}%
+\contentsline {subsection}{\numberline {3.1.5}Validación y ajuste por inferencia}{19}{subsection.3.1.5}%
+\contentsline {subsubsection}{\numberline {3.1.5.1}Regresión logística}{20}{subsubsection.3.1.5.1}%
+\contentsline {subsubsection}{\numberline {3.1.5.2}Modelos explicativos OLS}{20}{subsubsection.3.1.5.2}%
+\contentsline {chapter}{\numberline {4}Evaluación}{21}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Métricas para la evaluación y selección de pistas}{21}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Poder Discriminativo (PD)}{21}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Ambigüedad Relativa (AMB)}{22}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Ganancia de Información Normalizada (nGAIN)}{22}{subsection.4.1.3}%
+\contentsline {subsection}{\numberline {4.1.4}Consistencia Semántica Interna (CONS)}{23}{subsection.4.1.4}%
+\contentsline {subsection}{\numberline {4.1.5}Lecturabilidad y Carga Cognitiva (LEC)}{23}{subsection.4.1.5}%
+\contentsline {subsection}{\numberline {4.1.6}Restricción de Proximidad (CLAMP)}{24}{subsection.4.1.6}%
+\contentsline {subsection}{\numberline {4.1.7}Score Final de Calidad: QUILL}{24}{subsection.4.1.7}%
+\contentsline {subsection}{\numberline {4.1.8}Métricas Sintáctico-Lingüísticas}{25}{subsection.4.1.8}%
+\contentsline {subsubsection}{\numberline {4.1.8.1}PROPN\_Ratio}{25}{subsubsection.4.1.8.1}%
+\contentsline {subsubsection}{\numberline {4.1.8.2}NUM\_Ratio}{25}{subsubsection.4.1.8.2}%
+\contentsline {subsubsection}{\numberline {4.1.8.3}ADJ\_Ratio}{25}{subsubsection.4.1.8.3}%
+\contentsline {subsubsection}{\numberline {4.1.8.4}VERB\_Ratio}{26}{subsubsection.4.1.8.4}%
+\contentsline {subsubsection}{\numberline {4.1.8.5}Max\_IDF}{26}{subsubsection.4.1.8.5}%
+\contentsline {subsubsection}{\numberline {4.1.8.6}Tree\_Depth}{26}{subsubsection.4.1.8.6}%
+\contentsline {subsubsection}{\numberline {4.1.8.7}NER\_Count}{26}{subsubsection.4.1.8.7}%
+\contentsline {subsection}{\numberline {4.1.9}Relación entre métricas semánticas y lingüísticas}{27}{subsection.4.1.9}%
+\contentsline {subsection}{\numberline {4.1.10}Ejemplo numérico: cálculo de QUILL}{27}{subsection.4.1.10}%
+\contentsline {paragraph}{\numberline {4.1.10.0.1}Caso 1 — Pista de alta calidad (Buda Gautama, $Q = 0.507$)}{27}{paragraph.4.1.10.0.1}%
+\contentsline {paragraph}{\numberline {4.1.10.0.2}Caso 2 — Pista de baja calidad (Molière, $Q = -0.068$)}{28}{paragraph.4.1.10.0.2}%
+\contentsline {chapter}{\numberline {5}Resultados}{30}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Resultados obtenidos}{30}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Descripción general del experimento}{30}{subsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.1.1}Distribución de las Métricas de Calidad}{31}{subsubsection.5.1.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.1.2}Análisis de Correlación e Independencia de Métricas}{32}{subsubsection.5.1.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.1.3}Validación empírica de la función CLAMP}{34}{subsubsection.5.1.1.3}%
+\contentsline {subsection}{\numberline {5.1.2}H1 --- Poder predictivo de QUILL}{34}{subsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.2.1}Validación Cruzada y Capacidad Discriminativa}{35}{subsubsection.5.1.2.1}%
+\contentsline {subsubsection}{\numberline {5.1.2.2}Bondad de Ajuste Global}{35}{subsubsection.5.1.2.2}%
+\contentsline {subsection}{\numberline {5.1.3}H2 --- Predominio del Poder Discriminativo}{37}{subsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.3.1}Coeficientes del Modelo}{37}{subsubsection.5.1.3.1}%
+\contentsline {subsubsection}{\numberline {5.1.3.2}Interpretación Empírica}{37}{subsubsection.5.1.3.2}%
+\contentsline {subsubsection}{\numberline {5.1.3.3}Reestimación de Pesos}{37}{subsubsection.5.1.3.3}%
+\contentsline {subsection}{\numberline {5.1.4}H3 --- Propiedades lingüísticas y calidad semántica}{39}{subsection.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.4.1}Poder Discriminativo (PD)}{41}{subsubsection.5.1.4.1}%
+\contentsline {paragraph}{\numberline {5.1.4.1.1}Bondad de ajuste}{41}{paragraph.5.1.4.1.1}%
+\contentsline {paragraph}{\numberline {5.1.4.1.2}Coeficientes estandarizados}{41}{paragraph.5.1.4.1.2}%
+\contentsline {paragraph}{\numberline {5.1.4.1.3}Análisis por variable}{42}{paragraph.5.1.4.1.3}%
+\contentsline {paragraph}{\numberline {5.1.4.1.4}Diagnóstico}{42}{paragraph.5.1.4.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.4.2}Ambigüedad (AMB)}{43}{subsubsection.5.1.4.2}%
+\contentsline {paragraph}{\numberline {5.1.4.2.1}Bondad de ajuste}{43}{paragraph.5.1.4.2.1}%
+\contentsline {paragraph}{\numberline {5.1.4.2.2}Coeficientes estandarizados}{43}{paragraph.5.1.4.2.2}%
+\contentsline {paragraph}{\numberline {5.1.4.2.3}Análisis por variable}{44}{paragraph.5.1.4.2.3}%
+\contentsline {paragraph}{\numberline {5.1.4.2.4}Diagnóstico}{44}{paragraph.5.1.4.2.4}%
+\contentsline {subsubsection}{\numberline {5.1.4.3}Ganancia de Información (nGAIN)}{44}{subsubsection.5.1.4.3}%
+\contentsline {paragraph}{\numberline {5.1.4.3.1}Bondad de ajuste}{44}{paragraph.5.1.4.3.1}%
+\contentsline {paragraph}{\numberline {5.1.4.3.2}Coeficientes estandarizados}{45}{paragraph.5.1.4.3.2}%
+\contentsline {paragraph}{\numberline {5.1.4.3.3}Análisis por variable}{45}{paragraph.5.1.4.3.3}%
+\contentsline {paragraph}{\numberline {5.1.4.3.4}Diagnóstico}{46}{paragraph.5.1.4.3.4}%
+\contentsline {subsubsection}{\numberline {5.1.4.4}Lecturabilidad (LEC)}{46}{subsubsection.5.1.4.4}%
+\contentsline {paragraph}{\numberline {5.1.4.4.1}Bondad de ajuste}{46}{paragraph.5.1.4.4.1}%
+\contentsline {paragraph}{\numberline {5.1.4.4.2}Coeficientes estandarizados}{46}{paragraph.5.1.4.4.2}%
+\contentsline {paragraph}{\numberline {5.1.4.4.3}Análisis por variable}{47}{paragraph.5.1.4.4.3}%
+\contentsline {paragraph}{\numberline {5.1.4.4.4}Diagnóstico}{47}{paragraph.5.1.4.4.4}%
+\contentsline {subsubsection}{\numberline {5.1.4.5}Consistencia (CONS)}{47}{subsubsection.5.1.4.5}%
+\contentsline {paragraph}{\numberline {5.1.4.5.1}Bondad de ajuste}{47}{paragraph.5.1.4.5.1}%
+\contentsline {paragraph}{\numberline {5.1.4.5.2}Coeficientes estandarizados}{48}{paragraph.5.1.4.5.2}%
+\contentsline {paragraph}{\numberline {5.1.4.5.3}Análisis por variable}{48}{paragraph.5.1.4.5.3}%
+\contentsline {paragraph}{\numberline {5.1.4.5.4}Diagnóstico}{49}{paragraph.5.1.4.5.4}%
+\contentsline {subsection}{\numberline {5.1.5}H4 --- Efecto de la modalidad experimental}{49}{subsection.5.1.5}%
+\contentsline {subsubsection}{\numberline {5.1.5.1}Invarianza del análisis OLS}{49}{subsubsection.5.1.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.5.2}Regresión logística: Fase 2 (Mundo Cerrado)}{49}{subsubsection.5.1.5.2}%
+\contentsline {paragraph}{\numberline {5.1.5.2.1}Modalidad de respuesta y dinámica del acierto}{49}{paragraph.5.1.5.2.1}%
+\contentsline {paragraph}{\numberline {5.1.5.2.2}Datos y distribución de clases}{49}{paragraph.5.1.5.2.2}%
+\contentsline {paragraph}{\numberline {5.1.5.2.3}Bondad de ajuste y validación cruzada}{50}{paragraph.5.1.5.2.3}%
+\contentsline {paragraph}{\numberline {5.1.5.2.4}Coeficientes e importancia de métricas}{51}{paragraph.5.1.5.2.4}%
+\contentsline {paragraph}{\numberline {5.1.5.2.5}Análisis por métrica}{52}{paragraph.5.1.5.2.5}%
+\contentsline {subsubsection}{\numberline {5.1.5.3}Comparación de las tres variantes de $Q$}{53}{subsubsection.5.1.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusiones y trabajos futuros}{57}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Conclusiones}{57}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Consecución de los objetivos planteados}{57}{subsection.6.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.1.1}Objetivo general}{57}{subsubsection.6.1.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.1.2}Objetivos específicos}{58}{subsubsection.6.1.1.2}%
+\contentsline {subsection}{\numberline {6.1.2}El verbo como determinante negativo de la calidad}{58}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}La carga atributiva y la eficiencia cognitiva}{59}{subsection.6.1.3}%
+\contentsline {subsection}{\numberline {6.1.4}El valor del anclaje factual y la profundidad estructural}{59}{subsection.6.1.4}%
+\contentsline {subsection}{\numberline {6.1.5}La naturaleza inmanente de la ambigüedad}{59}{subsection.6.1.5}%
+\contentsline {subsection}{\numberline {6.1.6}Perfil empírico y el principio de especificidad nominal}{60}{subsection.6.1.6}%
+\contentsline {subsection}{\numberline {6.1.7}Consideraciones metodológicas y limitaciones}{60}{subsection.6.1.7}%
+\contentsline {section}{\numberline {6.2}Impacto social y medioambiental}{61}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Líneas futuras}{62}{section.6.3}%
+\contentsline {chapter}{Bibliograf\'{\i }a}{64}{chapter*.48}%

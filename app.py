@@ -60,11 +60,11 @@ app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HT
 # CSRF Protection
 csrf = CSRFProtect(app)
 
-# Rate Limiting - global limits: 200 requests per day, 50 per hour
+# Rate Limiting - no global limits, only per-endpoint limits where needed
 limiter = Limiter(
     key_func=get_remote_address,
     app=app,
-    default_limits=["200 per day", "50 per hour"],
+    default_limits=[],
     storage_uri="memory://"
 )
 
@@ -563,7 +563,14 @@ def index():
     current_user = get_current_user()
     leaderboard = calcular_leaderboard()
 
-    # Fetch all available person names sorted alphabetically for the Objetivos modal
+    return render_template('index.html',
+                         current_user=current_user,
+                         leaderboard=leaderboard)
+
+@app.route('/spygame/api/personas')
+@csrf.exempt
+def api_personas():
+    """API endpoint to get all available person names sorted alphabetically"""
     personas = []
     try:
         sessions_collection, users_collection, pistas_collection, mongodb_available = get_db_collections()
@@ -571,7 +578,12 @@ def index():
             personas = sorted(
                 [doc['nombre'] for doc in pistas_collection.find({}, {'nombre': 1, '_id': 0}) if doc.get('nombre')]
             )
-        else:
+    except Exception as e:
+        logger.error(f"Error fetching personas from MongoDB: {e}")
+
+    # Fallback to JSON file if MongoDB query returned no results
+    if not personas:
+        try:
             pistas_file = 'pistas.json'
             if os.path.exists(pistas_file):
                 with open(pistas_file, 'r', encoding='utf-8') as f:
@@ -580,16 +592,12 @@ def index():
                     personas = sorted([p['nombre'] for p in data if p.get('nombre')])
                 elif isinstance(data, dict):
                     personas = sorted([p['nombre'] for p in data.values() if isinstance(p, dict) and p.get('nombre')])
-    except Exception as e:
-        logger.error(f"Error fetching personas for index: {e}")
+        except Exception as e:
+            logger.error(f"Error fetching personas from JSON fallback: {e}")
 
-    return render_template('index.html',
-                         current_user=current_user,
-                         leaderboard=leaderboard,
-                         personas=personas)
+    return jsonify({'status': 'ok', 'personas': personas})
 
 @app.route('/spygame/register', methods=['POST'])
-@limiter.limit("3 per minute")
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def register():
     """Register a new user"""
@@ -644,7 +652,6 @@ def register():
         return jsonify({'status': 'error', 'message': 'Error en el registro. Por favor, inténtalo de nuevo.'})
 
 @app.route('/spygame/login', methods=['POST'])
-@limiter.limit("5 per minute")
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def login():
     """Login an existing user"""
@@ -922,7 +929,6 @@ def get_hint():
     })
 
 @app.route('/spygame/make_guess', methods=['POST'])
-@limiter.limit("72 per minute")
 @csrf.exempt  # Exempt because this endpoint uses JSON API with fetch
 def make_guess():
     """Make a guess for the current person"""

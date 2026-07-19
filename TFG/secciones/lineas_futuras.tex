@@ -1,0 +1,27 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+\section{Líneas futuras}
+
+Los resultados obtenidos en este estudio establecen una base empírica sólida para la evaluación sintáctico-semántica de textos informativos, abriendo múltiples vectores para la investigación y el desarrollo futuro. Las limitaciones identificadas y los descubrimientos estadísticos sugieren las siguientes vías de expansión:
+
+\textbf{1. Desarrollo de un linter lingüístico en tiempo real:}
+La traducción natural de estos hallazgos es la implementación de un clasificador automatizado o \textit{linter} que opere durante la fase de generación de contenido. Este sistema podría analizar en tiempo real el texto producido (ya sea por un jugador humano o por un LLM), calculando sus ratios de verbos, adjetivos y entidades nombradas para emitir alertas o sugerencias de reescritura antes de que la pista sea introducida en el sistema, asegurando así un control de calidad preventivo basado en el perfil óptimo definido.
+
+\textbf{2. Contraste empírico con corpus de autoría humana:}
+Dado que el presente estudio se apoyó en pistas generadas mediante \textit{in-context learning}, el corpus resultante presenta una homogeneidad estructural inherente a la naturaleza del LLM utilizado. Una línea de investigación fundamental consistirá en replicar este diseño metodológico utilizando un conjunto de datos compuesto íntegramente por pistas redactadas libremente por usuarios humanos. Esto permitirá comprobar si la mayor varianza natural en la sintaxis humana amplifica la magnitud de los coeficientes penalizadores descubiertos en este análisis.
+
+\textbf{3. Integración de modelos semánticos nativos en español:}
+La evaluación de la métrica de subjetividad se vio limitada por el uso de herramientas genéricas que no lograron capturar los matices del español. Futuras iteraciones del proyecto deberán incorporar modelos de Procesamiento de Lenguaje Natural entrenados nativamente en español para el análisis de sentimientos y polaridad. Esto permitirá aislar de forma mucho más precisa el impacto real que tiene la inclusión de opiniones frente a hechos objetivos en el poder discriminativo de la pista.
+
+\textbf{4. Optimización avanzada de Prompt Engineering:}
+Los principios descubiertos, en particular el de la \textit{especificidad nominal}, deben ser integrados en las instrucciones de sistema (\textit{system prompts}) de los agentes generativos. Investigaciones posteriores podrían realizar pruebas A/B contrastando el rendimiento de un LLM instruido genéricamente para ``escribir pistas claras'' frente a uno instruido explícitamente bajo restricciones matemáticas derivadas del perfil óptimo definido en este trabajo. Esto permitirá medir hasta qué punto las heurísticas estructurales superan a las instrucciones semánticas en la arquitectura de LLMs.
+
+\textbf{5. Calibración supervisada de la función CLAMP:}
+La función CLAMP, reformulada en este trabajo para adoptar una penalización sigmoide calibrada sobre la distribución empírica del corpus, conserva un único parámetro convencional ($k=2$, regla de las dos sigmas). Una línea de investigación natural consistirá en optimizar dicho parámetro mediante validación cruzada sobre interacciones etiquetadas, o en sustituirlo por un umbral aprendido directamente a partir de la distribución de éxito y fracaso de los jugadores. Este enfoque convertiría la función CLAMP en un componente totalmente supervisado, cerrando el ciclo de retroalimentación entre el comportamiento del usuario y la calibración interna del sistema de calidad.
+
+\textbf{6. Extensión a dominios y juegos alternativos:}
+La metodología desarrollada está formulada de forma genérica y no se restringe al dominio de figuras públicas ni al formato de \textit{Spygame}. Futuros trabajos podrían trasladar el marco QUILL a otros entornos de deducción, como juegos de palabras, trivias científicas o plataformas de aprendizaje adaptativo, verificando la transferibilidad de los principios de especificidad nominal y evaluando si las jerarquías lingüísticas descubiertas se mantienen estables entre dominios.
+
+\end{document}

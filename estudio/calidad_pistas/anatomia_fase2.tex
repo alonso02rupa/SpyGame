@@ -1,0 +1,190 @@
+\subsection{Análisis integral: Anatomía de la pista (Fase 2: Mundo Cerrado)}
+
+La segunda fase experimental introduce una variación fundamental en la mecánica de juego: los jugadores ya no recuperan el nombre del personaje de memoria, sino que lo seleccionan de un conjunto cerrado de candidatos predefinidos. Este cambio no afecta a las pistas en sí —siguen siendo los mismos 360 enunciados, generados con idéntico procedimiento— pero transforma radicalmente la dinámica cognitiva del acierto. El presente análisis se organiza en torno a esta asimetría: los modelos OLS son matemáticamente invariantes (las métricas de calidad son propiedades del texto, no del jugador), mientras que la regresión logística refleja un paisaje predictivo sustancialmente distinto al observado en mundo abierto.
+
+% -------------------------------------------------------
+\subsubsection{Invarianza del análisis OLS}
+
+Las métricas de calidad PD, AMB, nGAIN, LEC y CONS se calculan sobre las pistas como entidades lingüísticas: sus valores dependen de los embeddings y la estructura sintáctica de cada enunciado, con independencia de cómo el jugador interactúe con él. Al ser las 360 pistas idénticas en ambas fases, los cinco modelos OLS producen exactamente los mismos coeficientes, los mismos valores de $R^2$ y los mismos niveles de significancia. Repetir el análisis OLS en esta sección no aportaría ningún resultado nuevo.
+
+Esta invarianza no es un resultado vacío: confirma que la relación entre estructura lingüística y calidad semántica es una propiedad estable del texto. Los coeficientes y su interpretación se encuentran en la subsección correspondiente a la Fase 1 y aplican sin modificación al presente experimento.
+
+% -------------------------------------------------------
+\subsubsection{Regresión logística: Fase 2 (Mundo Cerrado)}
+
+\paragraph{Modalidad de respuesta y dinámica del acierto}
+
+En mundo cerrado el jugador dispone de una lista visible de candidatos y debe identificar cuál de ellos corresponde a la pista. Esta condición elimina la necesidad de recuperación libre de memoria y sustituye la inferencia abierta por un proceso de discriminación comparativa: el jugador puede evaluar cada candidato de la lista frente al contenido de la pista y seleccionar el más probable. Esta diferencia cognitiva se traduce directamente en una tasa de acierto mucho más elevada (78.1\% frente al 65.5\% observado en mundo abierto) y en un patrón de importancia de métricas cualitativamente distinto.
+
+\paragraph{Datos y distribución de clases}
+
+El conjunto de datos de esta fase comprende \textbf{$N = 1\,119$} registros de partida, recogidos bajo la modalidad de selección restringida. La distribución de clases es la siguiente:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\hline
+Clase & Frecuencia & Porcentaje \\
+\hline
+Acierto (1) & 874 & 78.1\% \\
+Fallo (0)   & 245 & 21.9\% \\
+\hline
+Total & 1\,119 & \\
+\hline
+\end{tabular}
+\caption{Distribución de clases en el conjunto de datos de Fase 2.}
+\label{tab:clases_f2}
+\end{table}
+
+El desbalance de clases (casi 4:1 a favor del acierto) es más pronunciado que en mundo abierto (aproximadamente 1.9:1). Esto impone restricciones a la capacidad del modelo para detectar los casos de fallo, que constituyen la señal más informativa para la predicción. El parámetro \texttt{class\_weight='balanced'} mitiga parcialmente este efecto pero no lo elimina.
+
+\paragraph{Bondad de ajuste y validación cruzada}
+
+El modelo se evalúa mediante validación cruzada estratificada de 5 pliegues y un conjunto de prueba retenido (80/20 estratificado). La Tabla~\ref{tab:bondad_f2} compara las métricas de ajuste con las obtenidas en mundo abierto:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\hline
+Métrica & Mundo Cerrado (F2) & Mundo Abierto (F1) & Diferencia \\
+\hline
+Accuracy (CV 5-fold)   & $0.532 \pm 0.040$ & $\sim 0.55 \pm 0.03$ & $-0.018$ \\
+AUC-ROC (CV 5-fold)    & $0.548 \pm 0.058$ & $\sim 0.565 \pm 0.027$ & $-0.017$ \\
+AUC-ROC (test set)     & $0.505$           & $0.591$              & $-0.086$ \\
+McFadden $R^2$         & $0.0132$          & $0.0102$             & $+0.003$ \\
+McFadden $R^2$ adj.    & $0.0030$          & $0.0061$             & $-0.003$ \\
+LR test $G^2$          & $15.56$           & $30.10$              & $-14.54$ \\
+LR test $p$            & $0.0082$          & $< 0.001$            & — \\
+Brier Score            & $0.2495$          & $0.245$              & $+0.005$ \\
+\hline
+\end{tabular}
+\caption{Comparación de bondad de ajuste del modelo logístico entre ambas fases.}
+\label{tab:bondad_f2}
+\end{table}
+
+A pesar de que los jugadores aciertan con más frecuencia en mundo cerrado, el modelo tiene más dificultades para predecir el éxito con las métricas de la pista. La paradoja se explica por el extremo desbalance de clases: cuando casi todos los jugadores aciertan, el margen de variación atribuible a la calidad de la pista es mucho menor. El modelo logístico sigue siendo estadísticamente significativo ($G^2 = 15.56$, $p = 0.0082$), lo que confirma que las métricas de calidad contienen señal predictiva real incluso en este contexto más restrictivo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{imagenes/logistic_validation_completa.png}
+    \caption{Validación completa del modelo logístico en Fase 2. Se incluyen la curva ROC sobre el conjunto de prueba, las métricas de validación cruzada estratificada (accuracy, AUC, F1, log-loss) y el reporte de clasificación. La curva ROC muestra capacidad discriminativa modesta pero consistentemente superior al azar.}
+    \label{fig:logistic_val_f2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{imagenes/roc_curve_cv.png}
+    \caption{Curva ROC con validación cruzada de 5 pliegues (Fase 2). La banda sombreada representa la desviación estándar entre pliegues. El AUC medio de $0.548 \pm 0.058$ es inferior al obtenido en mundo abierto ($0.565 \pm 0.027$) y presenta mayor varianza entre pliegues, reflejo del menor tamaño muestral.}
+    \label{fig:roc_cv_f2}
+\end{figure}
+
+\paragraph{Coeficientes e importancia de métricas}
+
+La Tabla~\ref{tab:coef_logistica_f2} presenta los coeficientes $\beta$ estandarizados del modelo sklearn (con regularización L2) y los contrasta con los de mundo abierto, revelando las diferencias en la estructura de importancia entre modalidades:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\hline
+Métrica & $\beta$ F2 & Dirección & $\beta$ F1 (ref.) & Cambio \\
+\hline
+\textbf{PD}   & $\mathbf{+0.333}$ & $\uparrow$ acierto & $+0.110$ & $\times 3.0$  \\
+\textbf{CONS} & $-0.162$          & $\downarrow$ acierto & $-0.008$ & emerge \\
+\textbf{nGAIN}& $+0.061$          & $\uparrow$ acierto & $+0.056$ & estable \\
+\textbf{AMB}  & $+0.051$          & $\uparrow$ acierto & $-0.080$ & \textit{invierte} \\
+\textbf{LEC}  & $+0.023$          & $\uparrow$ acierto & $-0.070$ & \textit{invierte} \\
+\hline
+\end{tabular}
+\caption{Coeficientes $\beta$ estandarizados del modelo logístico (sklearn, L2) en Fase 2, comparados con los de Fase 1. Los pesos normalizados derivados sitúan PD en el 53.2\%, CONS en el 25.9\%, nGAIN en el 9.8\%, AMB en el 8.1\% y LEC en el 3.7\%.}
+\label{tab:coef_logistica_f2}
+\end{table}
+
+En cuanto a la significancia individual (modelo statsmodels, sin regularización), únicamente \textbf{PD} alcanza el umbral convencional del 5\% ($\beta = +0.325$, $p = 0.028$). El resto de coeficientes no son individualmente significativos, en parte por el menor tamaño muestral ($N = 1\,119$ frente a $N = 2\,293$), aunque el modelo conjunto sigue siendo significativo ($p = 0.008$).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{imagenes/logistic_importance.png}
+    \caption{Importancia relativa de las métricas de calidad en el modelo logístico de Fase 2 (pesos normalizados a partir de $|\beta|$). PD absorbe más del 53\% del peso total, mientras que en Fase 1 su contribución era de aproximadamente el 34\%. CONS emerge como segundo factor relevante (25.9\%) desde una posición prácticamente irrelevante en mundo abierto (2\%).}
+    \label{fig:logistic_importance_f2}
+\end{figure}
+
+\paragraph{Análisis por métrica}
+
+\textbf{PD: de relevante a dominante.} En mundo abierto, el Poder Discriminativo tenía el coeficiente positivo más alto pero no se distinguía estadísticamente del ruido. En mundo cerrado, PD triplica su coeficiente ($+0.110 \rightarrow +0.333$) y se convierte en el único predictor individualmente significativo. La explicación es directa: en presencia de una lista de candidatos el jugador realiza explícitamente un proceso de discriminación comparativa —evalúa cada candidato frente a la pista— lo que hace que la capacidad de la pista para separar el target del resto de candidatos sea la propiedad más directamente útil. Una pista con PD alto apunta de forma nítida hacia un individuo concreto dentro de la lista visible; una pista con PD bajo distribuye similitud entre varios candidatos y dificulta la elección.
+
+\textbf{AMB: inversión de signo por mediación de la lista.} En mundo abierto, la ambigüedad semántica tenía un efecto negativo sobre el acierto ($\beta = -0.080$): cuando el jugador tiene que recuperar el nombre de memoria, una pista que activa múltiples candidatos lo lleva a callejones sin salida. En mundo cerrado el signo se invierte ($\beta = +0.051$): la lista de candidatos actúa como filtro externo que resuelve la ambigüedad. Aunque la pista no apunte limpiamente hacia el target, el jugador puede confrontarla contra cada candidato de la lista y descartar los que son claramente incompatibles. La ambigüedad intrínseca de la pista importa mucho menos cuando el proceso de eliminación lo guía la interfaz, no la memoria.
+
+\textbf{LEC: dilución del efecto en mundo cerrado.} La Lecturabilidad presentaba un coeficiente negativo en mundo abierto ($\beta = -0.070$), interpretado como señal de que el vocabulario técnico y específico —que penaliza el índice Flesch— era en realidad más discriminativo. En mundo cerrado ese efecto desaparece casi por completo ($\beta = +0.023$, no significativo). Cuando el jugador puede leer la pista tranquilamente y compararla con una lista finita, la carga cognitiva del vocabulario difícil deja de ser un obstáculo: tiene tiempo para procesar cada término y confrontarlo con los candidatos disponibles. La ventaja del vocabulario técnico se diluye.
+
+\textbf{CONS: de irrelevante a segundo factor.} La Consistencia interna tenía un coeficiente prácticamente nulo en mundo abierto ($\beta = -0.008$). En mundo cerrado emerge como segundo predictor en magnitud ($\beta = -0.162$). Una hipótesis explicativa es que cuando las pistas de un personaje son muy temáticamente cohesionadas, pueden crear un perfil genérico dentro de su categoría. Si todos los clues de un personaje hablan de ``actuación y premios cinematográficos'', ese perfil puede describir con igual plausibilidad a varios candidatos del panel que pertenecen a la misma categoría. La consistencia alta no ayuda a diferenciar al individuo concreto de sus vecinos semánticos más próximos en la lista.
+
+\textbf{nGAIN: el único coeficiente estable.} La Ganancia de Información Normalizada es la única métrica que no cambia sustancialmente entre fases ($+0.056 \rightarrow +0.061$). Esto sugiere que la capacidad de la pista para reducir la entropía del espacio de candidatos es igualmente valiosa independientemente de si el jugador accede a ese espacio de forma libre o restringida. Una pista que concentra probabilidad sobre el target lo hace tanto si el jugador recuerda el nombre por sí solo como si lo selecciona de una lista.
+
+% -------------------------------------------------------
+\subsubsection{Comparación de las tres variantes de $Q$}
+
+La función de calidad compuesta $Q$ existe en tres versiones: la \textbf{$Q$ Inicial}, calculada con los pesos teóricos asignados antes de cualquier análisis empírico ($w_{nGAIN}=0.30$, $w_{PD}=w_{AMB}=0.20$, $w_{CONS}=w_{LEC}=0.15$); la \textbf{$Q$ Mundo Abierto}, con pesos derivados de la regresión logística de Fase 1 ($w_{PD}=0.335$, $w_{LEC}=0.303$, $w_{AMB}=0.215$, $w_{nGAIN}=0.139$, $w_{CONS}=0.009$); y la \textbf{$Q$ Mundo Cerrado}, con los pesos de Fase 2 ($w_{PD}=0.529$, $w_{CONS}=0.257$, $w_{nGAIN}=0.097$, $w_{AMB}=0.081$, $w_{LEC}=0.037$). Las figuras siguientes comparan las tres distribuciones sobre las mismas 360 pistas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{imagenes/q_comparison.png}
+    \caption{Panel resumen ($2\times3$) con las seis comparaciones entre las tres variantes de $Q$. Fila superior: histogramas superpuestos, box plots y violin plots. Fila inferior: diagramas de dispersión para cada par de variantes ($Q$~Inicial vs $Q$~M.Abierto, $Q$~Inicial vs $Q$~M.Cerrado, $Q$~M.Abierto vs $Q$~M.Cerrado). Azul: $Q$ Inicial; morado: $Q$ Mundo Abierto; verde: $Q$ Mundo Cerrado.}
+    \label{fig:q_comparison_f2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{imagenes/q_comparison_histogramas.png}
+    \caption{Histogramas superpuestos de las tres variantes de $Q$ sobre las 360 pistas. La $Q$ Inicial (azul) concentra masa en una banda estrecha centrada en valores medios, reflejo de que todos los pesos eran moderados. La $Q$ Mundo Abierto (morado) se desplaza según la doble dominancia de PD y LEC. La $Q$ Mundo Cerrado (verde) muestra la mayor dispersión, consecuencia del dominio extremo de PD (53\%): las pistas con PD alto se separan claramente del resto.}
+    \label{fig:q_hist_f2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{imagenes/q_comparison_boxplot.png}
+    \caption{Diagramas de caja comparativos de las tres variantes de $Q$. La comparación de medianas y rangos intercuartílicos revela cómo el rebalanceo de pesos entre variantes desplaza la tendencia central y modifica la asimetría de la distribución. La mayor varianza de $Q$ Mundo Cerrado es consistente con la polarización inducida por el peso dominante de PD.}
+    \label{fig:q_boxplot_f2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{imagenes/q_comparison_violin.png}
+    \caption{Diagramas de violín de las tres variantes de $Q$. La forma del violín revela la densidad de probabilidad en cada punto del rango de valores. La $Q$ Inicial muestra una forma más compacta y simétrica; la $Q$ Mundo Cerrado presenta una forma más elongada con un pico pronunciado en valores medios-bajos y cola más larga en los valores altos, asociada a las pistas con PD excepcional.}
+    \label{fig:q_violin_f2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{imagenes/q_comparison_scatter.png}
+    \caption{Diagramas de dispersión para cada par de variantes. \textit{Izquierda}: $Q$ Inicial vs $Q$ Mundo Abierto — la correlación es moderada; las pistas con LEC alta ganan posición respecto a la $Q$ Inicial. \textit{Centro}: $Q$ Inicial vs $Q$ Mundo Cerrado — la dispersión alrededor de la diagonal es mayor, indicando un reordenamiento más profundo inducido por el peso dominante de PD. \textit{Derecha}: $Q$ Mundo Abierto vs $Q$ Mundo Cerrado — el tercer scatter muestra directamente cuánto difiere el ordenamiento de las pistas entre las dos fórmulas empíricas: las pistas que tienen PD alto pero LEC baja suben en mundo cerrado y bajan en mundo abierto, y viceversa.}
+    \label{fig:q_scatter_f2}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\hline
+Estadístico & $Q$ Inicial & $Q$ M.\,Abierto & $Q$ M.\,Cerrado \\
+\hline
+Media         & 0.4233    & 0.3624    & 0.3423 \\
+Mediana       & 0.4022    & 0.3519    & 0.3304 \\
+Desv.\,típica & 0.1137    & 0.1216    & 0.1016 \\
+Mínimo        & $-$0.069  & $-$0.235  & 0.027  \\
+Máximo        & 0.734     & 0.673     & 0.639  \\
+$P_{25}$      & 0.353     & 0.289     & 0.272  \\
+$P_{75}$      & 0.479     & 0.424     & 0.394  \\
+\hline
+\multicolumn{4}{l}{\textit{Correlaciones de Pearson entre variantes}} \\
+\hline
+$Q$ Inicial $\leftrightarrow$ $Q$ M.\,Abierto     & \multicolumn{3}{c}{$r = 0.974$} \\
+$Q$ Inicial $\leftrightarrow$ $Q$ M.\,Cerrado     & \multicolumn{3}{c}{$r = 0.963$} \\
+$Q$ M.\,Abierto $\leftrightarrow$ $Q$ M.\,Cerrado & \multicolumn{3}{c}{$r = 0.974$} \\
+\hline
+\end{tabular}
+\caption{Estadísticos descriptivos de las tres variantes de $Q$ sobre las 360 pistas del corpus, con correlaciones de Pearson entre pares ($N=360$).}
+\label{tab:q_stats_f2}
+\end{table}
+
+Las tres correlaciones son elevadas ($r \geq 0.96$), lo que indica que el rebalanceo de pesos no altera radicalmente el ordenamiento de las pistas: las pistas valoradas como buenas por la fórmula inicial tienden a serlo también por ambas fórmulas empíricas. Sin embargo, los estadísticos revelan desplazamientos sistemáticos: las fórmulas empíricas reducen la media en conjunto (de 0.423 a 0.362 y 0.342), reflejo de que la $Q$ Inicial era más generosa al distribuir el peso en nGAIN, métrica con valores típicamente elevados. La $Q$ Mundo Cerrado presenta la menor dispersión ($\sigma = 0.102$) y el mínimo absoluto más alto (0.027, sin valores negativos), efecto directo de que todos sus pesos apuntan en el mismo sentido en la fórmula compuesta: PD y nGAIN en positivo, CONS y AMB como penalizaciones suaves vía el término $(1-1.5 \cdot AMB)$.
+
+La evolución de las tres variantes ilustra el impacto empírico de los datos de juego sobre la fórmula de calidad. Mientras que la $Q$ Inicial distribuía el peso de forma relativamente uniforme basándose en criterios teóricos, ambas versiones empíricas convergen en elevar el papel de PD —aunque en distinta medida— y reducen drásticamente el peso de nGAIN, que ocupaba el lugar privilegiado en la fórmula original. Las diferencias entre la $Q$ Mundo Abierto y la $Q$ Mundo Cerrado reflejan, pista a pista, la asimetría de las mecánicas: las pistas que el modelo de mundo cerrado valora por encima del modelo de mundo abierto son aquellas que apuntan con precisión al target dentro de una lista, aunque resulten difíciles de procesar o temáticamente dispersas; las pistas que el modelo de mundo abierto prima son aquellas que combinan discriminación semántica con claridad expresiva, necesaria cuando el jugador no dispone de ningún andamiaje externo.

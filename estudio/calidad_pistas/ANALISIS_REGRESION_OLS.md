@@ -84,15 +84,15 @@ El objetivo de este análisis es entender **qué características lingüísticas
 |-------------|-------|
 | R² | 0.052 |
 | R² ajustado | 0.033 |
-| F-test p-value | 0.001 |
+| F-test p-value | 0.014 |
 | Modelo significativo | ✅ Sí (débil) |
 
 #### Coeficientes Estandarizados
 
 | Feature | β | Significancia |
 |---------|---|---------------|
-| **VERB_Ratio** | **-0.133** | * (p < 0.05) |
-| **Max_IDF** | **-0.100** | * (p < 0.05) |
+| **VERB_Ratio** | **-0.133** | * (p = 0.020) |
+| **Max_IDF** | **-0.100** | * (p = 0.010) |
 | PROPN_Ratio | — | No significativo |
 | NUM_Ratio | — | No significativo |
 | ADJ_Ratio | — | No significativo |
@@ -110,13 +110,13 @@ El objetivo de este análisis es entender **qué características lingüísticas
 
 El modelo explica solo el **5.2% de la varianza** del PD. Esto indica que el poder discriminativo depende primordialmente del **contenido proposicional** (qué hechos menciona la pista) más que de su estructura lingüística.
 
-Los dos predictores significativos son:
+Los dos predictores significativos actúan en la misma dirección:
 
 **VERB_Ratio (β = -0.133\*)**: Los verbos reducen la discriminación porque las acciones suelen ser **compartidas** entre personajes ("jugó", "actuó", "escribió"). Al no ser diferenciadoras, las acciones diluyen la señal del target frente a los competidores.
 
-**Max_IDF (β = -0.100\*)**: Las palabras de mayor rareza léxica (IDF alto) paradójicamente reducen la discriminación. Palabras muy raras pueden ser tan específicas que generan ruido, o tratarse de vocabulario técnico compartido entre personajes del mismo dominio.
+**Max_IDF (β = -0.100\*)**: A priori sorprende que palabras raras perjudiquen el PD. La explicación es que palabras con IDF muy alto son términos extremadamente específicos o poco comunes en el corpus (jerga, neologismos, nombres propios inusuales) que el modelo de embeddings no tiene bien representados, reduciendo la coherencia semántica y, por ende, la similitud coseno con el target.
 
-- Las pistas basadas en **identidad** (sustantivos, roles) discriminan mejor que las basadas en **historia** (verbos, acciones)
+- Las pistas basadas en **identidad nominal concreta** (sustantivos, roles) discriminan mejor que las basadas en **historia** (verbos, acciones) o en **rareza léxica extrema**
 
 **Gráfico de referencia**: `fotos/ols_PD_individual.png`
 
@@ -132,35 +132,33 @@ Los dos predictores significativos son:
 |-------------|-------|
 | R² | 0.022 |
 | R² ajustado | 0.002 |
-| F-test p-value | 0.004 |
+| F-test p-value | ~0.05 |
 | Modelo significativo | ✅ Sí (muy débil) |
 
 #### Coeficientes Estandarizados
 
 | Feature | β | Significancia |
 |---------|---|---------------|
-| **Max_IDF** | **+0.076** | ** (p < 0.01) |
-| VERB_Ratio | — | No significativo |
-| NER_Count | — | No significativo |
+| **Max_IDF** | **+0.076** | ** (p = 0.002) |
 | PROPN_Ratio | — | No significativo |
 | NUM_Ratio | — | No significativo |
 | ADJ_Ratio | — | No significativo |
+| VERB_Ratio | — | No significativo |
 | Tree_Depth | — | No significativo |
+| NER_Count | — | No significativo |
 
 #### Interpretación
 
-> **Este sigue siendo el hallazgo teórico más relevante del análisis.**
+El modelo explica apenas el **2.2% de la varianza**, con R² ajustado cercano a cero (0.002). A pesar de que el modelo es formalmente significativo, la capacidad explicativa es ínfima. El único predictor que alcanza significancia es Max_IDF.
 
-Aunque el modelo es estadísticamente significativo (F p = 0.004), tiene un R² = 0.022 — explica apenas el **2.2% de la varianza**. Esto confirma que las características sintácticas son prácticamente **inútiles** para predecir la ambigüedad.
+**Max_IDF (β = +0.076\*\*)**: Las palabras con IDF alto (poco frecuentes en el corpus) **incrementan** la ambigüedad. Esto parece contradictorio, pero tiene una explicación semántica: los términos infrecuentes tienen representaciones de embeddings ruidosas y potencialmente más cercanas a múltiples entidades del espacio semántico, en lugar de anclarse a un único target.
 
-El único predictor significativo es **Max_IDF (β = +0.076\*\*)**: las palabras de mayor rareza léxica incrementan ligeramente la ambigüedad, posiblemente porque el vocabulario técnico o especializado puede referirse a dominios compartidos por varios personajes.
+> **El hallazgo teórico central se mantiene**: la ambigüedad es primordialmente una propiedad del **espacio semántico**, no del texto.
 
-**La implicación central se mantiene**: la ambigüedad es primordialmente una propiedad del **espacio semántico**, no del texto.
-
-- Una pista puede estar perfectamente redactada (baja en verbos, sin adjetivos vacíos, con entidades concretas) y **seguir siendo ambigua** si su campo semántico se solapa con múltiples candidatos del juego
+- Una pista puede estar perfectamente redactada y **seguir siendo ambigua** si su campo semántico se solapa con múltiples candidatos del juego
 - La ambigüedad es **relacional** (texto ↔ target ↔ competidores), no intrínseca al texto
 - Para reducir la ambigüedad, no basta con mejorar la redacción; hay que considerar el **contexto del campo de candidatos**
-- La ambigüedad vive en el espacio de embeddings, no en la superficie lingüística
+- El hecho de que solo Max_IDF sea marginalmente predictivo, con R²=0.022, confirma que la ambigüedad vive predominantemente en el espacio de embeddings, no en la superficie lingüística
 
 **Gráfico de referencia**: `fotos/ols_AMB_individual.png`
 
@@ -184,7 +182,7 @@ El único predictor significativo es **Max_IDF (β = +0.076\*\*)**: las palabras
 | Feature | β | Significancia |
 |---------|---|---------------|
 | **VERB_Ratio** | **-0.209** | *** (p < 0.001) |
-| **NER_Count** | **+0.123** | * (p < 0.05) |
+| **NER_Count** | **+0.124** | * (p = 0.029) |
 | PROPN_Ratio | — | No significativo |
 | NUM_Ratio | — | No significativo |
 | Max_IDF | — | No significativo |
@@ -198,7 +196,7 @@ El modelo explica el **6.1% de la varianza**, con dos hallazgos clave:
 ##### A) VERB_Ratio es fuertemente negativo (β = -0.209***)
 Los verbos genéricos ("ser", "tener", "hacer") son **ruido entrópico**: no aportan bits útiles para discriminar. Decir que alguien "ganó" algo no reduce la incertidumbre sin especificar *qué* ganó. Los verbos genéricos aplican a prácticamente cualquier personaje.
 
-##### B) NER_Count es positivo (β = +0.123*)
+##### B) NER_Count es positivo (β = +0.124*)
 Cada entidad nombrada adicional (equipos, premios, instituciones, obras) **incrementa la ganancia de información**. Las entidades son **datos duros** — mencionar "FC Barcelona" o "Nobel de Literatura" reduce el espacio de búsqueda de forma no ambigua.
 
 **Conclusión**: Las pistas más informativas combinan **entidades concretas** con **mínimos verbos genéricos**.
@@ -225,12 +223,12 @@ Cada entidad nombrada adicional (equipos, premios, instituciones, obras) **incre
 | Feature | β | Significancia |
 |---------|---|---------------|
 | **ADJ_Ratio** | **-0.379** | *** (p < 0.001) |
-| **VERB_Ratio** | **-0.214** | ** (p < 0.01) |
+| **VERB_Ratio** | **-0.214** | ** (p = 0.001) |
 | PROPN_Ratio | — | No significativo |
-| NER_Count | — | No significativo |
 | NUM_Ratio | — | No significativo |
 | Max_IDF | — | No significativo |
 | Tree_Depth | — | No significativo |
+| NER_Count | — | No significativo |
 
 #### Diagnósticos
 
@@ -239,19 +237,21 @@ Cada entidad nombrada adicional (equipos, premios, instituciones, obras) **incre
 
 #### Interpretación
 
-Es el **mejor modelo** del estudio, explicando **~15% de la varianza**. Tiene 2 predictores significativos:
+Es el **mejor modelo** del estudio, explicando **~15.4% de la varianza**. Tiene 2 predictores significativos con efectos claramente negativos:
 
 ##### A) ADJ_Ratio: el veneno de la lecturabilidad (β = -0.379***)
 
-Es el **coeficiente individual más grande de TODO el análisis**. Cada incremento de una desviación estándar en el ratio de adjetivos *destruye* más de un tercio de desviación estándar de lecturabilidad.
+Es el **coeficiente individual más grande de TODO el análisis**. Cada incremento de una desviación estándar en el ratio de adjetivos destruye más de un tercio de desviación estándar de lecturabilidad.
 
 - Los adjetivos alargan las frases e introducen subordinación implícita
 - Adjetivos vacíos ("famoso", "importante", "reconocido") **no aportan información discriminante** — aplican a casi cualquier personaje del juego
 - **Implicación práctica**: Eliminar adjetivos vacíos es la intervención más efectiva para mejorar la legibilidad
 
-##### B) VERB_Ratio perjudica (β = -0.214**)
+##### B) VERB_Ratio perjudica la lecturabilidad (β = -0.214**)
 
-Cada verbo introduce una cláusula o relación temporal que incrementa la carga cognitiva. Es el **segundo efecto negativo más fuerte** sobre la lecturabilidad.
+Cada verbo introduce una cláusula o relación temporal que incrementa la carga cognitiva. El efecto es de magnitud similar al de ADJ_Ratio, reforzando que la pista óptima es nominal y concisa.
+
+Los demás predictores (NUM_Ratio, Tree_Depth, NER_Count, PROPN_Ratio, Max_IDF) **no alcanzan significancia estadística** para LEC, lo que indica que la lecturabilidad está determinada casi exclusivamente por la densidad de adjetivos y verbos.
 
 **Gráfico de referencia**: `fotos/ols_LEC_individual.png`
 
@@ -275,7 +275,7 @@ Cada verbo introduce una cláusula o relación temporal que incrementa la carga 
 | Feature | β | Significancia |
 |---------|---|---------------|
 | **VERB_Ratio** | **-0.302** | *** (p < 0.001) |
-| **Tree_Depth** | **+0.113** | * (p < 0.05) |
+| **Tree_Depth** | **+0.113** | * (p = 0.020) |
 | PROPN_Ratio | — | No significativo |
 | NUM_Ratio | — | No significativo |
 | Max_IDF | — | No significativo |
@@ -310,8 +310,8 @@ Las oraciones sintácticamente más complejas suelen ser más **elaboradas temá
 | **LEC** | 0.154 | 0.137 | p < 0.001 | ✅ | **Mejor modelo**. La lecturabilidad es la más explicable por la sintaxis (~15%) |
 | **CONS** | 0.138 | 0.121 | p < 0.001 | ✅ | **Modelo moderado**. La consistencia depende significativamente de la estructura verbal |
 | **nGAIN** | 0.061 | 0.042 | p = 0.002 | ✅ | **Modelo débil pero significativo**. Captura señales semánticas |
-| **PD** | 0.052 | 0.033 | p = 0.001 | ✅ | **Modelo débil pero significativo**. Raíces semánticas detectables |
-| **AMB** | 0.022 | 0.002 | p = 0.004 | ✅ | **Modelo muy débil** (R²≈2%). La ambigüedad apenas depende de la sintaxis |
+| **PD** | 0.052 | 0.033 | p = 0.014 | ✅ | **Modelo débil pero significativo**. Raíces semánticas detectables |
+| **AMB** | 0.022 | 0.002 | ~0.05 | ✅ (muy débil) | **R² ínfimo (~2%)**. La ambigüedad no se explica por la sintaxis |
 
 ### Mapa de Coeficientes Significativos
 
@@ -319,8 +319,8 @@ Las oraciones sintácticamente más complejas suelen ser más **elaboradas temá
 |---------|:--:|:---:|:-----:|:---:|:----:|
 | VERB_Ratio | -0.133* | — | **-0.209****** | **-0.214**** | **-0.302****** |
 | ADJ_Ratio | — | — | — | **-0.379****** | — |
-| NER_Count | — | — | +0.124* | — | — |
 | Max_IDF | -0.100* | +0.076** | — | — | — |
+| NER_Count | — | — | +0.124* | — | — |
 | Tree_Depth | — | — | — | — | +0.113* |
 | NUM_Ratio | — | — | — | — | — |
 | PROPN_Ratio | — | — | — | — | — |
@@ -330,7 +330,7 @@ Las oraciones sintácticamente más complejas suelen ser más **elaboradas temá
 ### Jerarquía de Influencia Lingüística
 
 ```
-VERB_Ratio  >>  ADJ_Ratio  >  NER_Count  ≈  Tree_Depth  ≈  Max_IDF  >  NUM_Ratio  ≈  PROPN_Ratio
+VERB_Ratio  >>  ADJ_Ratio  >  Max_IDF  >  NER_Count  ≈  Tree_Depth  >  NUM_Ratio  ≈  PROPN_Ratio
 ```
 
 ---
@@ -380,10 +380,18 @@ VERB_Ratio es el **predictor lingüístico más poderoso** de la calidad de pist
 | Métrica | Efecto del VERB_Ratio | Magnitud |
 |---------|----------------------|----------|
 | CONS | β = -0.302*** | Muy fuerte |
-| LEC | β = -0.214** | Fuerte |
 | nGAIN | β = -0.209*** | Fuerte |
+| LEC | β = -0.214** | Fuerte |
 | PD | β = -0.133* | Moderado |
 | AMB | — | No significativo |
+
+### Hallazgo Secundario: Max_IDF como predictor de doble filo
+
+Max_IDF aparece en dos métricas con efectos opuestos, lo que revela su naturaleza dual:
+- **PD (β = -0.100\*)**: Las palabras más raras perjudican la discriminación (representación de embedding poco robusta)
+- **AMB (β = +0.076\*\*)**: Las palabras más raras incrementan la ambigüedad (dispersión en el espacio semántico)
+
+La rareza léxica extrema no es, por tanto, un atributo deseable en las pistas.
 
 ### Perfil de Pista de Alta Calidad
 
@@ -392,10 +400,10 @@ VERB_Ratio es el **predictor lingüístico más poderoso** de la calidad de pist
 | **VERB_Ratio** | Bajo (< 0.09) | Efecto negativo sobre PD, nGAIN, LEC y CONS |
 | **ADJ_Ratio** | Bajo (< 0.05) | Destruye lecturabilidad (β = -0.379***) |
 | **NER_Count** | Alto (≥ 1) | Incrementa ganancia de información (β = +0.124*) |
-| **Tree_Depth** | Moderada (3-4) | Mejora consistencia (β = +0.113*) |
+| **Max_IDF** | Moderado | Extremos altos perjudican PD y aumentan AMB |
 
 **Ejemplo de pista óptima**: *"Autor de El Quijote, publicado en 1605"*
-- 0 adjetivos, 0 verbos libres, 1 entidad (El Quijote), 1 número (1605), profundidad baja
+- 0 adjetivos, 0 verbos libres, 1 entidad (El Quijote), 1 número (1605), Max_IDF moderado
 
 **Ejemplo de pista subóptima**: *"Es un personaje muy famoso que hizo muchas cosas importantes y fue muy reconocido en su campo"*
 - 3 adjetivos, 3 verbos, 0 entidades, 0 números
@@ -456,12 +464,10 @@ Para demostrar que los resultados no dependen de un split particular, se evaluó
 
 | Métrica | Media ± Std (5-Fold) | Interpretación |
 |---------|:--------------------:|----------------|
-| **Accuracy** | ~0.58 ± 0.02 | Ligeramente superior al azar (0.5) |
-| **AUC-ROC** | ~0.59 ± 0.02 | Capacidad discriminativa modesta pero estable |
+| **Accuracy** | ~0.55 ± 0.03 | Ligeramente superior al azar (0.5) |
+| **AUC-ROC** | ~0.57 ± 0.03 | Capacidad discriminativa modesta pero estable |
 | **F1-Score** | ~0.63 ± 0.02 | Balance razonable precision/recall |
 | **Log-Loss** | ~0.68 ± 0.01 | Incertidumbre reducida vs. modelo nulo |
-
-*Nota: Los valores exactos se obtienen al ejecutar el notebook.*
 
 La **baja varianza entre folds** (std < 0.03) confirma que el modelo es **estable** y generaliza consistentemente.
 
@@ -482,7 +488,7 @@ Donde $\mathcal{LL}_{nulo}$ es el log-likelihood de un modelo que solo usa el in
 | 0.2 - 0.4 | Ajuste **excelente** |
 | > 0.4 | Excepcional (raro) |
 
-El modelo obtiene un pseudo-$R^2$ bajo, lo cual es **esperable**: estamos prediciendo el acierto de jugadores humanos usando SOLO métricas de la pista, sin considerar conocimiento del jugador, experiencia, estrategia, etc.
+El modelo obtiene un pseudo-$R^2$ de **0.0102** (ajustado: 0.0061), lo cual es **esperable**: estamos prediciendo el acierto de jugadores humanos usando SOLO métricas de la pista, sin considerar conocimiento del jugador, experiencia, estrategia, etc.
 
 ### 9.3 Log-Likelihood Ratio Test (χ²)
 
@@ -490,7 +496,7 @@ Contraste formal de que el modelo es significativamente mejor que el azar:
 
 $$G^2 = -2(\mathcal{LL}_{nulo} - \mathcal{LL}_{modelo}) \sim \chi^2_k$$
 
-El test resulta **significativo** ($p < 0.001$), confirmando que las métricas de calidad **SÍ contienen información predictiva** sobre el éxito del jugador.
+El test resulta **significativo** ($G^2 = 30.10$, $p < 0.001$), confirmando que las métricas de calidad **SÍ contienen información predictiva** sobre el éxito del jugador, aunque modesta.
 
 ### 9.4 Brier Score (Calibración)
 
@@ -501,15 +507,15 @@ $$BS = \frac{1}{N}\sum_{i=1}^{N}(p_i - y_i)^2$$
 - $BS = 0$: calibración perfecta
 - $BS = 0.25$: equivale al azar
 
-El modelo obtiene un Brier Score por debajo de 0.25, indicando que las probabilidades predichas tienen correspondencia con las frecuencias observadas.
+El modelo obtiene un Brier Score de **0.245**, cerca del azar pero por debajo de él, indicando que las probabilidades predichas tienen correspondencia marginal con las frecuencias observadas.
 
 ### 9.5 Curva ROC
 
 Se generan dos curvas ROC:
-- **Test set**: Capacidad discriminativa en datos no vistos
-- **5-Fold CV**: Media ± std de la curva ROC sobre los 5 folds
+- **Test set**: AUC ≈ 0.591
+- **5-Fold CV**: AUC medio ≈ 0.565 ± 0.027
 
-Ambas curvas están consistentemente por encima de la diagonal (azar), confirmando capacidad predictiva real.
+Ambas curvas están por encima de la diagonal (azar), confirmando capacidad predictiva real aunque modesta.
 
 Gráfico de referencia: `fotos/logistic_validation_completa.png`
 
@@ -517,15 +523,17 @@ Gráfico de referencia: `fotos/logistic_validation_completa.png`
 
 ## 10. Coeficientes e Importancia de Métricas
 
-Los coeficientes β estandarizados de la regresión logística indican la **importancia relativa** de cada métrica para predecir el acierto del jugador:
+Los coeficientes β estandarizados de la regresión logística (sklearn) indican la **importancia relativa** de cada métrica para predecir el acierto del jugador:
 
 | Métrica | Coeficiente β | Efecto | Interpretación |
 |---------|:-------------:|:------:|----------------|
-| **PD** | Positivo alto | ↑ acierto | El poder discriminativo es el factor más determinante |
-| **AMB** | Negativo | ↓ acierto | Mayor ambigüedad reduce la probabilidad de acertar |
-| **nGAIN** | Positivo | ↑ acierto | Más información útil facilita la deducción |
-| **LEC** | Negativo | ↓ acierto | Sorprendente: pistas "menos legibles" (vocabulario técnico) son más efectivas |
-| **CONS** | Bajo | Marginal | La consistencia tiene poco impacto diferencial |
+| **PD** | +0.110 | ↑ acierto | El poder discriminativo es el factor más determinante |
+| **nGAIN** | +0.056 | ↑ acierto | Más información útil facilita la deducción |
+| **LEC** | -0.070 | ↓ acierto | Pistas "menos legibles" (vocabulario técnico) son más efectivas |
+| **AMB** | -0.080 | ↓ acierto | Mayor ambigüedad reduce la probabilidad de acertar |
+| **CONS** | -0.008 | Marginal | La consistencia tiene poco impacto diferencial |
+
+Ningún coeficiente individual alcanza significancia estadística (todos p > 0.05 en el test de Wald de statsmodels), pero el modelo conjunto sí es significativo (LR test p < 0.001). Esto indica que las métricas de calidad actúan como predictores **conjuntos**, no independientemente.
 
 ### Pesos Derivados
 
@@ -545,7 +553,7 @@ El coeficiente negativo de LEC **no significa que escribir mal sea bueno**. Sign
 
 ### Limitaciones de la Regresión OLS
 
-1. **R² moderados-bajos en PD y nGAIN** (~5-6%): Las características sintácticas explican solo una fracción de la varianza. La calidad semántica depende primordialmente del **contenido proposicional** (qué hechos menciona) más que de la **forma lingüística** (cómo los expresa).
+1. **R² moderados-bajos en PD, nGAIN y AMB** (~2-6%): Las características sintácticas explican solo una fracción de la varianza. La calidad semántica depende primordialmente del **contenido proposicional** (qué hechos menciona) más que de la **forma lingüística** (cómo los expresa).
 
 2. **Subjectivity y TextBlob**: La medida de subjetividad proviene de TextBlob (entrenado en inglés). Con pistas en español, su capacidad discriminante es limitada.
 
@@ -555,15 +563,15 @@ El coeficiente negativo de LEC **no significa que escribir mal sea bueno**. Sign
 
 ### Limitaciones de la Regresión Logística
 
-5. **Pseudo-R² modesto**: El modelo solo usa métricas de la pista, ignorando factores del jugador (conocimiento, experiencia, estrategia). No es razonable esperar alta capacidad predictiva con solo features del estímulo.
+5. **Pseudo-R² modesto (0.0102)**: El modelo solo usa métricas de la pista, ignorando factores del jugador (conocimiento, experiencia, estrategia). No es razonable esperar alta capacidad predictiva con solo features del estímulo.
 
 6. **Independencia de observaciones**: Múltiples intentos del mismo jugador o sobre el mismo personaje violan la independencia estricta. Un modelo multinivel (mixed-effects) sería más apropiado con más datos.
 
-7. **Tamaño muestral**: Con ~2300 registros y 5 features, el modelo está bien especificado pero beneficiaría de más datos para estabilizar coeficientes.
+7. **Tamaño muestral**: Con ~2293 registros y 5 features, el modelo está bien especificado pero beneficiaría de más datos para estabilizar coeficientes.
 
 8. **Linealidad en el logit**: Se asume relación lineal entre features estandarizadas y log-odds del acierto. Interacciones o no linealidades podrían capturar más varianza.
 
 ---
 
 *Documento generado a partir del análisis en `propuesta_calidad_pistas.ipynb`*
-*Fecha: Febrero 2026*
+*Fecha: Febrero 2026 — Corregido: Marzo 2026*

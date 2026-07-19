@@ -1,0 +1,321 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+\section{Métricas para la evaluación y selección de pistas}
+
+La generación automática de pistas en un sistema de juego requiere un mecanismo de validación robusto que garantice no solo la veracidad de la información, sino también su utilidad lúdica. Una pista válida debe ser discriminativa (apuntar al objetivo), no trivial (evitar spoilers directos) y semánticamente coherente.
+
+Para cuantificar estas propiedades, se propone un esquema de evaluación compuesto por métricas semánticas, métricas sintáctico-lingüísticas y una función de agregación final.
+
+Las métricas semánticas evalúan la relación conceptual entre la pista $h$ y el conjunto de candidatos $C$, así como la coherencia interna del propio texto. El Poder Discriminativo (PD), la Ambigüedad Relativa (AMB) y la Consistencia Semántica Interna (CONS) son contribuciones originales de este trabajo, diseñadas específicamente para capturar distintas dimensiones de la utilidad funcional de una pista en el contexto de los sistemas interactivos de deducción. La Ganancia de Información Normalizada (nGAIN) se inspira en los fundamentos de la teoría de la información \cite{Shannon1948, Cover2006Elements} y adopta el principio de reducción de entropía empleado en aprendizaje activo \cite{Settles2009ActiveLearning}. La Lecturabilidad (LEC) se basa en el Índice de Perspicuidad de Flesch-Szigriszt, estándar para la evaluación de legibilidad en español \cite{szigriszt1993sistemas}.
+
+\subsection{Poder Discriminativo (PD)}
+
+El Poder Discriminativo mide la capacidad de la pista $h$ para acercarse semánticamente al concepto objetivo $c^*$ más que al promedio del resto de candidatos en el espacio de búsqueda. Se basa en la premisa de que una buena pista debe maximizar la similitud con el objetivo mientras minimiza la similitud promedio con los distractores.
+
+Sea $\mathbf{e}(\cdot)$ la función de \textit{embedding} que mapea un texto a un espacio vectorial de dimensión $d$:
+
+\begin{equation}
+\text{PD}(h) =
+\cos(\mathbf{e}(h), \mathbf{e}(c^*)) -
+\frac{1}{N-1} \sum_{c \in C, c \neq c^*}
+\cos(\mathbf{e}(h), \mathbf{e}(c))
+\end{equation}
+
+Donde:
+\begin{itemize}
+    \item $C$ es el conjunto total de candidatos posibles y $N = |C|$.
+    \item $\cos(\mathbf{u}, \mathbf{v})$ denota la similitud coseno entre dos vectores.
+\end{itemize}
+
+Un valor alto indica fuerte direccionalidad hacia el objetivo.
+Un valor negativo implica que la pista está, en promedio, más cerca de distractores que del target.
+El rango teórico de PD es $(-1, 1)$, aunque en la práctica los valores del corpus oscilan entre $-0.16$ y $+0.30$.
+
+Esta métrica captura la función primaria de una pista: señalar diferencialmente al objetivo dentro del espacio semántico global.
+
+\medskip
+\textbf{Ejemplo.} La pista \textit{``Nació en Lumbini en el seno de una familia aristocrática en la república Sakia.''} (Buda Gautama) obtiene $\text{PD} = +0.285$: el término \textit{Lumbini} y el contexto de la república Sakia sitúan la pista en un espacio semántico muy próximo al objetivo, alejándola de los distractores. En contraste, la pista \textit{``Nació en una familia próspera y estudió en el Collège de Clermont.''} (Molière) obtiene $\text{PD} = -0.144$: las nociones de familia acomodada y formación académica genérica son compartidas por numerosos candidatos del corpus, de modo que la pista resulta más cercana en promedio a los distractores que al objetivo.
+
+\subsection{Ambigüedad Relativa (AMB)}
+
+Mientras que el Poder Discriminativo compara contra el promedio, la métrica de Ambigüedad se enfoca en el riesgo específico de confusión con el \textit{mejor rival}. No importa si la pista descarta a la mayoría de candidatos; si existe un solo distractor que se asemeja al objetivo tanto como la pista, esta resulta inútil para el jugador.
+
+Definimos la AMB como el ratio de similitud entre el mejor candidato incorrecto y el objetivo:
+
+\begin{equation}
+\text{AMB}(h) =
+\frac{\text{sim}(h, c_{rival})}
+{\text{sim}(h, c_{rival}) + \text{sim}(h, c^*)}
+\end{equation}
+
+donde:
+
+\[
+c_{rival} =
+\arg\max_{c \in C, c \neq c^*}
+\text{sim}(h, c)
+\]
+
+Esta formulación produce valores típicamente próximos a $[0, 1]$ cuando ambas similitudes son positivas. Sin embargo, si $\text{sim}(h, c^*) < 0$ (el embedding de la pista no apunta hacia el objetivo), el denominador puede ser menor que el numerador y AMB puede superar la unidad, señalando que el rival atrae más señal semántica que el propio objetivo:
+
+\begin{itemize}
+    \item $\text{AMB} \approx 0.5$: Incertidumbre máxima (la pista se parece igual a ambos candidatos).
+    \item $\text{AMB} < 0.5$: La pista apunta correctamente al objetivo.
+    \item $\text{AMB} > 0.5$: La pista favorece semánticamente al rival sobre el objetivo.
+    \item $\text{AMB} > 1.0$: Caso extremo; el rival atrae más señal que el objetivo, indicando ausencia total de discriminación.
+\end{itemize}
+
+\medskip
+\textbf{Ejemplo.} Con la pista de Buda Gautama anterior se obtiene $\text{AMB} = 0.360 < 0.5$: el objetivo supera claramente al mejor rival en similitud, por lo que la pista señala correctamente al objetivo. Con la pista de Molière, $\text{AMB} = 1.910 > 1.0$: el rival genera más similitud que el propio objetivo, convirtiendo la pista en una fuente de confusión sistemática para el usuario.
+
+\subsection{Ganancia de Información Normalizada (nGAIN)}
+
+Esta métrica es ortogonal a la Ambigüedad Relativa: mientras AMB vigila al competidor más cercano, GAIN evalúa cuánto reduce la pista la incertidumbre global del espacio de búsqueda (volumen de candidatos).
+
+Primero, inducimos una distribución de probabilidad $P(h)$ sobre los candidatos mediante una función Softmax con temperatura $\tau$:
+
+\begin{equation}
+p_i(h) =
+\frac{\exp(\cos(\mathbf{e}(h), \mathbf{e}(c_i))/\tau)}
+{\sum_{j=1}^{N} \exp(\cos(\mathbf{e}(h), \mathbf{e}(c_j))/\tau)}
+\end{equation}
+
+La entropía posterior es:
+
+\begin{equation}
+H(h) = - \sum_{i=1}^{N} p_i(h)\log p_i(h)
+\end{equation}
+
+Considerando que la entropía inicial $H_0$ (sin pista) es la de una distribución uniforme ($H_0 = \log N$) \cite{Cover2006Elements, Shannon1948}, definimos la Ganancia de Información normalizada como:
+
+\begin{equation}
+\text{nGAIN}(h) =
+\frac{H_0 - H(h)}{H_0}
+\end{equation}
+
+El valor resultante representa el porcentaje del espacio de búsqueda que ha sido efectivamente descartado por la pista. Un valor de 1.0 indicaría una identificación perfecta y única. Esta formulación es análoga a la reducción de entropía empleada en aprendizaje activo para seleccionar las consultas más informativas sobre un espacio de hipótesis \cite{Settles2009ActiveLearning}.
+
+\medskip
+\textbf{Ejemplo.} La pista de Buda Gautama obtiene $\text{nGAIN} = 0.638$: reduce en un 63,8\,\% la entropía inicial del espacio de 45 candidatos, concentrando la distribución de probabilidad sobre un subconjunto reducido de alternativas compatibles. La pista de Molière obtiene $\text{nGAIN} = 0.232$: solo descarta el 23,2\,\% de la entropía inicial, dejando una gran incertidumbre residual sobre el objetivo.
+
+\subsection{Consistencia Semántica Interna (CONS)}
+
+Para asegurar que la pista no sea una concatenación de conceptos disjuntos (producto de alucinaciones del modelo), se evalúa su cohesión. La pista $h$ se segmenta en $K$ unidades semánticas $\{u_1, \dots, u_K\}$.
+
+La consistencia es la similitud media entre pares de fragmentos:
+
+\begin{equation}
+    \text{CONS}(h) = \frac{2}{K(K-1)} \sum_{i=1}^{K} \sum_{j=i+1}^{K} \cos(\mathbf{e}(u_i), \mathbf{e}(u_j))
+\end{equation}
+
+Esta métrica garantiza que la pista mantenga un tema conceptual unificado.
+
+\medskip
+\textbf{Ejemplo.} La pista de Buda Gautama obtiene $\text{CONS} = 0.756$: los fragmentos \textit{Lumbini}, \textit{familia aristocrática} y \textit{república Sakia} comparten un dominio semántico cohesionado (origen geográfico y contexto social del nacimiento). En contraste, una pista hipotética como \textit{``Estudió las leyes del movimiento y pintó el techo de la Capilla Sixtina.''} obtendría un valor de CONS muy reducido, pues mezcla física clásica y arte renacentista —dominios semánticamente lejanos— cuyas unidades presentarían baja similitud coseno entre sí.
+
+\subsection{Lecturabilidad y Carga Cognitiva (LEC)}
+Más allá de la precisión semántica, es imperativo validar la \textit{calidad superficial} del texto. Una pista puede ser matemáticamente discriminativa pero lúdicamente inviable si presenta una sintaxis enrevesada, un vocabulario excesivamente técnico o una longitud que agote la atención del jugador.
+
+Para cuantificar esto, utilizamos el Índice de Perspicuidad de Flesch-Szigriszt \cite{szigriszt1993sistemas}, el estándar académico para evaluar la legibilidad en lengua española. Este índice pondera la longitud de las frases y la complejidad silábica de las palabras.
+
+Sea $ISZ(h)$ el valor crudo obtenido mediante la fórmula:
+\begin{equation}
+    ISZ(h) = 206.84 - 62.3 \left( \frac{\text{Sílabas}}{\text{Palabras}} \right) - \left( \frac{\text{Palabras}}{\text{Frases}} \right)
+\end{equation}
+
+Dado que el índice original oscila en una escala aproximada de 0 (muy difícil) a 100 (muy fácil), normalizamos el valor al intervalo $[0, 1]$ para integrarlo en el sistema de puntuación:
+
+\begin{equation}
+    \text{LEC}(h) = \min\left(1, \max\left(0, \frac{ISZ(h)}{100}\right)\right)
+\end{equation}
+
+Esta métrica actúa como un proxy de la accesibilidad cognitiva, penalizando implícitamente tanto las frases excesivamente largas como el abuso de polisílabos innecesarios.
+
+\medskip
+\textbf{Ejemplo.} La pista \textit{``Fue un físico y matemático que desarrolló las leyes de la física y la astronomía.''} (Isaac Newton, dificultad 1) obtiene $\text{LEC} \approx 0.99$: oración breve con vocabulario accesible. En contraste, una pista como \textit{``La contribución epistemológica del personaje a la elucidación de los mecanismos electromagnéticos subyacentes a la propagación de la luz constituyó un hito paradigmático en la historiografía científica contemporánea.''} obtendría un valor de LEC inferior a 0.3, penalizada por la acumulación de polisílabos técnicos y la longitud de la oración.
+
+\subsection{Restricción de Proximidad (CLAMP)}
+
+Para evitar pistas triviales o \textit{spoilers}, se introduce una penalización basada en la proximidad directa al objetivo. Sea $\text{PROX}(h) = \cos(\mathbf{e}(h), \mathbf{e}(c^*))$ la similitud coseno directa entre la pista y su objetivo. En lugar de fijar un umbral arbitrario, la restricción se calibra automáticamente sobre la distribución empírica de proximidades del corpus.
+
+Sean $\mu_{\text{PROX}}$ y $\sigma_{\text{PROX}}$ la media y la desviación típica de $\text{PROX}$ calculadas sobre el conjunto completo de pistas. Se define la puntuación tipificada:
+
+\begin{equation}
+    z(h) = \frac{\text{PROX}(h) - \mu_{\text{PROX}}}{\sigma_{\text{PROX}}}
+\end{equation}
+
+La función CLAMP aplica una penalización sigmoide centrada en $z = 2$ (criterio de las dos sigmas). La función resultante es la función logística estándar evaluada en $2 - z(h)$:
+
+\begin{equation}
+    \text{CLAMP}(h) = \frac{1}{1 + \exp\!\left(-(2 - z(h))\right)}
+\end{equation}
+
+Esta formulación garantiza que las pistas con proximidad inferior a $\mu_{\text{PROX}} + 2\sigma_{\text{PROX}}$ reciban un factor CLAMP próximo a 1, mientras que aquellas con proximidad excepcionalmente alta quedan penalizadas de forma suave y proporcional. El único parámetro ($k=2$) está justificado por la convención estadística de las dos sigmas, eliminando la arbitrariedad de la formulación basada en umbrales manuales.
+
+\subsection{Score Final de Calidad: QUILL}
+
+Denominamos \textbf{QUILL} (\textit{Quality Index for Ludic Learning hints}) a la función de calidad compuesta que integra las métricas semánticas y formales definidas en las secciones anteriores. Para una pista $h$, el valor QUILL combina linealmente las cinco dimensiones de calidad ponderadas, protegido por la restricción CLAMP:
+
+\begin{equation}
+    Q(h) = \text{CLAMP}(h) \cdot \left[ w_1 \text{PD} + w_2 (1 - 1.5 \text{AMB}) + w_3 \text{nGAIN} + w_4 \text{CONS} + w_5 \text{LEC} \right]
+\end{equation}
+
+Los pesos $w_i$ (con $\sum w_i = 1$) se ajustan empíricamente a partir de los coeficientes de la regresión logística sobre datos reales de interacción. La adición de la lecturabilidad asegura que QUILL seleccione pistas que no solo sean precisas, sino también accesibles al usuario final. La función busca maximizar la discriminación y la ganancia de información, minimizar la ambigüedad (reflejado en el término $1-1.5\,\text{AMB}$), mantener la coherencia interna y garantizar una lectura fluida.
+\subsection{Métricas Sintáctico-Lingüísticas}
+
+Estas métricas caracterizan propiedades estructurales del texto, independientes de su relación semántica con el target.
+
+Sea $T$ el número total de tokens de la pista.
+
+\subsubsection{PROPN\_Ratio}
+
+\begin{equation}
+\text{PROPN\_Ratio}(h) =
+\frac{\#\text{PROPN}}{T}
+\end{equation}
+
+Donde $\#\text{PROPN}$ es el número de tokens etiquetados como nombre propio (etiqueta POS \texttt{PROPN}) por spaCy, y $T$ es el número total de tokens válidos de la pista (excluyendo signos de puntuación). Mide la densidad de nombres propios. Valores altos pueden indicar riesgo de revelación directa.
+
+\medskip
+\textbf{Ejemplo.} La pista \textit{``Abraham Lincoln presidió Estados Unidos durante la Guerra Civil.''} contiene dos nombres propios (\textit{Abraham Lincoln}, \textit{Estados Unidos}) sobre 9 tokens: $\text{PROPN\_Ratio} \approx 0.22$. La pista \textit{``Era conocido por sus teorías sobre la gravedad y el movimiento.''} no contiene nombres propios: $\text{PROPN\_Ratio} = 0.00$.
+
+\subsubsection{NUM\_Ratio}
+
+\begin{equation}
+\text{NUM\_Ratio}(h) =
+\frac{\#\text{NUM}}{T}
+\end{equation}
+
+Donde $\#\text{NUM}$ es el número de tokens etiquetados como numeral (etiqueta POS \texttt{NUM}), incluyendo cifras, años y cantidades escritas en formato numérico. Captura la densidad de información cuantitativa.
+
+\medskip
+\textbf{Ejemplo.} La pista \textit{``Nació en 1643 y murió en 1727 a los 84 años.''} contiene tres numerales (1643, 1727, 84) sobre 11 tokens: $\text{NUM\_Ratio} \approx 0.27$. Una pista descriptiva sin fechas ni cantidades obtendría $\text{NUM\_Ratio} = 0.00$.
+
+\subsubsection{ADJ\_Ratio}
+
+\begin{equation}
+\text{ADJ\_Ratio}(h) =
+\frac{\#\text{ADJ}}{T}
+\end{equation}
+
+Donde $\#\text{ADJ}$ es el número de tokens etiquetados como adjetivo (etiqueta POS \texttt{ADJ}). Indica el nivel descriptivo o atributivo de la pista.
+
+\medskip
+\textbf{Ejemplo.} La pista \textit{``Era un hombre brillante, curioso e incansable que influyó profundamente.''} contiene tres adjetivos (\textit{brillante}, \textit{curioso}, \textit{incansable}) sobre 12 tokens: $\text{ADJ\_Ratio} = 0.25$. La pista nominal \textit{``Compositor alemán del siglo XIX, autor de nueve sinfonías.''} contiene un único adjetivo (\textit{alemán}): $\text{ADJ\_Ratio} \approx 0.09$.
+
+\subsubsection{VERB\_Ratio}
+
+\begin{equation}
+\text{VERB\_Ratio}(h) =
+\frac{\#\text{VERB}}{T}
+\end{equation}
+
+Donde $\#\text{VERB}$ es el número de tokens etiquetados como verbo (etiquetas POS \texttt{VERB} o \texttt{AUX}). Refleja el dinamismo narrativo y la densidad de predicados en la pista.
+
+\medskip
+\textbf{Ejemplo.} La pista \textit{``Estudió, escribió, viajó y contribuyó al conocimiento durante toda su vida.''} contiene cuatro verbos conjugados sobre 13 tokens: $\text{VERB\_Ratio} \approx 0.31$. La pista \textit{``Fundador de una de las religiones más extendidas del mundo, nacido en la región de Hiyaz.''} contiene un único participio sobre 15 tokens: $\text{VERB\_Ratio} \approx 0.07$.
+
+\subsubsection{Max\_IDF}
+
+\begin{equation}
+\text{Max\_IDF}(h) =
+\max_{w \in h} IDF(w)
+\end{equation}
+
+Donde $IDF(w) = \log\!\left(\dfrac{N}{df(w)}\right)$, siendo $N$ el número total de pistas del corpus (360) y $df(w)$ el número de pistas que contienen la palabra $w$. Captura la presencia del término más raro o específico de la pista, actuando como indicador de especificidad léxica.
+
+\medskip
+\textbf{Ejemplo.} El término \textit{``Lumbini''} aparece en una única pista del corpus: $IDF \approx \log(360) \approx 5.9$, lo que produce un $\text{Max\_IDF}$ elevado. El término \textit{``fue''} aparece en la gran mayoría de las pistas: $IDF \approx 0.3$, contribuyendo poco a la especificidad.
+
+\subsubsection{Tree\_Depth}
+
+\[
+\text{Tree\_Depth}(h) =
+\max \text{ profundidad del árbol de dependencias}
+\]
+
+Donde la profundidad se define como el número de aristas en el camino más largo desde el nodo raíz (token con etiqueta \texttt{ROOT}) hasta una hoja en el árbol de dependencias sintácticas generado por spaCy. Aproxima la complejidad sintáctica jerárquica de la oración.
+
+\medskip
+\textbf{Ejemplo.} La pista \textit{``Nació en Lumbini.''} produce un árbol de profundidad 2 (raíz → complemento → término). La pista \textit{``Es conocido por haber sido el primero en demostrar que la Tierra orbita alrededor del Sol.''} genera un árbol más profundo, con varias cláusulas subordinadas anidadas: $\text{Tree\_Depth} \approx 5$.
+
+\subsubsection{NER\_Count}
+
+\begin{equation}
+\text{NER\_Count}(h) =
+\sum_{e \in h} \mathbb{1}_{\text{EntidadReconocida}}(e)
+\end{equation}
+
+Donde $\mathbb{1}_{\text{EntidadReconocida}}(e)$ es la función indicadora que toma valor 1 si la entidad $e$ es reconocida por el módulo NER de spaCy en alguna de sus categorías (persona, organización, lugar, obra, evento, fecha), y 0 en caso contrario. Contabiliza el número absoluto de entidades nombradas detectadas en la pista.
+
+\medskip
+\textbf{Ejemplo.} La pista \textit{``Abraham Lincoln presidió Estados Unidos durante la Guerra Civil Americana.''} contiene tres entidades reconocidas (persona: \textit{Abraham Lincoln}; lugar: \textit{Estados Unidos}; evento: \textit{Guerra Civil Americana}): $\text{NER\_Count} = 3$. La pista \textit{``Era conocido por sus teorías sobre la naturaleza.''} no contiene entidades reconocibles: $\text{NER\_Count} = 0$.
+
+\subsection{Relación entre métricas semánticas y lingüísticas}
+
+La función QUILL, definida formalmente en la sección anterior, integra exclusivamente las cinco métricas semánticas (PD, AMB, nGAIN, CONS, LEC) ponderadas por la restricción CLAMP. Las métricas sintáctico-lingüísticas descritas en esta sección (PROPN\_Ratio, NUM\_Ratio, ADJ\_Ratio, VERB\_Ratio, Max\_IDF, Tree\_Depth, NER\_Count) se utilizan como características explicativas en un análisis complementario de regresión lineal múltiple (Capítulo~5), cuyo objetivo es determinar qué propiedades superficiales del texto se asocian con cada dimensión de calidad semántica.
+
+Esta separación es conceptualmente relevante: las métricas semánticas miden el \textit{efecto} de la pista en el espacio de candidatos, mientras que las características lingüísticas describen su \textit{estructura interna}. Un buen sistema de generación de pistas puede aprovecharse de ambas capas: las métricas semánticas para seleccionar las mejores pistas del corpus, y las características lingüísticas para guiar al modelo generativo hacia formulaciones con mayor potencial discriminativo.
+
+La exclusión de las métricas sintáctico-lingüísticas de la composición de QUILL responde a una decisión de diseño deliberada: estas métricas capturan propiedades de la superficie textual que actúan como moduladoras de las dimensiones semánticas, pero no constituyen dimensiones independientes de calidad funcional. Incorporarlas directamente a la suma ponderada introduciría redundancia con las métricas semánticas y reduciría la interpretabilidad del índice, al mezclar niveles de análisis heterogéneos. Su rol en este trabajo es estrictamente explicativo: a través de la regresión OLS, permiten comprender qué estructuras lingüísticas favorecen o perjudican cada dimensión de calidad, pero la evaluación final de una pista recae exclusivamente sobre su impacto semántico medido.
+
+\subsection{Ejemplo numérico: cálculo de QUILL}
+
+Para ilustrar el cálculo concreto de la función QUILL, se presenta el desarrollo paso a paso para dos pistas reales del corpus: la de mayor puntuación y la de menor puntuación, usando los pesos iniciales ($w = [0.20, 0.20, 0.30, 0.15, 0.15]$) y los parámetros de calibración del corpus ($\mu_{\text{PROX}} = 0.273$, $\sigma_{\text{PROX}} = 0.153$).
+
+\paragraph{Caso 1 — Pista de alta calidad (Buda Gautama, $Q = 0.507$)}
+
+\textit{``Nació en Lumbini en el seno de una familia aristocrática en la república Sakia.''}
+
+Las métricas calculadas para esta pista son: $\text{PD} = 0.285$, $\text{AMB} = 0.360$, $\text{nGAIN} = 0.638$, $\text{CONS} = 0.756$, $\text{LEC} = 0.995$, $\text{PROX} = 0.326$.
+
+\begin{align}
+z &= \frac{0.326 - 0.273}{0.153} = 0.346 \\[4pt]
+\text{CLAMP} &= \sigma(2 - 0.346) = \frac{1}{1 + e^{-1.654}} \approx 0.840 \\[4pt]
+\text{Suma ponderada} &= 0.20 \times 0.285 \;+\; 0.20 \times (1 - 1.5 \times 0.360) \nonumber \\
+&\quad +\; 0.30 \times 0.638 \;+\; 0.15 \times 0.756 \;+\; 0.15 \times 0.995 \nonumber \\
+&= 0.057 + 0.092 + 0.191 + 0.113 + 0.149 = 0.602 \\[4pt]
+Q &= 0.840 \;\times\; 0.602 \;\approx\; \mathbf{0.507}
+\end{align}
+
+\paragraph{Caso 2 — Pista de baja calidad (Molière, $Q = -0.068$)}
+
+\textit{``Nació en una familia próspera y estudió en el Collège de Clermont.''}
+
+Las métricas calculadas son: $\text{PD} = -0.144$, $\text{AMB} = 1.910$, $\text{nGAIN} = 0.232$, $\text{CONS} = 0.758$, $\text{LEC} = 0.996$, $\text{PROX} = -0.094$.
+
+\begin{align}
+z &= \frac{-0.094 - 0.273}{0.153} = -2.399 \\[4pt]
+\text{CLAMP} &= \sigma(2 - (-2.399)) = \frac{1}{1 + e^{-4.399}} \approx 0.988 \\[4pt]
+\text{Suma ponderada} &= 0.20 \times (-0.144) \;+\; 0.20 \times (1 - 1.5 \times 1.910) \nonumber \\
+&\quad +\; 0.30 \times 0.232 \;+\; 0.15 \times 0.758 \;+\; 0.15 \times 0.996 \nonumber \\
+&= -0.029 \;+\; (-0.373) \;+\; 0.070 \;+\; 0.114 \;+\; 0.149 = -0.069 \\[4pt]
+Q &= 0.988 \;\times\; (-0.069) \;\approx\; \mathbf{-0.068}
+\end{align}
+
+El ejercicio numérico pone de manifiesto que la suma ponderada interior es el determinante principal del score final. La pista de Buda obtiene un interior positivo (0.602) gracias a su bajo AMB y alto nGAIN, mientras que la pista de Molière colapsa en negativo ($-0.069$) por una AMB que supera la unidad, lo que hace que el término $(1-1.5 \cdot \text{AMB})$ tome valor $-1.865$. El CLAMP actúa como modulador pero no revierte el signo: la pista de Molière, a pesar de tener un PROX negativo (el embedding no apunta hacia el objetivo) y por tanto un CLAMP elevado ($0.988$), no puede escapar del valor negativo de su suma interior.
+
+La tabla siguiente muestra las 8 pistas de Isaac Newton ordenadas por puntuación QUILL descendente, empleando los pesos iniciales. Nótese que la dificultad asignada durante la generación no predice el valor Q: la pista etiquetada como nivel 1 (la más fácil) obtiene el Q más alto, mientras que la de nivel 4 queda en última posición. Este resultado ilustra la necesidad de una métrica formal de calidad que complemente la etiqueta de dificultad.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccccp{7cm}}
+\hline
+\textbf{Dif.} & \textbf{Q} & \textbf{PD} & \textbf{AMB} & \textbf{Pista} \\
+\hline
+1 & 0.406 & 0.133 & 0.606 & ``Fue un físico y matemático que desarrolló las leyes de la física y la astronomía.'' \\
+2 & 0.374 & 0.120 & 0.642 & ``Nació en Woolsthorpe-by-Colsterworth, Lincolnshire, en 1643.'' \\
+3 & 0.367 & 0.182 & 0.524 & ``Desarrolló un carro de cuatro ruedas impulsado por una manivela que él accionaba desde su interior.'' \\
+1 & 0.349 & 0.133 & 0.552 & ``Es conocido por su trabajo en la gravedad y la creación de sus Principia.'' \\
+2 & 0.338 & 0.071 & 0.595 & ``Su padre murió antes de que él naciera, en octubre de 1642.'' \\
+5 & 0.311 & 0.023 & 0.644 & ``Escribió una lista de sus pecados, incluyendo amenazar a sus padres con quemar su casa.'' \\
+3 & 0.300 & $-$0.003 & 0.648 & ``Escribió su obra más importante sobre óptica, Opticks, en 1704.'' \\
+4 & 0.291 & 0.017 & 0.774 & ``Su abuelo lo desheredó, a pesar de vivir en la misma casa.'' \\
+\hline
+\end{tabular}
+\caption{Las 8 pistas de Isaac Newton del corpus, ordenadas por puntuación QUILL descendente. La dificultad asignada no predice el valor Q, lo que justifica la necesidad de una métrica formal de calidad.}
+\label{tab:newton_quill}
+\end{table}
+
+\end{document}

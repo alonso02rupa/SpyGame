@@ -1,0 +1,151 @@
+\begin{thebibliography}{10}
+
+\bibitem{Aleven2003}
+Vincent Aleven and Kenneth~R. Koedinger.
+\newblock An effective metacognitive strategy: Learning by doing and explaining with a computer-based cognitive tutor.
+\newblock {\em Cognitive Science}, 26(2):147--179, 2002.
+
+\bibitem{Aleven2016HelpDesign}
+Vincent Aleven, Elizabeth~A. McLaughlin, Rachel~A. Glenn, and Kenneth~R. Koedinger.
+\newblock Instruction based on adaptive learning technologies.
+\newblock {\em Handbook of Research on Learning and Instruction}, 2016.
+
+\bibitem{Aleven2016HelpHelps}
+Vincent Aleven, Ido Roll, Bruce~M. McLaren, and Kenneth~R. Koedinger.
+\newblock Help helps, but only so much: Research on help seeking with intelligent tutoring systems.
+\newblock {\em International Journal of Artificial Intelligence in Education}, 26(1):205--223, 2016.
+
+\bibitem{Anderson1995CognitiveTutors}
+John~R. Anderson, Albert~T. Corbett, Kenneth~R. Koedinger, and Ray Pelletier.
+\newblock Cognitive tutors: Lessons learned.
+\newblock {\em The Journal of the Learning Sciences}, 4(2):167--207, 1995.
+
+\bibitem{brown2020}
+Tom~B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel~M. Ziegler, Jeffrey Wu, Clemens Winter, Christopher Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever, and Dario Amodei.
+\newblock Language models are few-shot learners, 2020.
+
+\bibitem{Chi2018ActiveLearning}
+Michelene T.~H. Chi and Ruth Wylie.
+\newblock The icap framework: Linking cognitive engagement to active learning outcomes.
+\newblock {\em Educational Psychologist}, 49(4):219--243, 2018.
+
+\bibitem{BayesianKnowledgeTracing}
+Wikipedia contributor.
+\newblock Bayesian knowledge tracing --- wikipedia{,} the free encyclopedia.
+\newblock \url{https://en.wikipedia.org/wiki/Bayesian_knowledge_tracing}, 2025.
+\newblock Online|Accessed 25-Jan-2026.
+
+\bibitem{CorbettAnderson1995KT}
+Albert~T. Corbett and John~R. Anderson.
+\newblock Knowledge tracing: Modeling the acquisition of procedural knowledge.
+\newblock {\em User Modeling and User-Adapted Interaction}, 4(4):253--278, 1995.
+
+\bibitem{Cover2006Elements}
+Thomas~M. Cover and Joy~A. Thomas.
+\newblock {\em Elements of Information Theory}.
+\newblock Wiley-Interscience, Hoboken, NJ, 2nd edition, 2006.
+
+\bibitem{Kaliszyk2023PromiseLimits}
+Sutapa Dey~Tithi et~al.
+\newblock The promise and limits of large language models in constructing proofs and hints, 2025.
+
+\bibitem{FengHeffernan2009}
+Mingyu Feng, Neil~T. Heffernan, and Kenneth~R. Koedinger.
+\newblock Addressing the assessment challenge with an online system that tutors as it assesses.
+\newblock {\em User Modeling and User-Adapted Interaction}, 19(3):243--266, 2009.
+
+\bibitem{KoedingerAleven2007}
+Kenneth~R. Koedinger and Vincent Aleven.
+\newblock Exploring the assistance dilemma in experiments with cognitive tutors.
+\newblock {\em Educational Psychology Review}, 19(3):239--264, 2007.
+
+\bibitem{Koedinger2012DataDrivenHints}
+Kenneth~R. Koedinger, Ryan~S. Baker, and Katherine Cunningham.
+\newblock Data-driven discovery of better student models: Improving student learning with intelligent tutoring systems.
+\newblock {\em Educational Data Mining}, 2012.
+
+\bibitem{mackinnon1985}
+James~G. MacKinnon and Halbert White.
+\newblock Some heteroskedasticity-consistent covariance matrix estimators with improved finite sample properties.
+\newblock {\em Journal of Econometrics}, 29(3):305--325, 1985.
+
+\bibitem{Maniktala_2020}
+Mehak Maniktala, Christa Cody, Tiffany Barnes, and Min Chi.
+\newblock Avoiding help avoidance: Using interface design changes to promote unsolicited hint usage in an intelligent tutor.
+\newblock {\em International Journal of Artificial Intelligence in Education}, 30(4):637–667, October 2020.
+
+\bibitem{Marquez-Carpintero_Lopez-Sellers_Cazorla_2025}
+Luis Marquez-Carpintero, Alberto Lopez-Sellers, and Miguel Cazorla.
+\newblock Simulation of teaching behaviours in intelligent tutoring systems: A review using large language models - artificial intelligence review, Dec 2025.
+
+\bibitem{Maynez2020Faithfulness}
+Joshua Maynez, Shashi Narayan, Bernd Bohnet, and Ryan McDonald.
+\newblock On faithfulness and factuality in abstractive summarization.
+\newblock {\em Proceedings of ACL}, 2020.
+
+\bibitem{ITSAdaptation}
+Emergent Mind.
+\newblock Intelligent tutoring systems: Adaptation and personalization mechanisms.
+\newblock \url{https://www.emergentmind.com/topics/intelligent-tutoring-systems-its}, 2025.
+\newblock Online|Accessed 25-Jan-2026.
+
+\bibitem{Li2023HumanAIGeneratedHints}
+Zachary~A. Pardos and Shreya Bhandari.
+\newblock {ChatGPT}-generated help produces learning gains equivalent to human tutor-authored help on mathematics skills.
+\newblock {\em PLOS ONE}, 2024.
+
+\bibitem{Phung2024GPT4Hints}
+Tung Phung, Victor-Alexandru P{\u{a}}durean, Anjali Singh, Christopher Brooks, Jos{\'{e}} Cambronero, Sumit Gulwani, Adish Singla, and Gustavo Soares.
+\newblock Automating human tutor-style programming feedback: {Leveraging} {GPT-4} tutor model for hint generation and {GPT-3.5} student model for hint validation.
+\newblock In {\em Proceedings of the 14th Learning Analytics and Knowledge Conference (LAK~'24)}, pages 12--23, New York, NY, USA, 2024. ACM.
+
+\bibitem{Rafferty2016ModelingCognitiveStates}
+Anna~N. Rafferty, Michelle LaMar, and Thomas~L. Griffiths.
+\newblock Modeling cognitive states in intelligent tutoring systems.
+\newblock {\em Artificial Intelligence in Education}, pages 1--10, 2016.
+
+\bibitem{reimers2019}
+Nils Reimers and Iryna Gurevych.
+\newblock Sentence-bert: Sentence embeddings using siamese bert-networks.
+\newblock In {\em Proceedings of EMNLP-IJCNLP}, 2019.
+
+\bibitem{Scarlatos2024FeedbackRL}
+Alexander Scarlatos, Digory Smith, Simon Woodhead, and Andrew Lan.
+\newblock Improving the validity of automatically generated feedback via reinforcement learning.
+\newblock In {\em Artificial Intelligence in Education (AIED~2024)}, volume 14829 of {\em Lecture Notes in Computer Science}, pages 280--294, Cham, 2024. Springer.
+
+\bibitem{Settles2009ActiveLearning}
+Burr Settles.
+\newblock Active learning literature survey.
+\newblock Computer Sciences Technical Report 1648, University of Wisconsin--Madison, 2009.
+
+\bibitem{Shannon1948}
+Claude~E. Shannon.
+\newblock A mathematical theory of communication.
+\newblock {\em The Bell System Technical Journal}, 27(3):379--423, 1948.
+
+\bibitem{szigriszt1993sistemas}
+Francisco Szigriszt~Pazos.
+\newblock {\em Sistemas predictivos de legibilidad del mensaje escrito: f{\'o}rmula de perspicuidad}.
+\newblock Tesis doctoral, Universidad Complutense de Madrid, 1993.
+\newblock Colección Tesis Doctorales, n.º 228/93.
+
+\bibitem{tadayon2019predictingstudentperformanceeducational}
+Manie Tadayon and Greg Pottie.
+\newblock Predicting student performance in an educational game using a hidden markov model, 2019.
+
+\bibitem{tonga2024automaticgenerationquestionhints}
+Junior~Cedric Tonga, Benjamin Clement, and Pierre-Yves Oudeyer.
+\newblock Automatic generation of question hints for mathematics problems using large language models in educational technology, 2024.
+
+\bibitem{VanLehn2006}
+Kurt VanLehn.
+\newblock The behavior of tutoring systems.
+\newblock {\em International Journal of Artificial Intelligence in Education}, 16:227--265, 2006.
+
+\bibitem{Wiegreffe2021MeasuringExplanations}
+Sarah Wiegreffe and Ana Marasović.
+\newblock Measuring faithfulness in natural language explanations.
+\newblock In {\em Proceedings of EMNLP 2021}, 2021.
+
+\end{thebibliography}

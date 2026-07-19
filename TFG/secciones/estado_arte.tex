@@ -1,0 +1,164 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+El objetivo de este capítulo es situar el trabajo desarrollado en un marco amplio de investigación, analizando los avances recientes en la provisión de pistas, retroalimentación adaptativa, modelado del usuario y generación automática de contenido mediante modelos de lenguaje.
+
+\section{Sistemas de tutoría inteligente y generación de pistas}
+
+\subsection{Intelligent Tutoring Systems clásicos}
+
+Los \textit{Intelligent Tutoring Systems} (ITS) constituyen una de las primeras y más consolidadas aplicaciones de la inteligencia artificial en el ámbito educativo. Su objetivo principal es proporcionar instrucción personalizada mediante la adaptación dinámica de contenidos, ejercicios y mecanismos de ayuda en función del estado cognitivo del estudiante. Desde sus primeras formulaciones, los ITS han buscado modelar explícitamente tanto el dominio de conocimiento como al aprendiz, permitiendo al sistema razonar sobre qué sabe el usuario, qué errores comete y qué tipo de intervención resulta más adecuada en cada momento \cite{Anderson1995CognitiveTutors, CorbettAnderson1995KT}.
+
+Una de las contribuciones más influyentes en este campo es la introducción de los denominados \textit{Cognitive Tutors}, basados en modelos cognitivos que representan las habilidades subyacentes necesarias para resolver un conjunto de problemas. Estos sistemas emplean reglas de producción para simular el razonamiento humano paso a paso y permiten detectar errores específicos durante la resolución de una tarea, lo que facilita la provisión de retroalimentación inmediata y contextualizada \cite{Anderson1995CognitiveTutors}. Este enfoque ha demostrado ser especialmente eficaz en dominios estructurados como las matemáticas, la física o la programación introductoria.
+
+La adaptación en los ITS clásicos no se limita a la selección de tareas, sino que también se extiende a la gestión de la ayuda. En este contexto, las pistas se convierten en un elemento central del diseño pedagógico, actuando como un mecanismo intermedio entre la completa autonomía del estudiante y la provisión directa de la solución. La literatura muestra que el uso adecuado de pistas puede mejorar tanto el rendimiento inmediato como la comprensión a largo plazo, siempre que estas se integren de manera coherente dentro del modelo cognitivo del sistema \cite{KoedingerAleven2007, VanLehn2006}.
+
+\subsection{Estructura y diseño de pistas en ITS}
+
+Tradicionalmente, las pistas en los ITS se diseñan siguiendo una estructura jerárquica y progresiva. Este enfoque se basa en la idea de que la ayuda debe proporcionarse de forma incremental, aumentando su especificidad únicamente cuando el estudiante no progresa por sí mismo. En este esquema, se distinguen comúnmente tres niveles principales: pistas de orientación, que ofrecen indicaciones generales sobre el enfoque a seguir; pistas instrumentales, que sugieren pasos intermedios más concretos; y pistas \textit{bottom-out}, que proporcionan directamente la acción o respuesta correcta necesaria para avanzar \cite{Aleven2003, KoedingerAleven2007}.
+
+Este modelo de múltiples niveles ha sido ampliamente adoptado en sistemas como \textit{ASSISTments}\footnote{\url{https://new.assistments.org/}} y otros tutores basados en el enfoque de \textit{mastery learning}. Estudios empíricos muestran que la disponibilidad de pistas escalonadas puede reducir la frustración del estudiante y favorecer una resolución más eficiente de los problemas, siempre que el uso de las pistas no derive en una dependencia excesiva del sistema \cite{FengHeffernan2009}. En este sentido, el diseño cuidadoso de cada pista resulta crucial, ya que una pista demasiado explícita puede inhibir el razonamiento, mientras que una demasiado vaga puede resultar inútil.
+
+No obstante, un rasgo común de estos sistemas es que las pistas se codifican manualmente como parte del modelo cognitivo del tutor. Esto implica que expertos humanos deben anticipar los errores posibles, definir los distintos niveles de ayuda y redactar cada pista de forma individual. Si bien este enfoque garantiza un alto control pedagógico, también introduce una importante limitación en términos de escalabilidad y coste de desarrollo \cite{VanLehn2006}.
+
+\subsection{Modelado del estudiante y decisión de ayuda}
+
+La provisión de pistas en los ITS clásicos no depende únicamente de su diseño, sino también del momento en el que se presentan. Para ello, muchos sistemas incorporan modelos de seguimiento del conocimiento del estudiante, siendo el \textit{Bayesian Knowledge Tracing} (BKT) uno de los métodos más influyentes. BKT utiliza una red bayesiana dinámica para estimar la probabilidad de que un estudiante haya adquirido una habilidad concreta a partir de observaciones discretas como aciertos o errores \cite{CorbettAnderson1995KT}.
+
+Este tipo de modelos permite al sistema tomar decisiones adaptativas sobre cuándo ofrecer ayuda adicional, evitando tanto la sobreasistencia como el abandono del estudiante ante tareas excesivamente complejas. Sin embargo, estos enfoques suelen operar sobre representaciones simplificadas del conocimiento, en las que las pistas se tratan como eventos homogéneos sin una evaluación explícita de su contenido semántico o su impacto cognitivo específico \cite{VanLehn2006}.
+
+Como consecuencia, aunque los ITS clásicos pueden decidir \textit{cuándo} ofrecer una pista, rara vez evalúan \textit{qué tan buena} es esa pista desde un punto de vista cognitivo. La calidad de la ayuda se mide de forma indirecta mediante métricas agregadas como el rendimiento final o el número de errores, sin analizar cómo cada pista contribuye a la evolución del razonamiento del estudiante a lo largo del tiempo.
+
+\subsection{Limitaciones de los enfoques tradicionales}
+
+A pesar de su éxito empírico, los enfoques clásicos de los ITS presentan limitaciones claras que han motivado investigaciones posteriores. En primer lugar, la dependencia de reglas y pistas diseñadas manualmente dificulta la extensión del sistema a nuevos dominios o contextos menos estructurados \cite{KoedingerAleven2007}. En segundo lugar, la estructura jerárquica de pistas, aunque ampliamente aceptada, no garantiza por sí misma que una pista sea cognitivamente útil o informativa para un estudiante concreto \cite{Aleven2016HelpHelps}.
+
+Además, los sistemas tradicionales tienden a tratar las pistas como elementos estáticos, sin capacidad de adaptación semántica al contexto específico del error cometido o al historial previo del usuario. Esta rigidez contrasta con la creciente demanda de sistemas educativos capaces de ofrecer explicaciones más flexibles, personalizadas y alineadas con el razonamiento humano.
+
+En conjunto, el estado del arte en ITS establece un marco sólido para el uso de pistas como mecanismo de apoyo al aprendizaje, pero deja abierta la cuestión de cómo generar, adaptar y evaluar pistas de forma automática sin depender exclusivamente del diseño manual. Esta brecha resulta especialmente relevante en escenarios donde el espacio de soluciones es amplio o donde se desea escalar el sistema sin un esfuerzo humano proporcional.
+
+\section{Generación automática de pistas mediante modelos de lenguaje}
+
+\subsection{Uso de modelos de lenguaje en la generación de ayuda}
+
+La reciente irrupción de los \textit{Large Language Models} (LLMs) ha supuesto un punto de inflexión en el diseño de sistemas interactivos de aprendizaje basados en lenguaje natural, incluyendo los \textit{Intelligent Tutoring Systems}. A diferencia de los enfoques tradicionales, donde las pistas se codifican manualmente como parte del modelo cognitivo del tutor, los LLMs permiten generar explicaciones, sugerencias y pistas de forma automática a partir de descripciones textuales del problema o del estado del usuario.
+
+Este cambio ha despertado un creciente interés en la comunidad investigadora, ya que los LLMs son capaces de producir lenguaje fluido, contextualizado y, en muchos casos, alineado con las expectativas humanas. En el ámbito educativo, esto abre la posibilidad de reducir drásticamente el esfuerzo de diseño humano requerido para construir sistemas de tutoría, especialmente en dominios complejos o poco estructurados. Sin embargo, esta capacidad generativa plantea nuevas preguntas sobre la fiabilidad, la interpretabilidad y la utilidad cognitiva real de las pistas producidas automáticamente.
+
+\subsection{Evaluación de LLMs en la generación de pistas}
+
+Uno de los primeros trabajos en analizar de forma sistemática el uso de LLMs para la generación de pistas es \textit{The Promise and Limits of Large Language Models in Constructing Proofs and Hints} \cite{Kaliszyk2023PromiseLimits}. En este estudio, los autores evalúan la capacidad de distintos modelos de lenguaje para generar pasos intermedios y pistas en problemas de lógica formal y demostración matemática.
+
+Los resultados muestran que los LLMs pueden generar explicaciones y sugerencias plausibles desde un punto de vista sintáctico y semántico, y que, en ciertos casos, estas pistas pueden facilitar el avance del usuario. No obstante, el trabajo también pone de manifiesto limitaciones importantes: las pistas generadas no siempre justifican por qué se ofrecen en un momento concreto, ni contextualizan la pista dentro de la secuencia de razonamiento del usuario ni especifican qué estado cognitivo se espera activar con ella. En consecuencia, la calidad pedagógica de las pistas resulta altamente variable y difícil de garantizar sin mecanismos adicionales de validación \cite{Phung2024GPT4Hints}.
+
+Este tipo de resultados subraya una diferencia fundamental entre los ITS clásicos y los sistemas basados en LLMs. Mientras que en los primeros la pista forma parte explícita de un modelo cognitivo diseñado a priori, en los segundos la pista emerge como un producto probabilístico del modelo, sin una noción explícita de intención pedagógica. La literatura coincide en que esta falta de control dificulta la integración directa de los LLMs en sistemas de tutoría adaptativos sin capas adicionales de evaluación y filtrado \cite{Kaliszyk2023PromiseLimits, Scarlatos2024FeedbackRL}.
+
+\subsection{Comparación entre pistas humanas y pistas generadas}
+
+Otro eje relevante dentro del estado del arte es la comparación entre pistas generadas automáticamente y aquellas diseñadas por expertos humanos. Diversos estudios empíricos han analizado si modelos como ChatGPT\footnote{ChatGPT: \url{https://chat.openai.com}} pueden sustituir, total o parcialmente, a las pistas humanas en contextos educativos reales. En dominios como el álgebra o la resolución de problemas estructurados, Pardos y Bhandari observaron que las pistas generadas por ChatGPT superaron controles de calidad en un 70\% de los casos \cite{Li2023HumanAIGeneratedHints}.
+
+Sin embargo, aunque ambas condiciones produjeron ganancias de aprendizaje positivas, únicamente las pistas del tutor humano alcanzaron significación estadística \cite{Li2023HumanAIGeneratedHints}. Este resultado es coherente con marcos teóricos del aprendizaje activo, como el modelo ICAP, que establece una relación directa entre el nivel de compromiso cognitivo inducido por una intervención y las ganancias de aprendizaje observadas \cite{Chi2018ActiveLearning}. Las pistas humanas suelen estar mejor alineadas con el razonamiento esperado, evitan ambigüedades innecesarias y se adaptan de forma implícita al contexto del error cometido. Por el contrario, las pistas generadas por LLMs pueden ser correctas pero poco discriminativas, excesivamente generales o redundantes respecto a información ya conocida por el estudiante.
+
+Esta evidencia sugiere que la cuestión no reside únicamente en la capacidad de los LLMs para generar pistas correctas, sino en la ausencia de criterios claros para determinar cuándo una pista resulta cognitivamente útil. A día de hoy, no existe un análisis sistemático que relacione las propiedades internas de una pista generada con su impacto real sobre el proceso de razonamiento del usuario, lo que constituye una limitación significativa del estado del arte. Esta carencia motiva directamente el primer objetivo específico de este trabajo, que propone establecer métricas observables para evaluar la contribución individual de cada pista, y el cuarto, que busca identificar patrones recurrentes de generación subóptima mediante análisis estadístico.
+
+\subsection{Generación de múltiples niveles de pistas}
+
+Siguiendo la tradición de los ITS clásicos en el diseño de ayuda jerárquica, donde las pistas se estructuran de forma progresiva desde orientaciones generales hasta ayudas \textit{bottom-out} \cite{Aleven2016HelpDesign}, algunos trabajos recientes han explorado el uso de LLMs para generar múltiples niveles de pistas de forma automática \cite{tonga2024automaticgenerationquestionhints}.
+
+
+Los resultados de estos estudios son dispares. Por un lado, se observa que las pistas demasiado generales pueden resultar inútiles o incluso engañosas, ya que no reducen el espacio de hipótesis del usuario. Por otro lado, las pistas excesivamente específicas pueden trivializar la tarea y reducir el esfuerzo cognitivo necesario para consolidar el aprendizaje. En algunos casos, la inclusión de ejemplos concretos o reformulaciones explícitas mejora el soporte ofrecido al usuario, pero estos efectos no son consistentes entre distintos perfiles de estudiantes.
+
+Un aspecto común en esta línea de investigación es la ausencia de una formalización clara de qué características hacen que una pista sea “buena” desde un punto de vista cognitivo. La mayoría de los trabajos evalúan el impacto de las pistas mediante métricas agregadas como el rendimiento final o el número de aciertos, sin analizar cómo cada pista contribuye a la evolución del razonamiento a lo largo del tiempo. Como resultado, el estado del arte carece de métricas explícitas que permitan evaluar, comparar o seleccionar pistas generadas automáticamente en función de su utilidad funcional real. Esta limitación es la motivación directa del primer objetivo específico de este trabajo, que propone un conjunto de métricas observables —integradas en la función QUILL— capaces de capturar dimensiones como el poder discriminativo, la ambigüedad o la ganancia de información a nivel de pista individual.
+
+En conjunto, la literatura muestra que los LLMs ofrecen un potencial significativo para la generación automática de pistas, pero también revela una brecha clara entre la capacidad generativa del modelo y la capacidad de evaluación cognitiva de las pistas producidas. Esta brecha limita la integración efectiva de los LLMs en sistemas de tutoría adaptativos y pone de manifiesto la necesidad de marcos formales que permitan analizar la utilidad de las pistas más allá de su corrección superficial.
+
+\section{Modelado cognitivo del usuario mediante estados latentes}
+
+Una de las líneas históricamente más relevantes dentro de los \textit{Intelligent Tutoring Systems} es el modelado explícito del estado cognitivo del usuario. Dado que procesos como la comprensión, la adquisición de conocimiento o la certeza sobre una hipótesis no son directamente observables, los ITS han recurrido tradicionalmente a modelos latentes que permiten inferir dichos estados a partir de interacciones observadas, como respuestas correctas o incorrectas, tiempos de reacción o secuencias de acciones.
+
+Este enfoque parte de la premisa de que el comportamiento observable del usuario es una manifestación imperfecta de un estado cognitivo interno subyacente. En consecuencia, el objetivo del sistema no es únicamente reaccionar ante acciones aisladas, sino inferir la evolución del conocimiento o razonamiento del usuario a lo largo del tiempo. Esta perspectiva ha sido ampliamente adoptada en minería de datos educativos y aprendizaje adaptativo, constituyendo uno de los pilares teóricos de los sistemas de tutoría inteligente modernos.
+
+\subsection{Bayesian Knowledge Tracing y modelos ocultos de Markov}
+
+Uno de los modelos más influyentes en este ámbito es el \textit{Bayesian Knowledge Tracing} (BKT), introducido como un mecanismo probabilístico para estimar si un estudiante ha adquirido una habilidad específica en función de su historial de interacciones. BKT modela el proceso de aprendizaje como una red bayesiana dinámica, formalmente equivalente a un modelo oculto de Markov (HMM), donde el estado oculto representa el dominio o no de una habilidad, y las observaciones corresponden a respuestas correctas o incorrectas \cite{BayesianKnowledgeTracing}.
+
+A pesar de su simplicidad, BKT ha demostrado ser eficaz en múltiples dominios educativos y ha servido como base para numerosos sistemas de tutoría adaptativa. No obstante, su formulación clásica asume estados cognitivos discretos y bien definidos, así como observaciones igualmente discretas, lo que limita su capacidad para capturar procesos cognitivos más complejos, graduales o exploratorios.
+
+Trabajos posteriores han extendido este enfoque incorporando variantes de HMM más generales para analizar trayectorias temporales de interacción en entornos educativos y juegos serios. En particular, Tadayon y Pottie utilizan modelos ocultos de Markov para predecir el rendimiento de estudiantes en un juego educativo, mostrando que las secuencias de estados latentes permiten capturar patrones de exploración, aprendizaje y consolidación que no son evidentes a partir de métricas agregadas \cite{tadayon2019predictingstudentperformanceeducational}. Este tipo de resultados refuerza la utilidad de los modelos secuenciales para representar la dinámica del razonamiento del usuario a lo largo del tiempo.
+
+\subsection{Estados cognitivos como procesos dinámicos}
+
+Más allá de la estimación de conocimiento factual, la literatura ha comenzado a explorar representaciones más ricas del proceso cognitivo, en las que los estados latentes no se interpretan únicamente como “sabe” o “no sabe”, sino como fases del razonamiento. Algunos trabajos proponen modelar transiciones entre estados como exploración, convergencia o confirmación, especialmente en tareas abiertas o de resolución de problemas complejos \cite{Rafferty2016ModelingCognitiveStates}.
+
+Este tipo de modelado resulta particularmente relevante en sistemas interactivos donde el usuario formula hipótesis, prueba alternativas y refina progresivamente su comprensión. En estos escenarios, el interés no reside tanto en el resultado final como en la trayectoria seguida para alcanzarlo. Los modelos basados en estados latentes permiten analizar si el usuario progresa de forma consistente hacia la solución, si presenta comportamientos erráticos o si se estanca en fases tempranas del razonamiento.
+
+Desde esta perspectiva, las observaciones no se limitan a respuestas binarias, sino que pueden incluir secuencias de acciones, cambios en las hipótesis planteadas o incluso la distancia semántica entre intentos sucesivos. La incorporación de este tipo de señales observables amplía significativamente el poder descriptivo de los modelos cognitivos, aunque también incrementa su complejidad.
+
+\subsection{Limitaciones del estado del arte}
+
+A pesar de los avances en modelado cognitivo, el estado del arte presenta limitaciones relevantes cuando se combina con sistemas de ayuda o generación de pistas. En muchos enfoques, los modelos latentes se utilizan para estimar el conocimiento global del usuario, pero no para analizar el impacto específico de cada intervención o pista sobre la evolución del razonamiento. Como resultado, se pierde información valiosa sobre cómo una pista concreta contribuye, o no, a la transición entre estados cognitivos.
+
+Además, la mayoría de los modelos existentes operan sobre observaciones discretas y bien definidas, lo que dificulta su aplicación directa a entornos donde las interacciones son abiertas y basadas en lenguaje natural. En estos contextos, las señales observables son más ruidosas y requieren mecanismos adicionales de representación, como embeddings semánticos, para poder integrarse en un modelo probabilístico coherente.
+
+En conjunto, la literatura pone de manifiesto que los modelos ocultos de Markov y sus extensiones constituyen una herramienta sólida para representar procesos cognitivos latentes, pero su integración con sistemas de generación automática de pistas sigue siendo limitada. En particular, no existe un marco consolidado que permita analizar de forma explícita cómo las pistas afectan a la trayectoria cognitiva del usuario, ni cómo esta información puede utilizarse para evaluar la utilidad real de dichas pistas en sistemas interactivos complejos. Esta limitación constituye la motivación directa del tercer objetivo específico de este trabajo, que propone analizar experimentalmente el impacto de diferentes tipos de pistas sobre la dinámica de interacción del usuario, estudiando cómo influyen en la tasa de acierto y en los patrones de comportamiento observados.
+
+\section{Evaluación automática de la calidad de las pistas}
+
+La evaluación de la ayuda y las pistas en sistemas interactivos ha estado tradicionalmente ligada a métricas globales de rendimiento, como el porcentaje de aciertos, el tiempo total de resolución o las ganancias de aprendizaje medidas mediante pruebas pre y post. Si bien estos indicadores resultan útiles para evaluar el comportamiento general de un sistema, presentan limitaciones significativas cuando se pretende analizar el impacto específico de una pista individual sobre el proceso cognitivo del usuario.
+
+En particular, estas métricas agregadas no permiten aislar la contribución de cada pista dentro de una secuencia de interacción, ni capturar cómo una intervención concreta afecta a la trayectoria de razonamiento del usuario. Como consecuencia, una pista puede considerarse exitosa o fallida únicamente en función del resultado final, sin atender a si ha reducido el espacio de hipótesis, activado procesos de reflexión o inducido confusión temporal.
+
+Esta limitación se vuelve especialmente problemática en sistemas complejos donde el usuario recibe múltiples pistas a lo largo del tiempo, ya que el efecto de una pista concreta puede manifestarse de forma diferida o interactuar con intervenciones posteriores. La literatura reconoce que la evaluación de la ayuda sigue siendo uno de los aspectos menos formalizados dentro de los \textit{Intelligent Tutoring Systems} \cite{VanLehn2006}.
+
+\subsection{Evaluación de la utilidad de las pistas}
+
+Algunos trabajos han intentado avanzar hacia métricas más finas que permitan evaluar la utilidad de una pista más allá de su corrección factual. En este contexto, VanLehn introduce el concepto de \textit{help effectiveness}, analizando si la ayuda proporcionada conduce a un progreso observable en el razonamiento del estudiante \cite{VanLehn2006}. No obstante, estos enfoques suelen basarse en observaciones discretas y en dominios altamente estructurados, lo que limita su generalización.
+
+Investigaciones posteriores han propuesto evaluar la utilidad de la ayuda midiendo cambios en el comportamiento inmediatamente posteriores a la pista, como la reducción del número de errores repetidos o la aceleración del progreso hacia la solución. Sin embargo, estos indicadores siguen siendo indirectos y no capturan de forma explícita los mecanismos cognitivos subyacentes. En particular, no distinguen entre pistas que simplemente guían al usuario por ensayo y error y aquellas que fomentan una comprensión más profunda del problema.
+
+En consecuencia, el estado del arte carece de una definición operativa consensuada de qué constituye una “buena pista” desde un punto de vista cognitivo, especialmente en entornos abiertos donde el usuario formula hipótesis, explora alternativas y ajusta progresivamente su razonamiento. Esta limitación constituye la motivación central del primer objetivo específico de este trabajo, que propone un conjunto de métricas formales para evaluar la contribución individual de cada pista al proceso de razonamiento del usuario.
+
+\subsection{Ambigüedad, redundancia y trampas semánticas}
+
+Con la introducción de LLMs en la generación de pistas, han emergido nuevas fuentes de error que no estaban presentes en los sistemas tradicionales. Aunque los modelos de lenguaje pueden generar pistas gramaticalmente correctas y aparentemente relevantes, diversos estudios han mostrado que estas pueden ser cognitivamente ambiguas, redundantes o incluso engañosas \cite{Maynez2020Faithfulness}.
+
+Estas denominadas \textit{trampas semánticas} se producen cuando una pista es técnicamente correcta pero no reduce el espacio de hipótesis del usuario, induce interpretaciones múltiples o refuerza asociaciones incorrectas. En el contexto educativo, este tipo de pistas puede generar ruido cognitivo, ralentizar el proceso de convergencia o aumentar la frustración del usuario.
+
+La literatura sobre evaluación de explicaciones generadas automáticamente señala que la fluidez lingüística no es un indicador fiable de calidad semántica o utilidad cognitiva \cite{Wiegreffe2021MeasuringExplanations}. Sin embargo, la mayoría de estos trabajos se centran en tareas de \textit{natural language processing} y no abordan directamente el impacto de las explicaciones o pistas sobre el comportamiento de un usuario humano en una tarea interactiva.
+
+\subsection{Evaluación basada en comportamiento del usuario}
+
+Una línea emergente de investigación propone evaluar la calidad de las pistas a partir del comportamiento observable del usuario tras recibirlas. Desde esta perspectiva, una pista se considera útil si provoca cambios sistemáticos en el razonamiento del usuario, como la generación de hipótesis más cercanas a la solución, una reducción de la exploración errática o una mayor coherencia en las respuestas sucesivas \cite{Koedinger2012DataDrivenHints}.
+
+Este enfoque conecta de forma natural con el uso de modelos secuenciales y estados latentes, ya que permite analizar cómo una pista contribuye a transiciones entre estados cognitivos. No obstante, la mayoría de los trabajos existentes se limitan a dominios cerrados y observaciones discretas, como respuestas correctas o incorrectas, sin incorporar señales más ricas como la similitud semántica entre intentos o la evolución del contenido de las hipótesis formuladas por el usuario.
+
+En sistemas basados en lenguaje natural, esta limitación se acentúa, ya que la evaluación requiere mecanismos adicionales para representar el contenido semántico de las interacciones. Aunque los embeddings distribucionales ofrecen una posible solución, su integración en marcos formales de evaluación cognitiva sigue siendo un problema abierto.
+
+En síntesis, el estado del arte muestra un interés creciente por la evaluación automática de la ayuda y las pistas, pero carece de marcos formales que integren generación, evaluación y adaptación de forma coherente. Las métricas existentes son mayoritariamente indirectas, agregadas o dependientes del dominio, y no permiten caracterizar la utilidad funcional de una pista individual dentro de una secuencia de interacción compleja. Esta carencia es especialmente evidente en sistemas que emplean LLMs, donde la capacidad de generar pistas supera ampliamente la capacidad de evaluarlas. Dar respuesta a esta limitación es el objetivo transversal de este trabajo, que propone QUILL como marco formal para evaluar pistas en función de su impacto observable sobre el razonamiento del usuario.
+
+
+\section{Resumen de limitaciones y objetivos del TFG}
+
+A partir del análisis de los tres bloques anteriores, es posible identificar las principales limitaciones del estado del arte y establecer su correspondencia con los objetivos específicos planteados en este trabajo. La tabla siguiente sintetiza esta relación:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{5.5cm}p{2.5cm}p{5.5cm}}
+\hline
+\textbf{Limitación identificada} & \textbf{Sección} & \textbf{Objetivo específico del TFG que la aborda} \\
+\hline
+Ausencia de métricas explícitas para evaluar la utilidad funcional de pistas individuales generadas automáticamente & §2.2, §2.4 & OE1: Establecer métricas observables para evaluar la contribución individual de cada pista al proceso de razonamiento del usuario \\
+\hline
+Los LLMs carecen de mecanismos internos para validar la utilidad pedagógica del texto que generan; la calidad de las pistas es heterogénea & §2.2 & OE2: Integrar LLMs como generadores automáticos de pistas analizando sus limitaciones en ambigüedad y utilidad cognitiva \\
+\hline
+Los modelos de seguimiento cognitivo no analizan el impacto específico de cada pista sobre la trayectoria de razonamiento del usuario & §2.3 & OE3: Analizar experimentalmente el impacto de diferentes tipos de pistas sobre la dinámica de interacción del usuario \\
+\hline
+No se han identificado empíricamente los patrones de generación subóptima de pistas ni sus consecuencias sobre el comportamiento del usuario & §2.2 & OE4: Identificar patrones recurrentes de generación subóptima de pistas mediante análisis estadístico de datos reales de interacción \\
+\hline
+\end{tabular}
+\caption{Limitaciones del estado del arte y objetivos específicos del TFG que las abordan.}
+\label{tab:limitaciones_objetivos}
+\end{table}
+
+\end{document}

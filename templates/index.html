@@ -370,15 +370,16 @@
                 <span class="close" id="objetivos-close">&times;</span>
             </div>
             <div class="modal-body">
-                {% if personas %}
-                <ul class="objetivos-list">
-                    {% for persona in personas %}
-                    <li>{{ persona }}</li>
-                    {% endfor %}
+                <div id="objetivos-loading" style="text-align: center; padding: 20px;">
+                    <p style="color: #c4b5fd;">Cargando personajes...</p>
+                </div>
+                <div id="objetivos-error" style="display: none; text-align: center; padding: 20px;">
+                    <p style="color: #f87171;">No se pudieron cargar los personajes.</p>
+                    <button type="button" class="btn btn-secondary" id="retry-objetivos-btn" style="margin-top: 10px;">Reintentar</button>
+                </div>
+                <ul id="objetivos-list-container" class="objetivos-list" style="display: none;">
                 </ul>
-                {% else %}
-                <p style="color: #c4b5fd; text-align: center;">No hay personas disponibles.</p>
-                {% endif %}
+                <p id="objetivos-reminder" style="display: none; color: #94a3b8; font-size: 0.85em; text-align: center; margin-top: 12px; font-style: italic;">Puedes volver a ver los objetivos en el botón <strong>Objetivos</strong> al lado del botón Enviar.</p>
                 <div class="form-actions" style="justify-content: center; margin-top: 16px;">
                     <button type="button" class="btn btn-secondary" id="close-objetivos-btn">Cerrar</button>
                 </div>
@@ -801,6 +802,10 @@
         const objetivosModal = document.getElementById('objetivos-modal');
         const objetivosClose = document.getElementById('objetivos-close');
         const closeObjetivosBtn = document.getElementById('close-objetivos-btn');
+        const objetivosLoading = document.getElementById('objetivos-loading');
+        const objetivosError = document.getElementById('objetivos-error');
+        const objetivosListContainer = document.getElementById('objetivos-list-container');
+        const retryObjetivosBtn = document.getElementById('retry-objetivos-btn');
 
         // Reveal confirm modal elements
         const revealConfirmModal = document.getElementById('reveal-confirm-modal');
@@ -851,9 +856,10 @@
             if (submitGuessBtn) submitGuessBtn.addEventListener('click', makeGuess);
             
             // Objetivos button event listeners
-            if (objetivosBtn) objetivosBtn.addEventListener('click', showObjetivosModal);
+            if (objetivosBtn) objetivosBtn.addEventListener('click', function() { showObjetivosModal(false); });
             if (objetivosClose) objetivosClose.addEventListener('click', hideObjetivosModal);
             if (closeObjetivosBtn) closeObjetivosBtn.addEventListener('click', hideObjetivosModal);
+            if (retryObjetivosBtn) retryObjetivosBtn.addEventListener('click', loadObjetivos);
             
             // Listen for key presses in the guess input field
             if (guessInput) {
@@ -1104,6 +1110,9 @@
                     guessInput.disabled = false;                 // Enable guess input
                     submitGuessBtn.disabled = false;             // Enable submit button
                     
+                    // Show objetivos modal when game starts
+                    showObjetivosModal(true);
+
                     // Display the first hint automatically if provided with typewriter effect
                     if (data.first_hint) {
                         const li = document.createElement('li');
@@ -1652,10 +1661,60 @@
 
         /* Objetivos Modal Functions */
 
-        function showObjetivosModal() {
+        // Cache to avoid re-fetching if already loaded
+        let objetivosLoaded = false;
+
+        function showObjetivosModal(showReminder) {
             if (objetivosModal) {
                 objetivosModal.style.display = 'block';
+                // Show or hide the reminder text depending on context
+                const reminder = document.getElementById('objetivos-reminder');
+                if (reminder) {
+                    reminder.style.display = showReminder ? 'block' : 'none';
+                }
+                if (!objetivosLoaded) {
+                    loadObjetivos();
+                }
             }
+        }
+
+        function loadObjetivos() {
+            // Show loading, hide error and list
+            if (objetivosLoading) objetivosLoading.style.display = 'block';
+            if (objetivosError) objetivosError.style.display = 'none';
+            if (objetivosListContainer) objetivosListContainer.style.display = 'none';
+
+            fetch('{{ url_for("api_personas") }}')
+                .then(response => {
+                    if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                    return response.json();
+                })
+                .then(data => {
+                    if (objetivosLoading) objetivosLoading.style.display = 'none';
+
+                    if (data.personas && data.personas.length > 0) {
+                        // Build the list dynamically
+                        objetivosListContainer.innerHTML = '';
+                        data.personas.forEach(nombre => {
+                            const li = document.createElement('li');
+                            li.textContent = nombre;
+                            objetivosListContainer.appendChild(li);
+                        });
+                        objetivosListContainer.style.display = '';
+                        objetivosLoaded = true;
+                    } else {
+                        // No personas found even after fallback
+                        if (objetivosError) {
+                            objetivosError.querySelector('p').textContent = 'No hay personajes disponibles en este momento.';
+                            objetivosError.style.display = 'block';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading objetivos:', error);
+                    if (objetivosLoading) objetivosLoading.style.display = 'none';
+                    if (objetivosError) objetivosError.style.display = 'block';
+                });
         }
 
         function hideObjetivosModal() {

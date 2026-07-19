@@ -1,0 +1,25 @@
+\babel@toc {spanish}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Limitaciones del estado del arte y objetivos específicos del TFG que las abordan.}}{12}{table.caption.7}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Número de artículos de la Wikipedia en inglés con enlace entrante a cada personaje seleccionado, ordenados de mayor a menor. Todos superan el umbral mínimo de 200 enlaces. Los nombres son hipervínculos al artículo correspondiente en Wikipedia en inglés.}}{14}{table.3.1}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Muestra de pistas del corpus a distintos niveles de dificultad.}}{17}{table.caption.9}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Las 8 pistas de Isaac Newton del corpus, ordenadas por puntuación QUILL descendente. La dificultad asignada no predice el valor Q, lo que justifica la necesidad de una métrica formal de calidad.}}{29}{table.caption.12}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Pistas con mayor puntuación QUILL del corpus (pesos iniciales, $N=360$).}}{36}{table.caption.17}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Coeficientes estandarizados de la regresión logística ($N=2293$).}}{37}{table.caption.18}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Pistas con menor puntuación QUILL del corpus (pesos iniciales, $N=360$).}}{38}{table.caption.20}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Coeficientes estandarizados del modelo OLS para PD (errores robustos HC3).}}{42}{table.caption.21}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Coeficientes estandarizados del modelo OLS para AMB (errores robustos HC3).}}{43}{table.caption.23}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Coeficientes estandarizados del modelo OLS para nGAIN (errores robustos HC3).}}{45}{table.caption.25}%
+\contentsline {table}{\numberline {5.7}{\ignorespaces Coeficientes estandarizados del modelo OLS para LEC (errores robustos HC3).}}{46}{table.caption.27}%
+\contentsline {table}{\numberline {5.8}{\ignorespaces Coeficientes estandarizados del modelo OLS para CONS (errores robustos HC3).}}{48}{table.caption.29}%
+\contentsline {table}{\numberline {5.9}{\ignorespaces Distribución de clases en el conjunto de datos de Fase 2.}}{50}{table.caption.31}%
+\contentsline {table}{\numberline {5.10}{\ignorespaces Comparación de bondad de ajuste del modelo logístico entre ambas fases.}}{50}{table.caption.32}%
+\contentsline {table}{\numberline {5.11}{\ignorespaces Coeficientes $\beta $ estandarizados del modelo logístico (sklearn, L2) en Fase 2, comparados con los de Fase 1. Los pesos normalizados derivados sitúan PD en el 53.2\%, CONS en el 25.9\%, nGAIN en el 9.8\%, AMB en el 8.1\% y LEC en el 3.7\%.}}{52}{table.caption.35}%
+\contentsline {table}{\numberline {5.12}{\ignorespaces Estadísticos descriptivos de las tres variantes de $Q$ sobre las 360 pistas del corpus, con correlaciones de Pearson entre pares ($N=360$).}}{56}{table.caption.42}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Impacto estandarizado de la densidad verbal sobre las métricas de calidad.}}{59}{table.caption.43}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Perfil empírico de la pista óptima según los modelos OLS. Los umbrales VERB\_Ratio y ADJ\_Ratio corresponden al primer cuartil del corpus.}}{61}{table.caption.44}%

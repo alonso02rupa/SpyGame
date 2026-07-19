@@ -1,0 +1,10 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+This work presents \textit{Spygame}, an interactive game platform designed to study human deductive reasoning under partial information conditions. A corpus of 360 hints was generated automatically using the Meta-Llama-3.1-70B-Instruct model over 45 public figures extracted from Wikipedia, and a formal framework — \textbf{QUILL} (\textit{Quality Index for Ludic Learning hints}) — is proposed and evaluated to analyse the quality of LLM-generated hints.
+
+QUILL integrates five semantic metrics: Discriminative Power (PD), Relative Ambiguity (AMB), Normalised Information Gain (nGAIN), Internal Semantic Consistency (CONS), and Readability (LEC). These metrics are combined through an empirically calibrated weighted sum, modulated by a data-driven CLAMP function based on the corpus distribution of direct hint-to-target cosine similarity.
+
+Empirical validation was conducted across two experimental phases totalling 3,412 real user interactions: an open-world phase ($N=2{,}293$) requiring free-recall responses, and a closed-world phase ($N=1{,}119$) in which players selected from a visible candidate list. Logistic regression over the interaction logs was used to estimate the relative contribution of each metric to the probability of a correct guess, yielding empirically adjusted variants of QUILL for each modality.
+
+Results show that Discriminative Power is the most robust predictor of success in both phases, with its coefficient tripling in the closed-world condition ($\beta=+0.333$). Ordinary least squares regression over linguistic features of the corpus reveals that verb density penalises four of the five quality metrics, while the presence of named entities significantly increases information gain. These findings support a concrete design principle: hint quality depends primarily on nominal specificity rather than narrative fluency.
+\end{document}

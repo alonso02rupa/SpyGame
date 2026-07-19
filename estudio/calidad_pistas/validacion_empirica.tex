@@ -1,0 +1,625 @@
+\subsection{Validación Empírica con Usuarios (Fase 1: Mundo Abierto)}
+
+Para evaluar la utilidad funcional real de las métricas definidas, se utilizó el conjunto de interacciones $D_{logs}$ de la primera fase experimental ($N = 2293$), segmentando los registros en:
+
+\begin{itemize}
+\item Clase positiva ($y=1$): aciertos directos.
+\item Clase negativa ($y=0$): fallos, solicitudes adicionales o abandono.
+\end{itemize}
+
+Dado el leve desbalance del conjunto (aproximadamente 1:1.5), se empleó una regresión logística con ponderación de clases (\texttt{class\_weight='balanced'}). Todas las variables independientes fueron previamente estandarizadas mediante \texttt{StandardScaler} (transformación z-score), permitiendo comparar directamente las magnitudes relativas de los coeficientes estimados.
+
+Es importante destacar que el objetivo del modelo no es construir un predictor conductual de alta precisión, sino estimar la contribución marginal relativa de cada métrica a la probabilidad de acierto.
+
+\subsubsection{Validación Cruzada y Capacidad Discriminativa}
+
+Para evitar dependencia de un único particionado train/test, se realizó validación cruzada estratificada 5-fold.
+
+Los resultados medios obtenidos fueron:
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+Accuracy & $0.546 \pm 0.026$ \\
+AUC-ROC & $0.565 \pm 0.027$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Estos valores indican:
+
+\begin{itemize}
+\item Capacidad discriminativa modesta pero consistente (AUC > 0.5).
+\item Baja varianza entre folds (std < 0.03), lo que sugiere estabilidad estructural del modelo.
+\end{itemize}
+
+Aunque la mejora sobre el azar es limitada, este resultado es coherente con la naturaleza del problema: la probabilidad de acierto humano depende de múltiples factores no observados (conocimiento previo, experiencia, estrategia), mientras que el modelo solo utiliza características de la pista.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{imagenes/roc_curve_cv.png}
+    \caption{Curva ROC media en validación cruzada 5-fold con banda de desviación estándar.}
+    \label{fig:roc_cv}
+\end{figure}
+
+La curva se sitúa consistentemente por encima de la diagonal, confirmando señal predictiva real aunque de magnitud moderada.
+
+\subsubsection{Bondad de Ajuste Global}
+
+El pseudo-$R^2$ de McFadden obtenido fue:
+
+\[
+R^2_{McFadden} = 0.0102
+\]
+
+Este valor es bajo en términos absolutos, indicando que el modelo explica una fracción reducida de la variabilidad total frente al modelo nulo. Sin embargo, este resultado es esperable dado que únicamente se modelan propiedades del estímulo y no variables del jugador.
+
+Para contrastar formalmente la relevancia global del modelo se realizó un test de razón de verosimilitud:
+
+\[
+G^2 = 30.10, \quad p = 1.41 \times 10^{-5}
+\]
+
+El resultado significativo confirma que, colectivamente, las métricas contienen información predictiva real sobre la probabilidad de acierto.
+
+Adicionalmente, se calculó el Brier Score:
+
+\[
+BS = 0.245
+\]
+
+Dado que un modelo puramente aleatorio obtiene aproximadamente $0.25$, este valor indica calibración moderada pero coherente con la capacidad discriminativa observada.
+
+\subsubsection{Coeficientes del Modelo}
+
+La Tabla \ref{tab:coeficientes_logistica} muestra los coeficientes estandarizados estimados.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Métrica} & \textbf{Coeficiente ($\beta$)} & \textbf{Signo} \\ \hline
+PD & +0.110 & Positivo \\
+LEC & -0.070 & Negativo \\
+AMB & -0.080 & Negativo \\
+nGAIN & +0.056 & Positivo \\
+CONS & -0.008 & Nulo \\
+\hline
+\end{tabular}
+\caption{Coeficientes estandarizados de la regresión logística ($N=2293$).}
+\label{tab:coeficientes_logistica}
+\end{table}
+
+Cabe señalar que, aunque el modelo global resulta significativo, los coeficientes individuales no alcanzan significancia estadística estricta ($p<0.05$) cuando se estiman mediante \textit{statsmodels}. Esto es consistente con la presencia de colinealidad parcial entre métricas y con la dificultad intrínseca del problema.
+
+En consecuencia, la interpretación debe realizarse en términos de contribución relativa y no como evidencia causal individual.
+
+\subsubsection{Interpretación Empírica}
+
+\begin{enumerate}
+
+\item \textbf{Predominio del poder discriminativo:} PD presenta el mayor coeficiente positivo. Esto confirma que la separación efectiva respecto al competidor más cercano es el principal determinante observable del éxito.
+
+\item \textbf{Efecto inverso de la lecturabilidad:} El coeficiente negativo de LEC no implica que la complejidad lingüística sea deseable per se, sino que la métrica Flesch penaliza vocabulario técnico y específico, el cual resulta útil para discriminar.
+
+\item \textbf{Penalización por ambigüedad:} AMB mantiene efecto negativo consistente, reforzando la necesidad de minimizar similitudes estructurales con candidatos rivales.
+
+\item \textbf{Aporte positivo de nGAIN:} La reducción global de entropía contribuye al éxito, aunque en menor magnitud que PD.
+
+\item \textbf{Rol marginal de CONS:} La baja varianza observada en coherencia interna limita su capacidad discriminativa en este conjunto concreto.
+
+\end{enumerate}
+
+\subsubsection{Reestimación de Pesos}
+
+Con el objetivo de alinear la función de evaluación con la evidencia empírica, se recalcularon los pesos normalizando la magnitud absoluta de los coeficientes:
+
+\[
+w_i = \frac{|\beta_i|}{\sum |\beta_k|}
+\]
+
+Esta estrategia permite construir un índice compuesto basado en contribución relativa observada, aunque no implica inferencia causal individual fuerte.
+
+La nueva formulación queda definida como:
+
+\[
+Q_{opt}(h) =
+\text{CLAMP}(h) \cdot
+\left[
+0.35 \text{PD}
++ 0.20 (1 - 1.5\text{AMB})
++ 0.15 \text{nGAIN}
++ 0.05 \text{CONS}
++ 0.25 \text{LEC}
+\right]
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagenes/q_comparison_histogramas.png}
+    \caption{Comparativa entre ponderación teórica inicial y ponderación empírica ajustada.}
+    \label{fig:comparativa_pesos}
+\end{figure}
+
+En conjunto, los resultados muestran que la calidad efectiva de una pista depende principalmente de su capacidad para aislar el objetivo respecto a competidores cercanos, manteniendo suficiente especificidad léxica para evitar generalidad excesiva.
+
+
+\subsection{Análisis integral: Anatomía de la pista (Fase 1: Mundo Abierto)}
+
+A partir de los resultados empíricos obtenidos en la sección anterior, es posible formalizar con mayor precisión el concepto de pista como unidad funcional dentro del sistema. Definimos una pista como una unidad composicional de información expresada en lenguaje natural, condicionada por un objetivo latente $t$, cuya función es modificar el estado epistemológico del receptor reduciendo la entropía del espacio de estados posibles $\mathcal{S}$ sin revelar explícitamente dicho objetivo.
+
+Sea $\mathcal{S} = \{s_1, \dots, s_N\}$ el conjunto de candidatos posibles y $P(s)$ la distribución inicial asumida por el jugador, que en ausencia de información se aproxima a una distribución uniforme. Una pista $h$ actúa como operador informacional que induce una actualización bayesiana:
+
+\[
+P(s \mid h) \propto P(h \mid s)\,P(s)
+\]
+
+De este modo, la pista puede interpretarse como un \textbf{filtro bayesiano lingüístico}: transforma una distribución \textit{a priori} relativamente plana en una distribución \textit{a posteriori} donde la masa de probabilidad se concentra progresivamente sobre el objetivo $t$. La calidad de la pista no reside únicamente en la magnitud de esta concentración, sino en la forma en que se produce dicha redistribución.
+
+Esta reformulación mejora el baseline inicial ("unidad de información basada en lenguaje natural cuyo cometido es eliminar entropía") en tres dimensiones fundamentales:
+
+\begin{enumerate}
+
+\item \textbf{Composicionalidad estructural.}
+Una pista no es un dato atómico, sino una estructura lingüística compuesta por múltiples componentes (entidades nominales, propiedades atributivas, relaciones sintácticas y dependencias semánticas). Cada uno de estos elementos contribuye diferencialmente a la reducción de incertidumbre. Las regresiones OLS que se presentan a continuación permiten cuantificar qué características formales están asociadas con mayor poder discriminativo o mayor ganancia de información.
+
+\item \textbf{Condicionalidad relacional.}
+La calidad de una pista no es intrínseca al texto en sí mismo, sino relacional. Una misma secuencia lingüística puede ser altamente informativa para un objetivo $t_1$ y prácticamente irrelevante para $t_2$. La evaluación debe entenderse como una función ternaria texto–objetivo–campo semántico. Formalmente, $Q(h)$ depende de la estructura del espacio $\mathcal{S}$ y de la posición relativa del objetivo dentro de dicho espacio.
+
+\item \textbf{No-trivialidad óptima.}
+El objetivo de una pista no es colapsar la entropía a cero (lo cual equivaldría a revelar la respuesta), sino producir una reducción calibrada que mantenga un gradiente informativo. Una pista óptima equilibra discriminación y ambigüedad residual: reduce significativamente el conjunto plausible de estados sin eliminar completamente la incertidumbre. Esta tensión entre claridad y no-revelación constituye el núcleo del problema de optimización.
+
+\end{enumerate}
+
+Desde esta perspectiva, la pista puede descomponerse en dos niveles analíticos complementarios:
+
+\begin{itemize}
+\item Nivel \textbf{semántico-funcional}: mide el efecto global sobre la distribución $P(s)$ (PD, AMB, nGAIN).
+\item Nivel \textbf{estructural-lingüístico}: caracteriza la forma en que dicha información es codificada (longitud, complejidad sintáctica, densidad nominal, subjetividad, etc.).
+\end{itemize}
+
+Mientras que la regresión logística permitió estimar qué métricas semánticas se asocian con el éxito observable del jugador, el análisis OLS que se presenta a continuación busca responder una pregunta distinta pero complementaria:
+
+\begin{quote}
+¿Qué propiedades formales del texto explican variaciones sistemáticas en las métricas semánticas de calidad?
+\end{quote}
+
+En otras palabras, si la regresión logística modela la \textit{utilidad externa} de la pista, la regresión OLS modela su \textit{anatomía interna}. Este análisis permite entender no solo qué métricas son relevantes, sino cómo emergen estructuralmente a partir de la configuración lingüística del enunciado.
+
+\subsubsection{Marco formal del modelo}
+
+Sea $X \in \mathbb{R}^{n \times p}$ la matriz de características lingüísticas estandarizadas y $Y_k$ cada una de las métricas de calidad ($k \in \{PD, AMB, nGAIN, LEC, CONS\}$). Para cada métrica se estima el modelo lineal:
+
+\[
+Y_k = X\beta_k + \varepsilon_k
+\]
+
+donde:
+
+\begin{itemize}
+\item $\beta_k$ representa el vector de coeficientes estandarizados,
+\item $\varepsilon_k$ es el término de error,
+\item se utilizan errores robustos HC3 para garantizar inferencia válida ante heterocedasticidad.
+\end{itemize}
+
+Todas las variables se transforman mediante estandarización Z-score, lo que permite interpretar cada coeficiente $\beta$ como el cambio en desviaciones estándar de la métrica ante un incremento de una desviación estándar en el predictor.
+
+\subsubsection{Naturaleza esperada de los resultados}
+
+Antes de examinar los modelos individuales, es importante establecer una expectativa teórica:
+
+\begin{itemize}
+\item Las métricas puramente estructurales (como LEC) deberían mostrar mayor varianza explicada.
+\item Las métricas semánticas profundas (PD, nGAIN) deberían presentar $R^2$ bajos pero potencialmente significativos.
+\item Si AMB depende realmente del campo semántico relacional, debería resultar inexplicable desde variables superficiales.
+\end{itemize}
+
+Esta hipótesis constituye una prueba indirecta de la validez conceptual de las métricas diseñadas.
+
+\subsubsection{Dimensiones lingüísticas evaluadas}
+
+Las características independientes se agrupan en tres estratos conceptuales:
+
+\begin{itemize}
+\item \textbf{Anclaje nominal}: PROPN\_Ratio, NER\_Count, NUM\_Ratio, Max\_IDF.
+\item \textbf{Carga narrativa}: VERB\_Ratio, ADJ\_Ratio.
+\item \textbf{Estructura sintáctica}: Tree\_Depth.
+\end{itemize}
+
+Esta clasificación permitirá interpretar los resultados como dinámicas estructurales entre anclaje factual y dispersión narrativa.
+
+\subsubsection{Estrategia expositiva}
+
+A continuación se presentan cinco subsecciones independientes, cada una dedicada a una métrica específica. En cada caso se analizarán:
+
+\begin{itemize}
+\item Bondad de ajuste global (R², F-test).
+\item Coeficientes estandarizados y significancia.
+\item Diagnósticos (Q-Q plot, residuos vs ajustados).
+\item Implicaciones estructurales derivadas de los coeficientes.
+\end{itemize}
+
+\subsubsection{Poder Discriminativo (PD)}
+
+El Poder Discriminativo (PD) se define como:
+
+\[
+PD = \text{sim}(h,t) - \text{mean}(\text{sim}(h, s \neq t))
+\]
+
+donde la similitud se calcula mediante coseno en el espacio de embeddings. La métrica captura la separación relativa entre el objetivo y el conjunto de competidores activados por la pista.
+
+\paragraph{Bondad de ajuste}
+
+El modelo OLS estimado sobre $N = 360$ observaciones produce los siguientes resultados globales:
+
+\begin{itemize}
+\item $R^2 = 0.052$
+\item $R^2$ ajustado = 0.033
+\item $F = 3.458$
+\item $p$-valor global = 0.00135
+\end{itemize}
+
+El modelo resulta globalmente significativo, aunque con una capacidad explicativa reducida (aproximadamente 5.2\% de la varianza). Esto indica que las características lingüísticas superficiales contienen señal estadística, pero limitada, en la explicación del PD.
+
+\paragraph{Coeficientes estandarizados}
+
+La Tabla siguiente resume los coeficientes estimados con errores robustos HC3:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\hline
+Variable & $\beta$ & $p$-valor & Signif. \\
+\hline
+PROPN\_Ratio & 0.0248 & 0.655 & -- \\
+NUM\_Ratio & 0.0006 & 0.993 & -- \\
+Max\_IDF & -0.1000 & 0.010 & * \\
+ADJ\_Ratio & 0.0991 & 0.071 & $\dagger$ \\
+VERB\_Ratio & -0.1329 & 0.020 & * \\
+Tree\_Depth & 0.0179 & 0.708 & -- \\
+NER\_Count & 0.1082 & 0.068 & $\dagger$ \\
+\hline
+\end{tabular}
+\caption{Coeficientes estandarizados del modelo OLS para PD (errores robustos HC3).}
+\end{table}
+
+(* $p<0.05$, $\dagger$ $p<0.10$)
+
+La Figura \ref{fig:coef_pd} muestra los coeficientes estandarizados junto con sus intervalos de confianza.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/ols_PD_individual.png}
+    \caption{Coeficientes estandarizados del modelo OLS para PD.}
+    \label{fig:coef_pd}
+\end{figure}
+
+\paragraph{Análisis por variable}
+
+\textbf{VERB\_Ratio} presenta un coeficiente negativo y significativo ($\beta = -0.1329$, $p = 0.020$). Una mayor proporción de verbos se asocia con menor poder discriminativo. Esto sugiere que las pistas centradas en acciones tienden a activar características compartidas entre múltiples candidatos, reduciendo la separación relativa en el espacio de embeddings.
+
+\textbf{Max\_IDF} muestra también un efecto negativo significativo ($\beta = -0.1000$, $p = 0.010$). La mayor rareza léxica no incrementa la discriminación; por el contrario, se asocia con una ligera reducción del PD. Este resultado indica que la especificidad estadística de un término no garantiza su relevancia discriminativa respecto al objetivo.
+
+\textbf{ADJ\_Ratio} ($p = 0.071$) y \textbf{NER\_Count} ($p = 0.068$) presentan efectos positivos marginales, aunque no alcanzan el umbral convencional de significancia del 5\%. Ambos podrían estar relacionados con mayor anclaje descriptivo, pero la evidencia estadística es débil.
+
+\textbf{PROPN\_Ratio}, \textbf{NUM\_Ratio} y \textbf{Tree\_Depth} no muestran asociación significativa con PD en este modelo.
+
+\paragraph{Diagnóstico}
+
+El análisis gráfico (residuos vs ajustados y Q-Q plot) no muestra patrones sistemáticos evidentes. Se observa ligera desviación en colas del Q-Q plot, esperable en métricas acotadas. La utilización de errores robustos HC3 mitiga posibles efectos de heterocedasticidad.
+
+\subsubsection{Ambigüedad (AMB)}
+
+La métrica de Ambigüedad (AMB) cuantifica cuántos candidatos son activados simultáneamente por una pista, ponderando dicha activación por la similitud semántica en el espacio de embeddings. Valores altos indican que la pista distribuye probabilidad sobre múltiples personajes en lugar de concentrarla en el objetivo.
+
+\paragraph{Bondad de ajuste}
+
+El modelo OLS estimado sobre $N = 360$ observaciones produce los siguientes resultados globales:
+
+\begin{itemize}
+\item $R^2 = 0.022$
+\item $R^2$ ajustado = 0.002
+\item $F = 3.042$
+\item $p$-valor global = 0.00405
+\end{itemize}
+
+El modelo resulta globalmente significativo, aunque su capacidad explicativa es muy reducida (2.2\% de la varianza). Esto indica que las características lingüísticas contienen señal estadística débil respecto a la ambigüedad, pero dicha señal es estructuralmente limitada.
+
+\paragraph{Coeficientes estandarizados}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\hline
+Variable & $\beta$ & $p$-valor & Signif. \\
+\hline
+PROPN\_Ratio & -0.0284 & 0.649 & -- \\
+NUM\_Ratio & -0.0316 & 0.620 & -- \\
+Max\_IDF & 0.0755 & 0.002 & * \\
+ADJ\_Ratio & -0.0802 & 0.105 & -- \\
+VERB\_Ratio & 0.0565 & 0.282 & -- \\
+Tree\_Depth & -0.0203 & 0.636 & -- \\
+NER\_Count & 0.0462 & 0.539 & -- \\
+\hline
+\end{tabular}
+\caption{Coeficientes estandarizados del modelo OLS para AMB (errores robustos HC3).}
+\end{table}
+
+(* $p<0.05$)
+
+La Figura \ref{fig:coef_amb} muestra los coeficientes estandarizados junto con sus intervalos de confianza.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/ols_AMB_individual.png}
+    \caption{Coeficientes estandarizados del modelo OLS para AMB.}
+    \label{fig:coef_amb}
+\end{figure}
+
+\paragraph{Análisis por variable}
+
+El único predictor estadísticamente significativo es \textbf{Max\_IDF} ($\beta = 0.0755$, $p = 0.002$). La mayor rareza léxica se asocia con un incremento de la ambigüedad. Esto sugiere que términos infrecuentes no necesariamente restringen el campo semántico, sino que pueden activar regiones menos densas pero más dispersas del espacio de embeddings, aumentando el solapamiento relativo entre candidatos.
+
+El resto de variables no presenta efectos significativos:
+
+\begin{itemize}
+\item \textbf{PROPN\_Ratio} y \textbf{NUM\_Ratio} no muestran reducción sistemática de ambigüedad.
+\item \textbf{VERB\_Ratio} y \textbf{ADJ\_Ratio} no presentan asociación robusta.
+\item \textbf{Tree\_Depth} y \textbf{NER\_Count} no muestran efectos estructurales detectables.
+\end{itemize}
+
+\paragraph{Diagnóstico}
+
+El análisis gráfico no muestra patrones claros de heterocedasticidad o no linealidad. Se observa ligera desviación en colas del Q-Q plot, consistente con la naturaleza acotada de la métrica. La utilización de errores robustos HC3 garantiza inferencia válida ante posibles desviaciones de homocedasticidad.
+
+En conjunto, los resultados indican que la ambigüedad es escasamente explicable a partir de propiedades sintácticas superficiales. La baja varianza explicada sugiere que su comportamiento depende en mayor medida de la estructura relacional del espacio semántico que de la forma lingüística del enunciado.
+
+\subsubsection{Ganancia de Información (nGAIN)}
+
+La métrica nGAIN cuantifica la reducción de entropía inducida por la pista en la distribución de probabilidad sobre el conjunto de candidatos. Se encuentra normalizada en el intervalo $[0,1]$ y mide cuánto se concentra la probabilidad tras observar la pista respecto a la distribución inicial.
+
+Desde una perspectiva informacional, nGAIN captura la magnitud absoluta del desplazamiento probabilístico, independientemente de cuál sea el competidor más cercano.
+
+\paragraph{Bondad de ajuste}
+
+El modelo OLS estimado sobre $N = 360$ observaciones produce los siguientes resultados globales:
+
+\begin{itemize}
+\item $R^2 = 0.061$
+\item $R^2$ ajustado = 0.042
+\item $F = 3.342$
+\item $p$-valor global = 0.00184
+\end{itemize}
+
+El modelo resulta globalmente significativo y explica aproximadamente un 6.1\% de la varianza de nGAIN. Aunque la capacidad explicativa es moderada, es superior a la observada en AMB y ligeramente mayor que en PD, lo que sugiere que la ganancia de información es parcialmente modulable desde la estructura lingüística.
+
+\paragraph{Coeficientes estandarizados}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\hline
+Variable & $\beta$ & $p$-valor & Signif. \\
+\hline
+PROPN\_Ratio & -0.0064 & 0.920 & -- \\
+NUM\_Ratio & -0.0335 & 0.646 & -- \\
+Max\_IDF & -0.0241 & 0.636 & -- \\
+ADJ\_Ratio & 0.0136 & 0.820 & -- \\
+VERB\_Ratio & -0.2092 & 0.000 & *** \\
+Tree\_Depth & -0.0550 & 0.285 & -- \\
+NER\_Count & 0.1240 & 0.029 & * \\
+\hline
+\end{tabular}
+\caption{Coeficientes estandarizados del modelo OLS para nGAIN (errores robustos HC3).}
+\end{table}
+
+($*$ $p<0.05$, $***$ $p<0.001$)
+
+La Figura \ref{fig:coef_ngain} muestra los coeficientes estandarizados junto con sus intervalos de confianza.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/ols_nGAIN_individual.png}
+    \caption{Coeficientes estandarizados del modelo OLS para nGAIN.}
+    \label{fig:coef_ngain}
+\end{figure}
+
+\paragraph{Análisis por variable}
+
+\textbf{VERB\_Ratio} presenta el efecto más fuerte del modelo ($\beta = -0.2092$, $p < 0.001$). Una mayor proporción de verbos se asocia con una reducción significativa de la ganancia de información. Esto indica que las pistas centradas en acciones tienden a distribuir probabilidad sobre múltiples candidatos, disminuyendo la reducción neta de entropía. En términos estructurales, los verbos parecen introducir señal compartida más que discriminativa.
+
+\textbf{NER\_Count} muestra un efecto positivo significativo ($\beta = 0.1240$, $p = 0.029$). La presencia de entidades nombradas incrementa la ganancia de información. Las entidades concretas actúan como anclajes semánticos que restringen el espacio de búsqueda de manera más precisa que formulaciones genéricas.
+
+El resto de variables no presenta asociación estadísticamente significativa:
+
+\begin{itemize}
+\item \textbf{PROPN\_Ratio} y \textbf{NUM\_Ratio} no muestran efecto detectable sobre la reducción de entropía.
+\item \textbf{Max\_IDF} no evidencia relación sistemática con la ganancia informacional.
+\item \textbf{ADJ\_Ratio} no presenta efecto estructural relevante.
+\item \textbf{Tree\_Depth} no muestra impacto significativo.
+\end{itemize}
+
+\paragraph{Diagnóstico}
+
+Los gráficos de residuos no evidencian patrones sistemáticos de no linealidad. Se observa ligera desviación en colas del Q-Q plot, coherente con métricas normalizadas. La utilización de errores robustos HC3 garantiza inferencia consistente ante posibles desviaciones de homocedasticidad.
+
+En conjunto, los resultados muestran que la reducción efectiva de entropía depende principalmente de la presencia de entidades explícitas y de la moderación en el uso de verbos, mientras que otras dimensiones superficiales de la sintaxis no presentan efectos sistemáticos detectables.
+
+\subsubsection{Lecturabilidad (LEC)}
+
+La métrica LEC se basa en el índice de Flesch Reading Ease adaptado al español y mide la facilidad cognitiva de procesamiento del texto. Valores altos indican mayor simplicidad sintáctica y menor carga estructural.
+
+\paragraph{Bondad de ajuste}
+
+El modelo OLS estimado sobre $N = 360$ observaciones produce los siguientes resultados globales:
+
+\begin{itemize}
+\item $R^2 = 0.154$
+\item $R^2$ ajustado = 0.137
+\item $F = 3.790$
+\item $p$-valor global = 0.000556
+\end{itemize}
+
+El modelo resulta altamente significativo y explica aproximadamente un 15.4\% de la varianza en LEC. Es, hasta este punto, el modelo con mayor capacidad explicativa entre las métricas analizadas, lo que es coherente con la naturaleza estructural de la lecturabilidad.
+
+\paragraph{Coeficientes estandarizados}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\hline
+Variable & $\beta$ & $p$-valor & Signif. \\
+\hline
+PROPN\_Ratio & -0.0769 & 0.101 & -- \\
+NUM\_Ratio & 0.0379 & 0.190 & -- \\
+Max\_IDF & -0.0368 & 0.296 & -- \\
+ADJ\_Ratio & -0.3793 & 0.000 & *** \\
+VERB\_Ratio & -0.2141 & 0.001 & ** \\
+Tree\_Depth & -0.0432 & 0.337 & -- \\
+NER\_Count & 0.0617 & 0.160 & -- \\
+\hline
+\end{tabular}
+\caption{Coeficientes estandarizados del modelo OLS para LEC (errores robustos HC3).}
+\end{table}
+
+($**$ $p<0.01$, $***$ $p<0.001$)
+
+La Figura \ref{fig:coef_lec} muestra los coeficientes estandarizados junto con sus intervalos de confianza.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/ols_LEC_individual.png}
+    \caption{Coeficientes estandarizados del modelo OLS para LEC.}
+    \label{fig:coef_lec}
+\end{figure}
+
+\paragraph{Análisis por variable}
+
+\textbf{ADJ\_Ratio} presenta el mayor efecto estadístico del modelo ($\beta = -0.3793$, $p < 0.001$). Un incremento de una desviación estándar en la proporción de adjetivos se asocia empíricamente con una reducción de aproximadamente 0.38 desviaciones estándar en la lecturabilidad. Este es el coeficiente individual de mayor magnitud observado en el conjunto de regresiones estimadas, indicando que una mayor densidad de modificadores atributivos correlaciona fuertemente con una menor facilidad de lectura.
+
+\textbf{VERB\_Ratio} también muestra un efecto negativo y estadísticamente significativo ($\beta = -0.2141$, $p = 0.001$). Una mayor proporción de verbos en la pista se asocia sistemáticamente con una disminución en la métrica de lecturabilidad, constituyendo el segundo efecto de mayor peso dentro de este modelo en particular.
+
+El resto de las variables evaluadas no presentan efectos estadísticamente significativos sobre la lecturabilidad en esta muestra. Concretamente, \textbf{NUM\_Ratio} ($p = 0.190$) y \textbf{Tree\_Depth} ($p = 0.337$) no muestran una asociación sistemática con la variable dependiente, al igual que ocurre con \textbf{PROPN\_Ratio}, \textbf{Max\_IDF} y \textbf{NER\_Count}.
+
+\paragraph{Diagnóstico}
+
+La evaluación formal de los residuos revela desviaciones respecto a los supuestos clásicos de regresión. El test de Shapiro-Wilk ($W = 0.6600$, $p < 0.001$) indica que los residuos no se distribuyen de forma normal. Asimismo, el test de Breusch-Pagan ($LM = 28.3958$, $p < 0.001$) detecta la presencia de heterocedasticidad en el modelo.
+
+Ante este diagnóstico, la decisión metodológica de emplear errores estándar robustos HC3 resulta fundamental. Esta corrección garantiza que la inferencia estadística realizada sobre los coeficientes (específicamente los intervalos de confianza y los $p$-valores asociados a \textbf{ADJ\_Ratio} y \textbf{VERB\_Ratio}) mantenga su validez matemática a pesar de la ausencia de homocedasticidad y normalidad en los residuos.
+
+\subsubsection{Consistencia (CONS)}
+
+La métrica de Consistencia (CONS) mide la coherencia semántica interna del conjunto de pistas asociadas a un personaje, evaluando cuantitativamente si todas ellas convergen hacia un mismo eje temático o si presentan dispersión.
+
+\paragraph{Bondad de ajuste}
+
+El modelo OLS estimado sobre $N = 360$ observaciones produce los siguientes resultados globales:
+
+\begin{itemize}
+\item $R^2 = 0.138$
+\item $R^2$ ajustado = 0.121
+\item $F = 7.285$
+\item $p$-valor global $< 0.001$ ($3.63 \times 10^{-8}$)
+\end{itemize}
+
+El modelo resulta globalmente significativo y explica aproximadamente un 13.8\% de la varianza en CONS. Esta capacidad explicativa moderada sugiere que la coherencia temática está asociada de forma detectable con ciertas decisiones de estructuración lingüística.
+
+\paragraph{Coeficientes estandarizados}
+
+La siguiente tabla resume los coeficientes estimados utilizando errores robustos HC3:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\hline
+Variable & $\beta$ & $p$-valor & Signif. \\
+\hline
+PROPN\_Ratio & -0.0904 & 0.230 & -- \\
+NUM\_Ratio & -0.0884 & 0.180 & -- \\
+Max\_IDF & -0.0290 & 0.270 & -- \\
+ADJ\_Ratio & -0.0661 & 0.333 & -- \\
+VERB\_Ratio & -0.3016 & 0.000 & *** \\
+Tree\_Depth & 0.1131 & 0.020 & * \\
+NER\_Count & -0.0977 & 0.147 & -- \\
+\hline
+\end{tabular}
+\caption{Coeficientes estandarizados del modelo OLS para CONS (errores robustos HC3).}
+\end{table}
+
+(* $p<0.05$, *** $p<0.001$)
+
+La Figura \ref{fig:coef_cons} muestra los coeficientes estandarizados junto con sus intervalos de confianza.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/ols_CONS_individual.png}
+    \caption{Coeficientes estandarizados del modelo OLS para CONS.}
+    \label{fig:coef_cons}
+\end{figure}
+
+\paragraph{Análisis por variable}
+
+\textbf{VERB\_Ratio} presenta el efecto negativo más intenso de este modelo ($\beta = -0.3016$, $p < 0.001$). Un incremento en la proporción de verbos se asocia con una reducción significativa de la consistencia semántica entre las pistas. Estadísticamente, la introducción de una mayor densidad verbal correlaciona con una mayor dispersión direccional en el espacio temático.
+
+\textbf{Tree\_Depth} muestra un efecto positivo y estadísticamente significativo ($\beta = 0.1131$, $p = 0.020$). Una mayor profundidad del árbol sintáctico se asocia con un incremento en la consistencia. Este resultado indica que las oraciones con mayor complejidad estructural o anidamiento tienden a presentar una organización temática internamente más cohesionada.
+
+El resto de las variables (\textbf{PROPN\_Ratio}, \textbf{NUM\_Ratio}, \textbf{Max\_IDF}, \textbf{ADJ\_Ratio} y \textbf{NER\_Count}) no presentan asociaciones estadísticamente significativas con la consistencia en esta muestra, manteniendo $p$-valores ampliamente superiores al nivel $\alpha = 0.05$.
+
+\paragraph{Diagnóstico}
+
+La evaluación de los residuos sugiere un comportamiento estadístico manejable dentro de los parámetros del modelo. Como en las estimaciones anteriores, la utilización de errores estándar robustos HC3 garantiza que la inferencia sobre los coeficientes (\textit{p}-valores e intervalos de confianza) sea consistente y válida ante posibles desviaciones en los supuestos de normalidad u homocedasticidad.
+
+
+\subsection{Validación Empírica con Usuarios (Fase 2: Mundo Cerrado)}
+
+Para evaluar el impacto de la restricción del espacio de búsqueda, se replicó el análisis funcional de las métricas utilizando el conjunto de interacciones registradas tras la actualización de la interfaz a un modelo de mundo cerrado ($N = 1119$). La metodología de segmentación y estandarización se mantuvo idéntica a la Fase 1.
+
+\subsubsection{Validación Cruzada y Capacidad Discriminativa}
+
+El rendimiento predictivo del modelo se evaluó mediante validación cruzada estratificada de cinco particiones (5-Fold CV) para asegurar la robustez de las estimaciones ante la variabilidad muestral. Los resultados indican una precisión media (Accuracy) de $0.532 \pm 0.040$ y un Área Bajo la Curva ROC (AUC-ROC) de $0.548 \pm 0.058$. Al evaluar el modelo sobre el conjunto de reserva de prueba (hold-out test), se obtuvo una precisión de $0.500$ y un AUC-ROC de $0.505$. Aunque estas métricas reflejan una capacidad discriminativa modesta y cercana al azar, ilustran de manera precisa la elevada dificultad intrínseca de predecir el éxito humano en un entorno de mundo cerrado basándose de forma exclusiva en las propiedades formales del texto suministrado.
+
+\subsubsection{Bondad de Ajuste Global}
+
+El contraste formal de verosimilitud (Log-Likelihood Ratio Test) confirma que el modelo propuesto es significativamente superior a un modelo nulo que predice únicamente la clase mayoritaria. Específicamente, se observa una mejora estadística desde un log-likelihood nulo de $-588.11$ hasta un log-likelihood del modelo de $-580.33$, lo que arroja un estadístico $G^2 = 15.56$ con un valor $p = 0.0082$. Esta significancia estadística demuestra que las métricas de calidad contienen información predictiva real sobre el comportamiento del usuario. No obstante, la magnitud de esta señal es limitada en el contexto global, tal como refleja el Pseudo-$R^2$ de McFadden ($0.0132$) y el estadístico de Brier ($0.2495$), indicando que una fracción mayoritaria de la varianza en el acierto obedece a variables externas a la pista, como el conocimiento previo o la pericia deductiva del jugador.
+
+\subsubsection{Coeficientes del Modelo}
+
+La Tabla \ref{tab:coef_mundo_cerrado} resume los parámetros estimados mediante la regresión logística. Se presentan tanto los coeficientes crudos ($\beta$) con sus respectivos valores $p$, fundamentales para la significancia estadística, como los coeficientes estandarizados absolutos, los cuales permiten cuantificar la importancia relativa de cada métrica en la predicción del acierto.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\hline
+Métrica & $\beta$ (Crudo) & $p$-valor & Signif. & $\beta$ (Estandarizado) \\
+\hline
+PD & 0.3252 & 0.028 & * & 0.3325 \\
+CONS & -0.1141 & 0.132 & -- & -0.1623 \\
+nGAIN & -0.0343 & 0.717 & -- & 0.0608 \\
+AMB & 0.0512 & 0.679 & -- & 0.0511 \\
+LEC & -0.0101 & 0.888 & -- & 0.0229 \\
+\hline
+\end{tabular}
+\caption{Coeficientes de la regresión logística para el modelo de mundo cerrado ($N=1119$).}
+\label{tab:coef_mundo_cerrado}
+\end{table}
+
+\subsubsection{Interpretación Empírica}
+
+El análisis de los coeficientes revela una transformación drástica en la dinámica de las pistas al transicionar hacia un entorno de mundo cerrado. El Poder Discriminativo (PD) emerge como el único predictor estadísticamente significativo al nivel del 5\% ($p = 0.028$), concentrando la señal principal del modelo. En un escenario donde las opciones están explícitamente delimitadas en pantalla, la capacidad de la pista para apuntar de forma inequívoca al objetivo y separarlo de los distractores visibles se convierte en el factor crítico y decisivo para facilitar la deducción.
+
+La Consistencia (CONS), aunque pierde su significancia estadística estricta en esta iteración de modelado ($p = 0.132$), conserva el segundo mayor peso relativo en términos de magnitud estandarizada ($|\beta| = 0.1623$). Esto sugiere que la coherencia interna de las descripciones sigue ejerciendo una función estructural de soporte, al evitar que el jugador reciba señales semánticas contradictorias que dificulten el descarte sistemático de los candidatos erróneos.
+
+Por el contrario, aquellas métricas que ostentaban mayor relevancia teórica o empírica en fases previas, como la Ambigüedad (AMB), la Ganancia de Información (nGAIN) y la Lecturabilidad (LEC), presentan ahora efectos marginales y estadísticamente nulos. Puesto que el espacio de búsqueda ya se encuentra acotado artificialmente por la propia interfaz gráfica del mundo cerrado, el esfuerzo cognitivo requerido para reducir la entropía general o procesar sintaxis compleja disminuye considerablemente, vaciando de utilidad predictiva a estos indicadores.
+
+\subsubsection{Reestimación de Pesos}
+
+A partir de la magnitud de los coeficientes estandarizados absolutos, es posible derivar una nueva formulación empírica para el Score Final ($Q_{opt}$) que refleje de manera fidedigna las prioridades del entorno de mundo cerrado. Al normalizar la suma de los pesos derivados de la regresión ($0.63$), obtenemos una distribución ponderal radicalmente distinta a la jerarquización teórica planteada en el análisis descriptivo.
+
+La nueva función de evaluación empírica se define matemáticamente como:
+
+\[
+Q_{opt} = 0.53 \cdot PD + 0.26 \cdot CONS + 0.10 \cdot nGAIN + 0.08 \cdot AMB + 0.03 \cdot LEC
+\]
+
+Esta calibración contrasta profundamente con la asignación original a priori, donde la Ganancia de Información ostentaba el 30\% del peso total y el Poder Discriminativo un 20\%. En el nuevo modelo funcional de mundo cerrado, el Poder Discriminativo absorbe más de la mitad de la responsabilidad evaluativa (53\%), respaldado en segundo plano por la Consistencia (26\%). El resto de las dimensiones (nGAIN, AMB y LEC) quedan relegadas a un papel residual en la ecuación, demostrando estadísticamente que la restricción espacial de las opciones transforma de raíz qué propiedades lingüísticas resultan operativas para el receptor humano.

@@ -1,0 +1,292 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+\section{Metodología}
+
+La metodología seguida en este trabajo adopta un enfoque empírico basado en datos para la evaluación de la calidad de pistas, combinando modelado formal y validación experimental con usuarios. En este marco, se propone un proceso estructurado en varias etapas. En primer lugar, se parte de una fuente de conocimiento estructurada (Wikipedia) a partir de la cual se generan automáticamente pistas mediante modelos de lenguaje. Estas pistas constituyen la unidad fundamental de análisis y sobre ellas se calculan un conjunto de métricas diseñadas para capturar distintas dimensiones de calidad, integradas posteriormente en la función QUILL. A continuación, las pistas se presentan a usuarios en un entorno interactivo (\textit{Spygame}\footnote{\url{https://wiig.dia.fi.upm.es/spygame}}), donde se registran sus interacciones y respuestas, generando datos de comportamiento. Estos datos permiten analizar empíricamente la relación entre las propiedades de las pistas y su efectividad, mediante modelos estadísticos que estiman el impacto de cada métrica en el éxito del usuario. Finalmente, los resultados obtenidos se utilizan para validar y ajustar la función propuesta, cerrando así el ciclo entre generación, evaluación y validación de las pistas.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.6cm,
+    every node/.style={font=\small},
+    stage/.style={
+        rectangle,
+        rounded corners=3pt,
+        draw=#1!60!black,
+        fill=#1!12,
+        text width=11.2cm,
+        minimum height=1.55cm,
+        align=center,
+        line width=0.8pt
+    },
+    arrow/.style={-{Stealth[length=5pt]}, thick, draw=black!50}
+]
+\node[stage=blue] (s1) {
+    \begin{tabular}{c}
+        \textbf{Extracción de datos} \\[2pt]
+        {\footnotesize Recuperación de resúmenes y oraciones de Wikipedia con alta densidad de entidades}
+    \end{tabular}
+};
+\node[stage=teal, below=of s1] (s2) {
+    \begin{tabular}{c}
+        \textbf{Generación de pistas} \\[2pt]
+        {\footnotesize Creación de 360 pistas mediante LLM (45 entidades $\times$ 8 pistas)}
+    \end{tabular}
+};
+\node[stage=violet, below=of s2] (s3) {
+    \begin{tabular}{c}
+        \textbf{Caracterización de las pistas} \\[2pt]
+        {\footnotesize Cálculo de PD, AMB, nGAIN, CONS y LEC sobre el corpus completo}
+    \end{tabular}
+};
+\node[stage=orange, below=of s3] (s4) {
+    \begin{tabular}{c}
+        \textbf{Recogida de interacciones reales} \\[2pt]
+        {\footnotesize Uso de Spygame en dos fases: mundo abierto ($N=2{,}293$) y mundo cerrado ($N=1{,}119$)}
+    \end{tabular}
+};
+\node[stage=red, below=of s4] (s5) {
+    \begin{tabular}{c}
+        \textbf{Validación y ajuste por inferencia} \\[2pt]
+        {\footnotesize Regresión logística y OLS para estimar los pesos de QUILL y analizar la anatomía de las pistas}
+    \end{tabular}
+};
+\foreach \i/\stage in {1/s1, 2/s2, 3/s3, 4/s4, 5/s5} {
+    \node[left=0.4cm of \stage, font=\footnotesize\bfseries, text=black!50] {\i};
+}
+\draw[arrow] (s1) -- (s2);
+\draw[arrow] (s2) -- (s3);
+\draw[arrow] (s3) -- (s4);
+\draw[arrow] (s4) -- (s5);
+\end{tikzpicture}
+\caption{Flujo de trabajo de la metodología propuesta: desde la extracción de datos hasta la validación estadística del marco QUILL.}
+\label{fig:metodologia}
+\end{figure}
+
+El estudio se articula en torno a cuatro hipótesis falsables:
+
+\begin{itemize}
+    \item \textbf{H1:} La función QUILL presenta una asociación estadísticamente significativa con la probabilidad de acierto del usuario ($\text{AUC} > 0.5$, test de razón de verosimilitud $p < 0.05$).
+    \item \textbf{H2:} El poder discriminativo (PD) tiene una contribución significativamente mayor que el resto de métricas en la predicción del éxito del usuario (coeficiente de regresión logística superior y estadísticamente significativo frente a los demás).
+    \item \textbf{H3:} Al menos una propiedad lingüística superficial presenta un coeficiente de regresión estadísticamente significativo ($p < 0.05$) en los modelos OLS que predicen las métricas de calidad semántica.
+    \item \textbf{H4:} La transición de mundo abierto a mundo cerrado produce un cambio estadísticamente significativo en el rendimiento general de los usuarios y en los coeficientes de las métricas de calidad en el modelo logístico.
+\end{itemize}
+
+\subsection{Extracción de datos}
+
+Para garantizar un conjunto de objetivos homogéneo y replicable, se seleccionaron 45 figuras públicas a partir de Wikipedia. La definición operativa de ``fama'' se estableció mediante el número de enlaces entrantes a la página principal del individuo en la Wikipedia en inglés, que presenta mayor cobertura global. Se fijó un umbral mínimo de 200 enlaces y la selección final se realizó de manera aleatoria entre los candidatos elegibles, reduciendo la intervención manual y posibles sesgos subjetivos. La Tabla~\ref{tab:backlinks_wikipedia} muestra los 45 personajes seleccionados ordenados por popularidad decreciente; todos superan el umbral mínimo establecido, con Corbin Bleu como caso de menor popularidad (297 enlaces).
+
+\begin{longtable}{rlr}
+\caption{Número de artículos de la Wikipedia en inglés con enlace entrante a cada personaje seleccionado, ordenados de mayor a menor. Todos superan el umbral mínimo de 200 enlaces. Los nombres son hipervínculos al artículo correspondiente en Wikipedia en inglés.}
+\label{tab:backlinks_wikipedia} \\
+\toprule
+\textbf{\#} & \textbf{Personaje (Wikipedia en inglés)} & \textbf{Nº de enlaces} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{\#} & \textbf{Personaje (Wikipedia en inglés)} & \textbf{Nº de enlaces} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\footnotesize\itshape Continúa en la página siguiente} \\
+\endfoot
+\bottomrule
+\endlastfoot
+1 & \href{https://en.wikipedia.org/wiki/Ronald_Reagan}{Ronald Reagan} & 13.990 \\
+2 & \href{https://en.wikipedia.org/wiki/Adolf_Hitler}{Adolf Hitler} & 13.274 \\
+3 & \href{https://en.wikipedia.org/wiki/Franklin_D._Roosevelt}{Franklin D. Roosevelt} & 11.909 \\
+4 & \href{https://en.wikipedia.org/wiki/William_Shakespeare}{William Shakespeare} & 11.621 \\
+5 & \href{https://en.wikipedia.org/wiki/Abraham_Lincoln}{Abraham Lincoln} & 11.348 \\
+6 & \href{https://en.wikipedia.org/wiki/Jesus}{Jesús de Nazaret} & 10.788 \\
+7 & \href{https://en.wikipedia.org/wiki/Napoleon}{Napoleón Bonaparte} & 10.530 \\
+8 & \href{https://en.wikipedia.org/wiki/Winston_Churchill}{Winston Churchill} & 10.478 \\
+9 & \href{https://en.wikipedia.org/wiki/Vladimir_Putin}{Vladímir Putin} & 10.044 \\
+10 & \href{https://en.wikipedia.org/wiki/Joseph_Stalin}{Iósif Stalin} & 8.307 \\
+11 & \href{https://en.wikipedia.org/wiki/Aristotle}{Aristóteles} & 7.280 \\
+12 & \href{https://en.wikipedia.org/wiki/Muhammad}{Mahoma} & 7.004 \\
+13 & \href{https://en.wikipedia.org/wiki/Mahatma_Gandhi}{Mahatma Gandhi} & 6.634 \\
+14 & \href{https://en.wikipedia.org/wiki/Karl_Marx}{Karl Marx} & 6.358 \\
+15 & \href{https://en.wikipedia.org/wiki/Plato}{Platón} & 6.056 \\
+16 & \href{https://en.wikipedia.org/wiki/Augustine_of_Hippo}{Agustín de Hipona} & 6.017 \\
+17 & \href{https://en.wikipedia.org/wiki/Julius_Caesar}{Julio César} & 5.857 \\
+18 & \href{https://en.wikipedia.org/wiki/Alexander_the_Great}{Alejandro Magno} & 5.760 \\
+19 & \href{https://en.wikipedia.org/wiki/Ludwig_van_Beethoven}{Ludwig van Beethoven} & 5.600 \\
+20 & \href{https://en.wikipedia.org/wiki/Benjamin_Franklin}{Benjamin Franklin} & 5.476 \\
+21 & \href{https://en.wikipedia.org/wiki/Albert_Einstein}{Albert Einstein} & 5.176 \\
+22 & \href{https://en.wikipedia.org/wiki/Charles_Dickens}{Charles Dickens} & 5.161 \\
+23 & \href{https://en.wikipedia.org/wiki/Nelson_Mandela}{Nelson Mandela} & 5.104 \\
+24 & \href{https://en.wikipedia.org/wiki/Oscar_Wilde}{Oscar Wilde} & 4.241 \\
+25 & \href{https://en.wikipedia.org/wiki/Immanuel_Kant}{Immanuel Kant} & 4.146 \\
+26 & \href{https://en.wikipedia.org/wiki/Pablo_Picasso}{Pablo Picasso} & 4.127 \\
+27 & \href{https://en.wikipedia.org/wiki/Charlie_Chaplin}{Charles Chaplin} & 4.033 \\
+28 & \href{https://en.wikipedia.org/wiki/Isaac_Newton}{Isaac Newton} & 3.769 \\
+29 & \href{https://en.wikipedia.org/wiki/Leonardo_da_Vinci}{Leonardo da Vinci} & 3.536 \\
+30 & \href{https://en.wikipedia.org/wiki/Christopher_Columbus}{Cristóbal Colón} & 3.454 \\
+31 & \href{https://en.wikipedia.org/wiki/Gautama_Buddha}{Buda Gautama} & 3.400 \\
+32 & \href{https://en.wikipedia.org/wiki/Rabindranath_Tagore}{Rabindranath Tagore} & 3.346 \\
+33 & \href{https://en.wikipedia.org/wiki/Victor_Hugo}{Victor Hugo} & 3.294 \\
+34 & \href{https://en.wikipedia.org/wiki/Anton_Chekhov}{Antón Chéjov} & 2.861 \\
+35 & \href{https://en.wikipedia.org/wiki/Dante_Alighieri}{Dante Alighieri} & 2.782 \\
+36 & \href{https://en.wikipedia.org/wiki/Nikola_Tesla}{Nikola Tesla} & 2.624 \\
+37 & \href{https://en.wikipedia.org/wiki/Vincent_van_Gogh}{Vincent van Gogh} & 2.576 \\
+38 & \href{https://en.wikipedia.org/wiki/Michelangelo}{Miguel Ángel} & 2.480 \\
+39 & \href{https://en.wikipedia.org/wiki/Socrates}{Sócrates} & 2.465 \\
+40 & \href{https://en.wikipedia.org/wiki/Ren\%C3\%A9_Descartes}{René Descartes} & 2.420 \\
+41 & \href{https://en.wikipedia.org/wiki/Franz_Kafka}{Franz Kafka} & 2.175 \\
+42 & \href{https://en.wikipedia.org/wiki/Moli\%C3\%A8re}{Molière} & 2.091 \\
+43 & \href{https://en.wikipedia.org/wiki/Galileo_Galilei}{Galileo Galilei} & 1.946 \\
+44 & \href{https://en.wikipedia.org/wiki/Marie_Curie}{Marie Curie} & 1.653 \\
+45 & \href{https://en.wikipedia.org/wiki/Corbin_Bleu}{Corbin Bleu} & 297 \\
+\end{longtable}
+
+De cada persona seleccionada se extrajeron dos tipos de información:
+
+\begin{itemize}
+    \item El \textit{summary} inicial del artículo, que proporciona una descripción contextual general.
+    \item Oraciones con alta densidad de entidades nombradas (fechas, organizaciones, ubicaciones), identificadas automáticamente.
+\end{itemize}
+
+El proceso de extracción se realizó automáticamente mediante \textbf{spaCy} (\texttt{es\_core\_news\_sm}), asignando a cada oración una puntuación de densidad de entidades según el siguiente esquema: la presencia de una entidad temporal (\texttt{DATE}) aporta $+2$ puntos; las entidades de tipo localización (\texttt{LOC}) u organización (\texttt{ORG}) contribuyen $+1$ punto cada una; la referencia al sujeto del personaje aporta $+2$ puntos si se trata del nombre propio y $+1$ si es un pronombre. Se descartaron las oraciones con menos de seis o más de ochenta palabras, y solo se retuvieron las que alcanzaron una puntuación $\geq 1$, seleccionando finalmente las treinta de mayor puntuación por artículo.
+
+Estas últimas se consideran especialmente adecuadas como unidades informativas breves, dado su alto contenido factual y su potencial discriminativo como pistas.
+
+\subsection{Generación de pistas}
+
+A partir del material extraído de Wikipedia, se generaron pistas utilizando el modelo \texttt{Meta-Llama-3.1-70B-Instruct}, accedido mediante la API de HuggingFace\footnote{\url{https://huggingface.co/inference-api}}. Este modelo pertenece a la familia de grandes modelos de lenguaje (\textit{Large Language Models}, LLMs), cuyo comportamiento emergente en tareas de generación textual ha sido ampliamente documentado \cite{brown2020}. Se eligió este modelo por su acceso gratuito mediante la API de inferencia de HuggingFace, su capacidad de 70B parámetros que garantiza una generación textual de alta calidad, su naturaleza multilingüe —adecuada para la generación de pistas en español—, y su disponibilidad pública sin restricciones de uso para investigación.
+
+El proceso empleó técnicas de \textit{context learning}, proporcionando ejemplos estructurados que especificaban el formato de salida, la longitud esperada y el grado relativo de dificultad. Este enfoque permite guiar el comportamiento del modelo sin necesidad de ajuste fino adicional. A continuación se reproducen las reglas principales del prompt de generación utilizado:
+
+\begin{quote}
+\textbf{Reglas críticas de redacción:}
+\begin{enumerate}
+    \item \textbf{Anonimato absoluto:} No mencionar el nombre del personaje bajo ninguna circunstancia, ni sustituirlo por títulos obvios (\textit{``el famoso físico''}).
+    \item \textbf{Diversidad temática:} Prohibido generar más de una pista sobre el mismo evento biográfico; igualmente prohibido el uso de sinónimos para duplicar pistas.
+    \item \textbf{Estructura y longitud:} Sujeto tácito; longitud exacta de 15 a 25 palabras por pista; variedad de inicio entre pistas consecutivas.
+    \item \textbf{Contenido:} Usar exclusivamente la información del texto proporcionado; prohibidas las alucinaciones.
+    \item \textbf{Jerarquía de dificultad 5\,$\to$\,1:} nivel 5 = dato oscuro o trivial; nivel 4 = detalle previo a la fama; nivel 3 = obras o logros secundarios; nivel 2 = datos biográficos generales; nivel 1 = profesión principal o logro mundialmente conocido.
+    \item \textbf{Formato de salida:} JSON estricto: \texttt{\{"pistas": [\{"dificultad": N, "pista": "..."\}]\}}; sin texto adicional fuera del JSON.
+\end{enumerate}
+\end{quote}
+
+Para cada persona se generaron ocho pistas, organizadas ordinalmente por dificultad decreciente (etiquetadas de 5 a 1). La dificultad fue determinada por el grado de especificidad de la información incluida en el prompt: el nivel 5 corresponde a datos muy poco conocidos o especializados del personaje, mientras que el nivel 1 alude a rasgos ampliamente conocidos que permiten una identificación directa. La distribución no es uniforme: una pista de nivel 5, una de nivel 4 y dos pistas para cada uno de los niveles restantes. Este diseño experimental busca incrementar progresivamente la especificidad informativa a lo largo de la partida, permitiendo observar cómo varía la toma de decisiones del usuario en función del grado de ambigüedad del estímulo.
+
+El corpus final está compuesto por 360 pistas (45 personas $\times$ 8 pistas). La tabla siguiente muestra una muestra representativa de pistas de tres personas, ilustrando cómo varía el contenido en función del nivel de dificultad asignado:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llp{9cm}}
+\hline
+\textbf{Persona} & \textbf{Dificultad} & \textbf{Pista generada} \\
+\hline
+Isaac Newton & 5 & ``Escribió una lista de sus pecados, incluyendo amenazar a sus padres con quemar su casa.'' \\
+Galileo Galilei & 3 & ``Observó manchas en el Sol y demostró que están en su superficie.'' \\
+Ludwig van Beethoven & 1 & ``Fue un compositor y pianista alemán que influyó en la música del siglo XIX.'' \\
+\hline
+\end{tabular}
+\caption{Muestra de pistas del corpus a distintos niveles de dificultad.}
+\label{tab:muestra_pistas}
+\end{table}
+
+\subsection{Caracterización de las pistas}
+
+Para cuantificar la similitud semántica entre pistas, objetivos y respuestas del usuario sin depender de coincidencia léxica exacta, es necesario representar los textos como vectores en un espacio de alta dimensionalidad donde la proximidad geométrica refleje la proximidad conceptual. Esta representación permite calcular métricas como el poder discriminativo o la ambigüedad relativa de forma continua y sensible al contenido semántico.
+
+Se empleó el modelo \texttt{sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2}, basado en la arquitectura SBERT \cite{reimers2019}. Este modelo fue seleccionado por su soporte multilingüe nativo —que garantiza representaciones adecuadas del español—, su tamaño reducido que permite una inferencia eficiente, y su disponibilidad en la librería \texttt{sentence-transformers}. El modelo proyecta textos en un espacio vectorial de 384 dimensiones donde la similitud del coseno aproxima la proximidad semántica entre representaciones.
+
+Los \textit{guesses} son las respuestas en lenguaje natural introducidas por el jugador para indicar su hipótesis sobre la identidad del objetivo. Se generaron embeddings para:
+
+\begin{itemize}
+    \item Los nombres de las 45 personas.
+    \item Las 360 pistas generadas.
+    \item Los \textit{guesses} textuales introducidos por los usuarios.
+\end{itemize}
+
+Estos vectores permiten cuantificar relaciones semánticas entre pistas, objetivos y respuestas de los jugadores, constituyendo la base para el cálculo posterior de métricas informativas.
+
+Además de las métricas semánticas, resulta relevante analizar qué propiedades superficiales del texto —morfológicas, sintácticas y léxicas— se asocian con cada dimensión de calidad. Para ello, se extrajeron las siguientes características de cada pista: proporciones de categorías gramaticales (nombres propios, verbos, adjetivos, numerales), número de entidades nombradas reconocidas, profundidad máxima del árbol de dependencias sintácticas, valor máximo de frecuencia inversa de documento (IDF) como indicador de rareza léxica, y el índice de lecturabilidad adaptado al español. Estas características son relevantes porque cada una captura una dimensión estructural distinta: la densidad verbal puede relacionarse con la carga cognitiva, la presencia de entidades nombradas con el anclaje factual, y la rareza léxica con la especificidad informativa.
+
+Con el objetivo de extraer estas características de forma automática, se emplearon las siguientes herramientas:
+
+\begin{itemize}
+    \item \textbf{spaCy} (\texttt{es\_core\_news\_sm}) para etiquetado morfosintáctico, análisis de dependencias y reconocimiento de entidades.
+    \item \textbf{TF-IDF} (scikit-learn) para estimar la rareza léxica relativa.
+    \item \textbf{textstat} (índice Fernández-Huerta) para medir la lecturabilidad adaptada al español.
+\end{itemize}
+
+Todas las proporciones se calcularon respecto al número total de tokens válidos, neutralizando el efecto de la longitud del texto.
+
+\subsection{Recogida de interacciones reales}
+
+Spygame fue diseñado como entorno experimental que permite validar empíricamente las pistas generadas a través del comportamiento real de usuarios, recogiendo señales observables del proceso de razonamiento —intentos de respuesta, solicitudes de pistas adicionales y abandonos— sin necesidad de autoreporte. Este enfoque cierra el ciclo metodológico: las pistas evaluadas intrínsecamente mediante QUILL se someten aquí a validación extrínseca, vinculando cada métrica de calidad con una señal de comportamiento medible.
+
+La plataforma \textit{Spygame} fue concebida como un entorno experimental interactivo que permite registrar el comportamiento real de usuarios ante estímulos lingüísticos controlados, garantizando la trazabilidad completa de cada decisión tomada durante la partida. La aplicación está operativa desde el 17 de diciembre de 2025 y se sustenta en una arquitectura basada en MongoDB, empleando una base de datos documental para almacenar pistas, usuarios y sesiones en formato JSON.
+
+Los usuarios requieren registro previo con nombre de usuario y contraseña para acceder a la funcionalidad completa. Existe además un modo invitado con funcionalidad limitada y sin persistencia del historial de partidas. Durante el proceso de registro, cada usuario completa un breve cuestionario de autoevaluación que recoge información sobre cultura general, aptitudes informáticas y habilidades de búsqueda de información. Estas variables se almacenan como atributos del usuario y permiten estudiar la posible interacción entre el perfil cognitivo declarado y la utilidad efectiva de las pistas. La aplicación incorpora también una tabla de clasificación pública (\textit{leaderboard}) que introduce un componente competitivo, incrementando el número de sesiones y, por tanto, el tamaño muestral disponible.
+
+El despliegue de la herramienta se estructuró metodológicamente en dos fases diferenciadas para evaluar el impacto del contexto de decisión en la eficacia de las pistas. La primera fase operó bajo un paradigma de ``mundo abierto'', donde los usuarios debían inferir la identidad objetivo apoyándose exclusivamente en su conocimiento previo y estrategias de búsqueda libre. Posteriormente, se implementó una segunda fase bajo un paradigma de ``mundo cerrado'', en el cual se proporcionó a los jugadores el listado completo de los 45 objetivos posibles. Esta modificación metodológica permite contrastar el rendimiento de las pistas cuando la tarea cognitiva principal transita de la evocación libre al reconocimiento deductivo acotado.
+
+En cada partida, el sistema selecciona una persona de forma pseudoaleatoria, priorizando aquellas no mostradas previamente al usuario. Este mecanismo reduce la repetición de contenido y evita sesgos de aprendizaje derivados de la familiaridad con los datos.
+
+El orden de presentación de las pistas se aleatoriza en cada sesión, desacoplando la dificultad teórica del orden temporal y permitiendo analizar la influencia independiente de ambos factores.
+
+Durante una sesión, el usuario puede solicitar una pista adicional, intentar adivinar la persona o abandonar la partida. Cada respuesta explícita tras la presentación de una pista se define como una \textit{acción}. Formalmente:
+
+\[
+a_i = \langle h_i, u, t_i, r_i \rangle
+\]
+
+donde $h_i$ representa la pista mostrada, $u$ identifica al usuario, $t_i$ el instante temporal y $r_i$ la reacción observada. El subíndice $i$ denota el turno dentro de la sesión, no el índice del usuario. Los valores posibles de $r_i$ son: \textit{acierto} (el usuario identifica correctamente el objetivo), \textit{fallo} (respuesta incorrecta), \textit{solicitar\_pista} (el usuario pide una pista adicional) y \textit{abandonar} (el usuario finaliza la partida sin resolver).
+
+Una sesión se modela como una secuencia ordenada de acciones $\{a_1, \dots, a_n\}$. Para dar soporte a la fase de mundo cerrado, la interfaz de usuario se actualizó integrando un panel visual accesible que listaba el elenco completo de candidatos, limitando el espacio de búsqueda del jugador. En el momento del análisis, el dataset consolidado contiene un total de 3.412 interacciones registradas. De estas, 2.293 corresponden a la fase inicial de mundo abierto y 1.119 fueron recolectadas durante la fase experimental de mundo cerrado.
+
+Se distinguen explícitamente dos niveles conceptuales de análisis. El primero es el \textbf{nivel pista} ($N = 360$), que constituye la unidad fundamental del proyecto: sobre cada pista se calculan las métricas de calidad definidas formalmente en la sección siguiente. El segundo es el \textbf{nivel interacción} ($N = 3.412$), la unidad empírica de validación: cada interacción pista--usuario se considera una observación independiente y se utiliza para estimar la relación entre las métricas y el comportamiento real. Cada interacción se encuentra etiquetada según la fase metodológica a la que pertenece (mundo abierto o cerrado), lo que permite aislar el efecto del diseño de la interfaz sobre el rendimiento.
+
+No se modelaron efectos aleatorios por usuario, por lo que múltiples interacciones de un mismo individuo se tratan como independientes. Este enfoque puede introducir pseudorreplicación y se reconoce como limitación metodológica. Un tratamiento más riguroso requeriría modelos mixtos con efectos aleatorios por usuario.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{spygame_inicio.png}
+\caption{Pantalla de inicio de Spygame con formulario de registro y acceso.}
+\label{fig:spygame_inicio}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{0.47\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{spygame_partida.png}
+    \caption{Interfaz de partida activa: pista visible, campo de respuesta y botón para solicitar nueva pista.}
+    \label{fig:spygame_partida}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.47\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{spygame_resultado.png}
+    \caption{Pantalla de resultado tras acierto, con puntuación y opción de nueva partida.}
+    \label{fig:spygame_resultado}
+\end{subfigure}
+\caption{Flujo de juego en Spygame: partida activa (a) y pantalla de resultado (b).}
+\label{fig:spygame_juego}
+\end{figure}
+
+\subsection{Validación y ajuste por inferencia}
+
+Para validar el marco propuesto, son necesarios dos tipos de información estadística. Por un lado, se necesita estimar empíricamente el peso relativo de cada métrica de calidad sobre la probabilidad de acierto del usuario, de modo que la función QUILL pueda ajustarse a partir de datos reales de comportamiento. Por otro lado, se requiere comprender qué propiedades lingüísticas superficiales de las pistas explican las variaciones en las métricas semánticas, lo que permite identificar patrones de generación subóptima. Para obtener esta información, el análisis se estructura en dos etapas complementarias.
+
+\subsubsection{Regresión logística}
+
+Se ajustó un modelo de regresión logística binaria sobre el total de interacciones, donde la variable dependiente es el acierto del jugador (1/0) y las variables independientes son las métricas de calidad definidas a nivel de pista.
+
+El objetivo es estimar empíricamente el peso relativo de cada dimensión en la probabilidad de éxito, obteniendo una función de calidad basada en comportamiento real. Para controlar el efecto del cambio de paradigma experimental, el modelo incorpora una variable categórica que identifica la modalidad de la partida (mundo abierto vs. mundo cerrado). La inclusión de este factor permite estimar empíricamente si la influencia de las métricas de calidad sobre la probabilidad de éxito varía de forma significativa cuando se reduce la incertidumbre del espacio de soluciones.
+
+\subsubsection{Modelos explicativos OLS}
+
+Para analizar qué propiedades lingüísticas explican cada dimensión de calidad, se ajustaron cinco modelos de regresión lineal múltiple (uno por métrica como variable dependiente), utilizando como predictores las características lingüísticas extraídas.
+
+Todas las variables fueron estandarizadas mediante normalización $z$ para obtener coeficientes comparables.
+
+Se verificaron los supuestos clásicos de regresión. La multicolinealidad se evaluó mediante VIF (< 5). Las pruebas de Shapiro-Wilk indicaron desviaciones de normalidad en los residuos, y el test de Breusch-Pagan detectó heterocedasticidad en algunos modelos. Para garantizar inferencia válida, se emplearon errores estándar robustos HC3 \cite{mackinnon1985}. Bajo los supuestos de Gauss-Markov, los estimadores OLS permanecen insesgados y eficientes en sentido lineal.
+
+\end{document}
